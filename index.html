@@ -1,0 +1,200 @@
+<!doctype html>
+<html>
+
+<head>
+  <script src="ocrad.js"></script>
+  <style>
+    body {
+      margin: 0;
+      padding: 0;
+      position: absolute;
+    }
+    
+    #line {
+      filter: invert(100%);
+      width: 100vw;
+      top: 0;
+      left: 0;
+    }
+    
+    #container {
+      overflow: hidden;
+      position: relative;
+      height: 100vh;
+      width: 100vw;
+    }
+    
+    #full {
+      position: absolute;
+      top: 0;
+      left: -400px;
+    }
+    
+    #top {
+      position: relative;
+      min-height: 100px;
+      width: 100vw;
+      background: papayaWhip;
+    }
+  </style>
+</head>
+
+<body>
+  <div id="top">
+    <canvas id="line" height="20"></canvas>
+    <h1 id="wat"></h1>
+    <h1 id="txt"></h1>
+
+  </div>
+  <div id="container">
+    <canvas id="full"></canvas>
+
+  </div>
+  <img id="page">
+
+  <script>
+    var container = document.querySelector('#container');
+    var full = document.querySelector('#full');
+    var fullCtx = full.getContext('2d');
+    var line = document.querySelector('#line');
+    var lineCtx = line.getContext('2d');
+    var img = document.querySelector('img');
+    var imgData;
+    var wat = document.querySelector('#wat');
+    var begin, end, linetrack, lines = [],
+      text = [],
+      ls = [],
+      lstemp = [],
+      pause, count = 0;
+
+
+    //
+    var Doc = function (options) {
+
+      this.pages = options.pages;
+      this.hearingId = options.hearingId;
+      this.title = options.title;
+      this.lines = [];
+      this.text = "";
+      this.letters = [];
+      this.dLetters = [];
+      this.currentPage = 0;
+      this.currentLine = 0;
+      this.currentChr = 0;
+      this.init();
+    };
+
+
+    Doc.prototype.init = function () {
+      var doc = this;
+      console.log("init");
+      document.querySelector('img').onload = function () {
+        full.width = this.width;
+        full.height = this.height;
+        this.style.display = "none";
+        fullCtx.drawImage(this, 0, 0);
+
+        console.log("woo");
+        doc.process();
+      };
+
+      this.loadPage();
+
+    };
+
+    Doc.prototype.process = function () {
+      this.getLines().processLines();
+
+    }
+
+    Doc.prototype.loadPage = function () {
+      var page;
+
+      if (this.currentPage >= this.pages.length) {
+        return false;
+      }
+
+      if (!img.src) {
+        page = this.pages[0];
+      } else {
+        this.currentPage++;
+        page = this.pages[this.currentPage];
+      }
+      img.src = page;
+      console.log("loaded " + this.pages[this.currentPage]);
+    };
+
+
+    Doc.prototype.getLines = function () {
+      this.lines = OCRAD(img, {
+        verbose: true
+      }).lines;
+      return this;
+    }
+
+
+    /*
+        this.currentPage++;
+        else {
+          img.src = this.currentPage;
+        }
+        fullCtx.drawImage(img, 0, 0);
+
+        };
+    */
+
+
+
+    var statement = new Doc({
+      pages: ['page0.jpg', 'page1.jpg', 'page2.jpg'],
+      title: 'Buckley Statement',
+      hearingId: 'asdf'
+    });
+
+
+
+
+
+    function draw() {
+      fullCtx.drawImage(img, 0, 0);
+      drawLines();
+    }
+
+    function drawLines() {
+
+      fullCtx.fillStyle = "rgba(255,0,0,0.7)";
+      for (var line of lines) {
+        console.log("starting line");
+        if (line.height > 10) {
+          //console.dir(line);
+          var lineHeight = line.height;
+          for (var letter of line.letters) {
+            ls.push(letter);
+          }
+        }
+      }
+      window.setTimeout(drawLetters, 500);
+    }
+
+    function drawLetters() {
+      lstemp.push(ls[count]);
+      for (var letter of lstemp) {
+        console.log('y');
+        fullCtx.fillRect(letter.x, letter.y, letter.width, letter.height);
+        //full.style.top = letter.y;
+        full.style.left = "-" + letter.x + "px";
+      }
+
+      if (lstemp.length === ls.length) {
+        console.log('done');
+        return true;
+      } else {
+        window.setTimeout(drawLetters, 500);
+
+      }
+    }
+  </script>
+
+</body>
+
+</html>

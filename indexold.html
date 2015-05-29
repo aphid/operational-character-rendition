@@ -1,0 +1,142 @@
+<!doctype html>
+<html>
+
+<head>
+  <script src="ocrad.js"></script>
+  <style>
+    body { margin: 0; padding: 0; position: absolute; }
+    #full { filter: invert(100%);}
+    #line {
+      filter: invert(100%);
+      width: 100vw;
+      top: 0;
+      left: 0;
+      } 
+    #container { overflow: hidden; position: relative; width: auto; height: auto; }
+    #full { position: absolute; top: 0; left: -400px; transition: top 2s linear;  min-width: 98vw; min-height: 100vh;}
+    #top { position: relative; min-height: 100px; width: 100vw; background: papayaWhip; }
+  </style>
+</head>
+
+<body>
+<div id="top">
+  <canvas id="line" height="20"></canvas>
+  <h1 id="wat"></h1>
+  <h1 id="txt"></h1>
+
+  </div>
+<div id="container">
+  <canvas id="full"></canvas>
+
+  </div>
+  <img src="page0.jpg" id="page">
+
+  <script>
+    var docs = ['page1.jpg', 'page2.jpg'];
+    var container = document.querySelector('#container');
+    var full = document.querySelector('#full');
+    var fullCtx = full.getContext('2d');
+    var line = document.querySelector('#line');
+    var lineCtx = line.getContext('2d');
+    var img = document.querySelector('img');
+    var imgData;
+    var y = 300;
+    var wat = document.querySelector('#wat');
+    var begin, end, linetrack, lines = [],
+      text = [], pause;
+    
+
+    document.querySelector('img').onload = function () {
+      full.width = this.width;
+      full.height = this.height;
+      this.style.display = "none";
+      fullCtx.drawImage(this, 0, 0);
+
+      console.log("woo");
+      scanLine();
+    };
+
+    function scanLine() {
+      if (pause){
+        return false; 
+      }
+      if (y < full.height) {
+        window.setTimeout(function () {
+          fullCtx.clearRect(0, 0, full.width, full.height);
+          fullCtx.drawImage(img, 0, 0);
+          for (var line of lines) {
+            fullCtx.fillStyle = "rgba(0,0,0,0.2)";
+            fullCtx.fillRect(0, line.start, full.width, line.end - line.start);
+          }
+          fullCtx.beginPath();
+          fullCtx.moveTo(0, y);
+          fullCtx.lineTo(full.width, y);
+          var avg = lineAvg(y);
+          //wat.textContent = avg;
+          if (avg < 250) {
+            console.log("found");
+            fullCtx.strokeStyle = "red";
+            if (!linetrack) {
+              begin = y;
+              linetrack = true;
+            }
+          } else {
+            if (linetrack) {
+              linetrack = false;
+              console.log(y - begin);
+              if (y - begin > 10) {
+                var baseheight = y - begin;
+                console.log(baseheight);
+                lines.push({
+                  start: begin - 4,
+                  end: y + 8,
+                  height: y + 8 - (begin - 4)
+                });
+                full.style.top = "-" + y + "px";
+                ocr( lines.length - 1 );
+              }
+            }
+            fullCtx.strokeStyle = "black";
+          }
+
+          fullCtx.stroke();
+          fullCtx.closePath();
+          y++;
+          scanLine();
+        }, 1)
+      } else {
+        lines = [];
+        y = 0;
+        img.src = docs.shift();
+        scanLine();
+      }
+    }
+
+
+    function lineAvg(y) {
+      imgData = fullCtx.getImageData(0, y, full.width / 2, 1);
+      var tot = 0;
+      for (var i of imgData.data) {
+        tot += i;
+      }
+      return tot / imgData.data.length;
+    };
+
+    function ocr(i) {
+      var lin = lines[i];
+      line.height = lin.height;
+      line.width = full.width;
+      container.style.width = full.width + "px";
+      container.style.height = full.height + "px";
+
+      lineCtx.drawImage(img, 0, lin.start, full.width, lin.height, 0, 0, full.width, lin.height);
+      var txt = OCRAD(line);
+      text.push(txt);
+      full.style.top = 0;
+      document.querySelector("#txt").textContent = txt;
+    }
+  </script>
+
+</body>
+
+</html>

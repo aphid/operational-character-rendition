@@ -60,7 +60,7 @@
     
     #text {
       display: inline-block;
-      top: -5px;
+      top: -25px;
       position: absolute;
       color: white;
       font-size: 80vh;
@@ -87,7 +87,6 @@
   </div>
 
 
-  </div>
   <div id="container">
     <canvas id="full"></canvas>
 
@@ -173,29 +172,29 @@
     };
 
     Doc.prototype.drawLetters = function () {
+      console.log("dl");
       var doc = this;
       this.dLetters.push(this.letters[this.currentChr]);
 
       this.currentChr++;
-      for (var letter of this.dLetters) {
-        console.log('y');
-        fullCtx.fillRect(letter.x, letter.y, letter.width, letter.height);
-        fullCtx.fillRect(letter.x, letter.y, letter.width, letter.height);
-        full.style.top = "-" + (letter.y - 5) + "px";
-        full.style.left = "-" + letter.x + "px";
-        console.log(letter.matches.length);
-        type.width = letter.width;
-        type.height = letter.height;
-        typeCtx.clearRect(0, 0, type.width, type.height);
+      var letter = this.dLetters[this.dLetters.length - 1];
+      fullCtx.fillRect(letter.x, letter.y, letter.width, letter.height);
+      fullCtx.fillRect(letter.x, letter.y, letter.width, letter.height);
+      full.style.top = "-" + (letter.y - 5) + "px";
+      full.style.left = "-" + letter.x + "px";
+      type.width = letter.width;
+      type.height = letter.height;
+      typeCtx.clearRect(0, 0, type.width, type.height);
 
-        typeCtx.drawImage(img, letter.x, letter.y, letter.width, letter.height, 0, 0, type.width, type.height);
-        if (letter.matches.length) {
-          document.querySelector('#text').textContent = letter.matches[0].letter;
-        } else {
-          document.querySelector('#text').textContent = "???";
-        }
-
+      typeCtx.drawImage(img, letter.x, letter.y, letter.width, letter.height, 0, 0, type.width, type.height);
+      console.log(letter.matches.length);
+      if (letter.matches.length) {
+        document.querySelector('#text').textContent = letter.matches[0].letter;
+      } else {
+        document.querySelector('#text').textContent = "???";
       }
+
+
 
       if (this.dLetters.length === this.letters.length) {
         console.log('done');

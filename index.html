@@ -18,6 +18,7 @@
     }
     
     #container {
+      background: black;
       overflow: hidden;
       position: relative;
       height: 100vh;
@@ -28,22 +29,63 @@
       position: absolute;
       top: 0;
       left: -400px;
+      filter: invert(100%);
     }
     
     #top {
       position: relative;
-      min-height: 100px;
+      min-height: 80vh;
       width: 100vw;
-      background: papayaWhip;
+      background: black;
+    }
+    
+    #chrs {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 200px;
+      height: 300px;
+    }
+    
+    #type {
+      position: inline-block;
+      float: left;
+      display: block;
+      top: 0;
+      height: 80vh;
+      padding-top: 3px;
+      left: 0;
+      filter: invert(100%) contrast(400%);
+    }
+    
+    #text {
+      display: inline-block;
+      top: -5px;
+      position: absolute;
+      color: white;
+      font-size: 80vh;
+      height: 80vh;
+      vertical-align: text-top;
+      width: 120px;
+      font-family: monospace;
+      filter: blur(2px);
     }
   </style>
 </head>
 
 <body>
   <div id="top">
-    <canvas id="line" height="20"></canvas>
+    <canvas id="line" height="1"></canvas>
     <h1 id="wat"></h1>
     <h1 id="txt"></h1>
+
+    <div id="chrs">
+      <div id="text">
+      </div>
+      <canvas id="type" width="100" height="100"></canvas>
+    </div>
+  </div>
+
 
   </div>
   <div id="container">
@@ -53,6 +95,7 @@
   <img id="page">
 
   <script>
+    //set up all the things.  fold thes into the object at some point
     var container = document.querySelector('#container');
     var full = document.querySelector('#full');
     var fullCtx = full.getContext('2d');
@@ -61,6 +104,8 @@
     var img = document.querySelector('img');
     var imgData;
     var wat = document.querySelector('#wat');
+    var type = document.querySelector("#type");
+    var typeCtx = type.getContext("2d");
     var begin, end, linetrack, lines = [],
       text = [],
       ls = [],
@@ -68,7 +113,7 @@
       pause, count = 0;
 
 
-    //
+    //doc constructinator
     var Doc = function (options) {
 
       this.pages = options.pages;
@@ -108,24 +153,64 @@
     }
 
     Doc.prototype.processLines = function () {
-      for (var i = 0; i < this.lines; i++) {
+      var doc = this;
+      console.log("got " + this.lines.length + " lines, processing")
+      for (var i = 0; i < this.lines.length; i++) {
         var line = this.lines[i];
-        fullCtx.fillStyle = "rgba(255,0,0,0.7)";
-        for (var line of lines) {
-          console.log("starting line");
-          if (line.height > 10) {
-            //console.dir(line);
-            var lineHeight = line.height;
-            for (var letter of line.letters) {
-              ls.push(letter);
-            }
-          }
+        fullCtx.fillStyle = "rgb(0,0,0)";
+        //console.dir(line);
+        var lineHeight = line.height;
+        for (var letter of line.letters) {
+          this.letters.push(letter);
         }
-        window.setTimeout(drawLetters, 500);
+      }
+      window.setTimeout(function () {
+        doc.drawLetters();
+      }, 125);
+
+
+
+    };
+
+    Doc.prototype.drawLetters = function () {
+      var doc = this;
+      this.dLetters.push(this.letters[this.currentChr]);
+
+      this.currentChr++;
+      for (var letter of this.dLetters) {
+        console.log('y');
+        fullCtx.fillRect(letter.x, letter.y, letter.width, letter.height);
+        fullCtx.fillRect(letter.x, letter.y, letter.width, letter.height);
+        full.style.top = "-" + (letter.y - 5) + "px";
+        full.style.left = "-" + letter.x + "px";
+        console.log(letter.matches.length);
+        type.width = letter.width;
+        type.height = letter.height;
+        typeCtx.clearRect(0, 0, type.width, type.height);
+
+        typeCtx.drawImage(img, letter.x, letter.y, letter.width, letter.height, 0, 0, type.width, type.height);
+        if (letter.matches.length) {
+          document.querySelector('#text').textContent = letter.matches[0].letter;
+        } else {
+          document.querySelector('#text').textContent = "???";
+        }
 
       }
 
-    };
+      if (this.dLetters.length === this.letters.length) {
+        console.log('done');
+        return true;
+      } else {
+        window.setTimeout(function () {
+          console.log("ok!");
+          doc.drawLetters();
+        }, 250);
+
+
+
+
+      };
+    }
 
     Doc.prototype.loadPage = function () {
       var page;
@@ -183,45 +268,28 @@
 
 
 
-
-    function draw() {
-      fullCtx.drawImage(img, 0, 0);
-      drawLines();
-    }
-
-    function drawLines() {
-
-      fullCtx.fillStyle = "rgba(255,0,0,0.7)";
-      for (var line of lines) {
-        console.log("starting line");
-        if (line.height > 10) {
-          //console.dir(line);
-          var lineHeight = line.height;
-          for (var letter of line.letters) {
-            ls.push(letter);
-          }
+    /*
+        function draw() {
+          fullCtx.drawImage(img, 0, 0);
+          drawLines();
         }
-      }
-      window.setTimeout(drawLetters, 500);
-    }
 
-    function drawLetters() {
-      lstemp.push(ls[count]);
-      for (var letter of lstemp) {
-        console.log('y');
-        fullCtx.fillRect(letter.x, letter.y, letter.width, letter.height);
-        //full.style.top = letter.y;
-        full.style.left = "-" + letter.x + "px";
-      }
+        function drawLines() {
 
-      if (lstemp.length === ls.length) {
-        console.log('done');
-        return true;
-      } else {
-        window.setTimeout(drawLetters, 500);
-
-      }
-    }
+          fullCtx.fillStyle = "rgba(255,0,0,0.7)";
+          for (var line of lines) {
+            console.log("starting line");
+            if (line.height > 10) {
+              //console.dir(line);
+              var lineHeight = line.height;
+              for (var letter of line.letters) {
+                ls.push(letter);
+              }
+            }
+          }
+          window.setTimeout(drawLetters, 500);
+        }
+        */
   </script>
 
 </body>

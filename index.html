@@ -107,6 +107,26 @@
 
     }
 
+    Doc.prototype.processLines = function () {
+      for (var i = 0; i < this.lines; i++) {
+        var line = this.lines[i];
+        fullCtx.fillStyle = "rgba(255,0,0,0.7)";
+        for (var line of lines) {
+          console.log("starting line");
+          if (line.height > 10) {
+            //console.dir(line);
+            var lineHeight = line.height;
+            for (var letter of line.letters) {
+              ls.push(letter);
+            }
+          }
+        }
+        window.setTimeout(drawLetters, 500);
+
+      }
+
+    };
+
     Doc.prototype.loadPage = function () {
       var page;
 
@@ -126,11 +146,20 @@
 
 
     Doc.prototype.getLines = function () {
-      this.lines = OCRAD(img, {
+
+      //get line data from OCRAD
+      var lines = OCRAD(img, {
         verbose: true
       }).lines;
+
+      //filter out small lines and lines with no characters
+      for (var line of lines) {
+        if (line.height > 8 && line.letters.length) {
+          this.lines.push(line);
+        }
+      }
       return this;
-    }
+    };
 
 
     /*

@@ -4,84 +4,6 @@
 <head>
   <script src="ocrad.js"></script>
   <style>
-    body {
-      background: black;
-      margin: 0;
-      padding: 0;
-      position: absolute;
-    }
-    
-    #line {
-      filter: invert(100%);
-      width: 100vw;
-      top: 0;
-      left: 0;
-    }
-    
-    #container {
-      background: black;
-      overflow: hidden;
-      position: relative;
-      height: 100vh;
-      width: 100vw;
-    }
-    
-    #full {
-      position: absolute;
-      top: 0;
-      left: -400px;
-      filter: invert(100%);
-      -webkit-filter: invert(100%);
-    }
-    
-    #top {
-      position: relative;
-      min-height: 80vh;
-      width: 100vw;
-      background: black;
-    }
-    
-    #chrs {
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100vw;
-      height: 300px;
-    }
-    
-    #type {
-      float: left;
-      min-width: 80px;
-      height: 80vh;
-      padding-top: 3px;
-      filter: invert(100%) contrast(400%);
-      -webkit-filter: invert(100%) contrast(400%);
-    }
-    
-    #text {
-      float: left;
-      top: -25px;
-      color: white;
-      font-size: 80vh;
-      height: 80vh;
-      vertical-align: text-top;
-      font-family: monospace;
-      filter: blur(2px);
-      -webkit-filter: blur(2px);
-    }
-    
-    #words {
-      z-index: 99;
-      position: absolute;
-      top: 0;
-      right: 5px;
-      width: 40%;
-      height: 80vh;
-      text-align: right;
-      color: white;
-      filter: blur(0.1px);
-      -webkit-filter: blur(0.3px);
-    }
   </style>
 </head>
 
@@ -135,15 +57,6 @@
       this.pages = options.pages;
       this.hearingId = options.hearingId;
       this.title = options.title;
-      this.lines = [];
-      this.text = "";
-      this.letters = [];
-      this.words = [];
-      this.word = "";
-      this.dLetters = [];
-      this.currentPage = 0;
-      this.currentLine = 0;
-      this.currentChr = 0;
       this.init();
       this.newline;
     };
@@ -166,6 +79,17 @@
 
 
     Doc.prototype.init = function () {
+      this.lines = [];
+      this.text = "";
+      this.letters = [];
+      this.words = [];
+      this.word = "";
+      this.dLetters = [];
+      this.currentPage = 0;
+      this.currentLine = 0;
+      this.currentChr = 0;
+
+
       var doc = this;
       console.log("init");
       document.querySelector('img').onload = function () {
@@ -173,8 +97,6 @@
         full.height = this.height;
         this.style.display = "none";
         fullCtx.drawImage(this, 0, 0);
-
-        console.log("woo");
         doc.process();
       };
 
@@ -203,9 +125,7 @@
           this.letters.push(letter);
         }
       }
-      window.setTimeout(function () {
-        doc.drawLetters();
-      }, 125);
+      doc.drawLetters();
 
 
     };
@@ -227,14 +147,12 @@
 
       this.currentChr++;
       if (this.currentChr >= this.letters.length) {
-        this.currentChr = 0;
-        this.loadPage();
+        this.dLetters = [];
+        this.init();
       }
+
       var letter = this.letters[this.currentChr];
       if (letter.matches.length) {
-
-
-
         for (var match of letter.matches) {
 
           matches = matches + match.letter;
@@ -269,6 +187,7 @@
 
       if (this.dLetters.length === this.letters.length) {
         console.log('done');
+        this.dLetters = [];
         return true;
       } else {
         window.setTimeout(function () {

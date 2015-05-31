@@ -151,7 +151,7 @@ Doc.prototype.drawLetters = function () {
 
       matches = matches + match.letter;
     }
-    if (letter.wordEnd || matches.includes(' ') || matches.includes(',')) {
+    if (letter.wordEnd || matches.indexOf(' ') || matches.indexOf(',')) {
 
       if (letter.wordEnd) {
         console.log("wordend, matches: " + matches);

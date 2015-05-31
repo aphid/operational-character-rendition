@@ -57,6 +57,8 @@
       this.pages = options.pages;
       this.hearingId = options.hearingId;
       this.title = options.title;
+      this.currentPage = 0;
+
       this.init();
       this.newline;
     };
@@ -85,7 +87,6 @@
       this.words = [];
       this.word = "";
       this.dLetters = [];
-      this.currentPage = 0;
       this.currentLine = 0;
       this.currentChr = 0;
 
@@ -96,6 +97,7 @@
         full.width = this.width;
         full.height = this.height;
         this.style.display = "none";
+        fullCtx.clearRect(0, 0, full.width, full.height);
         fullCtx.drawImage(this, 0, 0);
         doc.process();
       };
@@ -209,9 +211,16 @@
       }
 
       if (!img.src) {
+        console.log("no image, starting out, page 0");
         page = this.pages[0];
+
+      } else if (this.currentPage >= this.pages.length - 1) {
+        return false;
       } else {
-        this.currentPage++;
+        console.log(this.currentPage);
+        this.currentPage = this.currentPage + 1;
+        console.log(this.currentPage);
+        console.log("iterating page, now " + this.currentPage);
         page = this.pages[this.currentPage];
       }
       img.src = page;

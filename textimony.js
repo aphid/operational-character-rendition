@@ -116,7 +116,7 @@ Doc.prototype.addWord = function (word) {
     console.log("trying " + word);
     var fuzzy = dict.get(word);
     fuzzy = fuzzy[0];
-    if (fuzzy[0] > 0.6) {
+    if (fuzzy[0] > 0.65) {
       span.textContent = fuzzy[1] + " ";
     }
 
@@ -125,7 +125,7 @@ Doc.prototype.addWord = function (word) {
     console.log("trying " + word);
     var fuzzy = suspect.get(word);
     fuzzy = fuzzy[0];
-    if (fuzzy[0] > 0.6) {
+    if (fuzzy[0] > 0.7) {
       span.textContent = "*" + fuzzy[1] + "* ";
     }
 

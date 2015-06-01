@@ -28,7 +28,7 @@ document.addEventListener("DOMContentLoaded", function (event) {
     dict = FuzzySet(JSON.parse(values[0]));
     suspect = FuzzySet(JSON.parse(values[1]));
     statement = new Doc({
-      pages: ['page0.jpg', 'page1.jpg', 'page2.jpg'],
+      pages: ['page0.jpg', 'page1.jpg', 'page2.jpg', 'questionnaire00.jpg', 'questionnaire01.jpg', 'questionnaire02.jpg', 'questionnaire03.jpg'],
       title: 'Buckley Statement',
       hearingId: 'asdf'
     });
@@ -95,7 +95,7 @@ Doc.prototype.processLines = function () {
       if (j === line.letters.length - 1) {
         letter.wordEnd = true;
       }
-      if (letter.height > 60 || letter.width > 60) {
+      if (letter.height > 100 || letter.width > 200) {
         console.log(letter);
       } else {
         this.letters.push(letter);
@@ -197,7 +197,7 @@ Doc.prototype.drawLetters = function () {
 
 Doc.prototype.loadPage = function () {
   var page;
-
+  words.appendChild(document.createElement('hr'));
   if (this.currentPage >= this.pages.length) {
     return false;
   }

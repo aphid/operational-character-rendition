@@ -6,6 +6,7 @@ var begin, end, linetrack, lines = [],
   pause, count = 0;
 var suspect, dict;
 var statement;
+var interval = 125;
 
 document.addEventListener("DOMContentLoaded", function (event) {
 
@@ -113,16 +114,14 @@ Doc.prototype.addWord = function (word) {
   span.textContent = word + " ";
   words.appendChild(span);
   window.setTimeout(function () {
-    console.log("trying " + word);
     var fuzzy = dict.get(word);
     fuzzy = fuzzy[0];
-    if (fuzzy[0] > 0.65) {
+    if (fuzzy[0] > 0.614) {
       span.textContent = fuzzy[1] + " ";
     }
 
   }, 1000);
   window.setTimeout(function () {
-    console.log("trying " + word);
     var fuzzy = suspect.get(word);
     fuzzy = fuzzy[0];
     if (fuzzy[0] > 0.7) {
@@ -186,7 +185,7 @@ Doc.prototype.drawLetters = function () {
   } else {
     window.setTimeout(function () {
       doc.drawLetters();
-    }, 5);
+    }, interval);
 
 
 

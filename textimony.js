@@ -113,7 +113,7 @@ Doc.prototype.addWord = function (word) {
   var span = document.createElement('span');
   span.textContent = word + " ";
   words.appendChild(span);
-  span.scrollIntoView();
+  words.scrollTop = words.scrollHeight;
 
   window.setTimeout(function () {
     var fuzzy = dict.get(word);

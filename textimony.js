@@ -121,7 +121,7 @@ Doc.prototype.addWord = function (word) {
       return false;
     }
     fuzzy = fuzzy[0];
-    if (fuzzy[0] > 0.614) {
+    if (fuzzy[0] > 0.5) {
       span.textContent = fuzzy[1] + " ";
     }
 

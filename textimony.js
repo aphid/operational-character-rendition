@@ -97,7 +97,7 @@ Doc.prototype.processLines = function () {
         letter.wordEnd = true;
       }
       if (letter.height > 100 || letter.width > 200) {
-        console.log(letter);
+        //console.log(letter);
       } else {
         this.letters.push(letter);
       }
@@ -113,8 +113,13 @@ Doc.prototype.addWord = function (word) {
   var span = document.createElement('span');
   span.textContent = word + " ";
   words.appendChild(span);
+  span.scrollIntoView();
+
   window.setTimeout(function () {
     var fuzzy = dict.get(word);
+    if (!fuzzy) {
+      return false;
+    }
     fuzzy = fuzzy[0];
     if (fuzzy[0] > 0.614) {
       span.textContent = fuzzy[1] + " ";
@@ -123,9 +128,14 @@ Doc.prototype.addWord = function (word) {
   }, 1000);
   window.setTimeout(function () {
     var fuzzy = suspect.get(word);
+    if (!fuzzy) {
+      return false;
+    }
+
     fuzzy = fuzzy[0];
     if (fuzzy[0] > 0.7) {
       span.textContent = "*" + fuzzy[1] + "* ";
+      span.classList.add('suspect');
     }
 
   }, 1000);

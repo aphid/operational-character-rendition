@@ -1,0 +1,88 @@
+ body {
+   background: black;
+   margin: 0;
+   padding: 0;
+   position: absolute;
+ }
+ 
+ #line {
+   filter: invert(100%);
+   width: 100vw;
+   top: 0;
+   left: 0;
+ }
+ 
+ #container {
+   background: black;
+   overflow: hidden;
+   position: relative;
+   height: 20vh;
+   width: 100vw;
+ }
+ 
+ #full {
+   position: absolute;
+   overflow: hidden;
+   top: 0;
+   left: -400px;
+   filter: invert(100%);
+   -webkit-filter: invert(100%);
+ }
+ 
+ #top {
+   position: relative;
+   min-height: 80vh;
+   width: 100vw;
+   background: black;
+ }
+ 
+ #chrs {
+   position: fixed;
+   top: 0;
+   left: 0;
+   width: 100vw;
+   height: 300px;
+ }
+ 
+ #type {
+   float: left;
+   min-width: 80px;
+   height: 80vh;
+   padding-top: 3px;
+   filter: invert(100%) contrast(400%);
+   -webkit-filter: invert(100%) contrast(400%);
+ }
+ 
+ #text {
+   float: left;
+   top: -25px;
+   color: white;
+   font-size: 80vh;
+   height: 80vh;
+   vertical-align: text-top;
+   font-family: monospace;
+   filter: blur(2px);
+   -webkit-filter: blur(2px);
+ }
+ 
+ #words {
+   font-family: monospace;
+   z-index: 99;
+   position: absolute;
+   top: 0;
+   right: 5px;
+   padding-right: 5px;
+   width: 40%;
+   height: 80vh;
+   overflow: hidden;
+   text-align: right;
+   color: white;
+   filter: blur(0.2px);
+   -webkit-filter: blur(0.2px);
+   font-size: 1.5em;
+   vertical-align: baseline;
+ }
+ 
+ .suspect {
+   color: red;
+ }

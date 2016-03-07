@@ -28,8 +28,10 @@ document.addEventListener("DOMContentLoaded", function (event) {
   Promise.all([get('dict.json'), get('suspect.json')]).then(function (values) {
     dict = FuzzySet(JSON.parse(values[0]));
     suspect = FuzzySet(JSON.parse(values[1]));
+    document.querySelector('#waiting').textContent = "";
+
     statement = new Doc({
-      pages: ['page0.jpg', 'page1.jpg', 'page2.jpg', 'questionnaire00.jpg', 'questionnaire01.jpg', 'questionnaire02.jpg', 'questionnaire03.jpg'],
+      pages: ['questionnaire00.jpg', 'questionnaire01.jpg', 'questionnaire02.jpg', 'questionnaire03.jpg', 'page0.jpg', 'page1.jpg', 'page2.jpg'],
       title: 'Buckley Statement',
       hearingId: 'asdf'
     });
@@ -57,7 +59,9 @@ Doc.prototype.init = function () {
   this.text = "";
   this.letters = [];
   this.words = [];
-  this.word = "";
+  this.word = {
+    text: ''
+  };
   this.dLetters = [];
   this.currentLine = 0;
   this.currentChr = 0;
@@ -95,9 +99,10 @@ Doc.prototype.processLines = function () {
       var letter = line.letters[j];
       if (j === line.letters.length - 1) {
         letter.wordEnd = true;
+        letter.lineEnd = true;
       }
       if (letter.height > 100 || letter.width > 200) {
-        //console.log(letter);
+        console.log(letter);
       } else {
         this.letters.push(letter);
       }
@@ -109,33 +114,32 @@ Doc.prototype.processLines = function () {
 };
 
 Doc.prototype.addWord = function (word) {
+  console.log(word.text);
   this.words.push(word);
   var span = document.createElement('span');
-  span.textContent = word + " ";
+  span.textContent = word.text + " ";
   words.appendChild(span);
-  words.scrollTop = words.scrollHeight;
 
+  if (word.lineEnd) {
+    words.appendChild(document.createElement('br'));
+  }
+
+  words.scrollTop = words.scrollHeight;
   window.setTimeout(function () {
-    var fuzzy = dict.get(word);
-    if (!fuzzy) {
-      return false;
-    }
+    var fuzzy = dict.get(word.text);
     fuzzy = fuzzy[0];
-    if (fuzzy[0] > 0.5) {
+    if (fuzzy[0] > 0.614) {
       span.textContent = fuzzy[1] + " ";
     }
 
   }, 1000);
   window.setTimeout(function () {
-    var fuzzy = suspect.get(word);
-    if (!fuzzy) {
-      return false;
-    }
-
+    var fuzzy = suspect.get(word.text);
     fuzzy = fuzzy[0];
     if (fuzzy[0] > 0.7) {
-      span.textContent = "*" + fuzzy[1] + "* ";
       span.classList.add('suspect');
+
+      span.textContent = "*" + fuzzy[1] + "* ";
     }
 
   }, 1000);
@@ -164,18 +168,23 @@ Doc.prototype.drawLetters = function () {
 
       if (letter.wordEnd) {
         console.log("wordend, matches: " + matches);
-        this.word = "" + this.word + letter.matches[0].letter;
+        this.word.text = "" + this.word.text + letter.matches[0].letter;
+      }
+      if (letter.lineEnd) {
+        this.word.lineEnd = true;
       }
       this.addWord(this.word);
-      this.word = "";
+      this.word = {
+        text: ''
+      };
 
     } else {
-      this.word = "" + this.word + letter.matches[0].letter;
+      this.word.text = "" + this.word.text + letter.matches[0].letter;
     }
     fullCtx.fillRect(letter.x, letter.y, letter.width, letter.height);
     fullCtx.fillRect(letter.x, letter.y, letter.width, letter.height);
-    full.style.top = "-" + (letter.y - 5) + "px";
-    full.style.left = "-" + letter.x + "px";
+    full.style.top = "-" + (letter.y - 130) + "px";
+    full.style.left = "-" + (letter.x - 130) + "px";
     type.width = letter.width;
     type.height = letter.height;
     typeCtx.clearRect(0, 0, type.width, type.height);

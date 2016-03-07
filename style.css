@@ -2,41 +2,49 @@
    background: black;
    margin: 0;
    padding: 0;
-   border: 0;
    position: absolute;
+   overflow: hidden;
  }
- 
+
+ #waiting {
+   color: papayawhip;
+   font-size: 18pt;
+ }
+
  #line {
    filter: invert(100%);
    width: 100vw;
    top: 0;
    left: 0;
  }
- 
+
+ .suspect {
+   color: red;
+ }
+
  #container {
    background: black;
    overflow: hidden;
    position: relative;
-   height: 20vh;
+   height: 100vh;
    width: 100vw;
  }
- 
+
  #full {
    position: absolute;
-   overflow: hidden;
-   top: 0;
+   top: 100px;
    left: -400px;
    filter: invert(100%);
    -webkit-filter: invert(100%);
  }
- 
+
  #top {
    position: relative;
-   min-height: 80vh;
+   min-height: 53.85vh;
    width: 100vw;
    background: black;
  }
- 
+
  #chrs {
    position: fixed;
    top: 0;
@@ -44,46 +52,41 @@
    width: 100vw;
    height: 300px;
  }
- 
+
  #type {
    float: left;
    min-width: 80px;
-   height: 80vh;
+   height: 53.85vh;
    padding-top: 3px;
    filter: invert(100%) contrast(400%);
    -webkit-filter: invert(100%) contrast(400%);
  }
- 
+
  #text {
    float: left;
    top: -25px;
    color: white;
-   font-size: 80vh;
-   height: 80vh;
+   font-size: 53.85vh;
+   height: 53.85vh;
    vertical-align: text-top;
    font-family: monospace;
    filter: blur(2px);
    -webkit-filter: blur(2px);
  }
- 
+
  #words {
-   font-family: monospace;
    z-index: 99;
    position: absolute;
-   top: 0;
+   top: 2px;
    right: 5px;
-   padding-right: 5px;
-   width: 40%;
-   height: 80vh;
-   overflow: hidden;
+   width: 60vw;
+   font-family: monospace;
+   font-size: 1.3em;
+   line-height: 2em;
+   height: 53.85vh;
+   overflow-y: hidden;
    text-align: right;
    color: white;
-   filter: blur(0.2px);
-   -webkit-filter: blur(0.2px);
-   font-size: 1.5em;
-   vertical-align: baseline;
- }
- 
- .suspect {
-   color: red;
+   filter: blur(0.1px);
+   -webkit-filter: blur(0.3px);
  }

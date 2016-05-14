@@ -161,13 +161,13 @@ document.addEventListener("DOMContentLoaded", function (event) {
   pages: ['questionnaire00.jpg', 'questionnaire01.jpg', 'questionnaire02.jpg', 'questionnaire03.jpg', 'page0.jpg', 'page1.jpg', 'page2.jpg'],
     title: 'Buckley Statement',
     hearingId: 'asdf'
-});
+});*/
     statement = new Doc({
       pages: ['texts/090521_litt-0.jpg', 'texts/090521_litt-1.jpg', 'texts/090521_litt-2.jpg'],
       title: 'Litt statement'
     });
 
-    */
+
 
   });
 

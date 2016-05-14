@@ -4,37 +4,124 @@
 <head>
   <script src="ocrad.js"></script>
   <script src="fuzzyset.js"></script>
+  <script src="dlav.js"></script>
   <script src="textimony.js">
   </script>
-  <link rel="stylesheet" href="style.css">
   <style>
+    body {
+      margin: 0;
+      overflow: hidden;
+    }
+    
+    #txt,
+    #wat,
+    #line {
+      display: none;
+    }
+    
+    #full {
+      width: 50vw;
+      position: relative;
+      overflow: hidden;
+      z-index: -1;
+    }
+    
+    .iffy {
+      /*color: aqua; */
+    }
+    
+    #page {
+      display: none;
+      top: 0;
+      right: 0;
+      z-index: 99;
+    }
+    
+    #chrs {
+      width: 100vw;
+      height: 15vh;
+      margin: 0;
+      overflow: visible;
+    }
+    
+    #type {
+      float: left;
+      height: 100%;
+      max-width: 50vw;
+      image-rendering: -moz-crisp-edges;
+      image-rendering: -o-crisp-edges;
+      image-rendering: pixelated;
+      image-rendering: crisp-edges;
+    }
+    
+    #read {
+      position: absolute;
+      top: 0;
+      left: 50vw;
+      height: 100vh;
+      width: 50vw;
+      word-break: break-all;
+      text-shadow: 2px 2px 0 black;
+      background: transparent;
+      color: white;
+      font-size: 15vh;
+      overflow-y: visible;
+      z-index: 999;
+    }
+    
+    #text,
+    #read {
+      font-size: 80px;
+    }
+    
+    #container {
+      overflow: hidden;
+    }
+    
+    #words {
+      position: absolute;
+      background-color: black;
+      color: white;
+      top: 0;
+      padding-top: 15vh;
+      left: 50vw;
+      width: 50vw;
+      height: 85vh;
+      font-size: 14pt;
+      font-family: monospace;
+      overflow-y: scroll;
+    }
   </style>
 </head>
 
 <body>
   <div id="waiting">Loading...</div>
-  <div id="words">
-  </div>
   <div id="top">
+    <div id="read"></div>
+
     <canvas id="line" height="1"></canvas>
     <h1 id="wat"></h1>
     <h1 id="txt"></h1>
+
 
     <div id="chrs">
 
       <canvas id="type" width="100" height="100"></canvas>
       <div id="text">
       </div>
+
     </div>
+
   </div>
 
 
   <div id="container">
     <canvas id="full"></canvas>
-
+    <div id="words"></div>
   </div>
   <img id="page">
 
+  </div>
 
 </body>
 

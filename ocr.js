@@ -1,5 +1,6 @@
 var container, full, fullCtx, line, lineCtx, img, words, wat, type, typeCtx;
 var begin, end, linetrack, lines = [],
+  otop, json,
   docs,
   text = [],
   txt,
@@ -145,10 +146,10 @@ document.addEventListener("DOMContentLoaded", function (event) {
   img = document.querySelector('img');
   words = document.querySelector('#words');
   var imgData;
-  wat = document.querySelector('#wat');
+  otop = document.querySelector('#top');
   txt = document.querySelector('#text');
   read = document.querySelector('#read');
-
+  json = document.querySelector('#json');
   type = document.querySelector("#type");
   typeCtx = type.getContext("2d");
 
@@ -156,7 +157,6 @@ document.addEventListener("DOMContentLoaded", function (event) {
   Promise.all([get('dict.json'), get('suspect.json')]).then(function (values) {
     rawdict = JSON.parse(values[0]);
     suspectdict = JSON.parse(values[1]);
-    document.querySelector('#waiting').textContent = "";
 
     docs = [{
         "title": "buckleyStatement",
@@ -236,7 +236,6 @@ document.addEventListener("DOMContentLoaded", function (event) {
 
     docs.push(buildPages(littResponses));
     docs.push(buildPages(clapperPost));
-    docs.push(buildPages(clapperQfrs));
     docs.push(buildPages(prehearing));
     docs.push(buildPages(attach1));
     docs.push(buildPages(attach21));
@@ -246,6 +245,7 @@ document.addEventListener("DOMContentLoaded", function (event) {
     docs.push(buildPages(prehear));
     docs.push(buildPages(prehear5));
     docs.push(buildPages(krasspre));
+    docs.push(buildPages(clapperQfrs));
 
 
 
@@ -258,7 +258,8 @@ document.addEventListener("DOMContentLoaded", function (event) {
 
     statement = new Doc({
       pages: randomDoc.pages,
-      title: randomDoc.title
+      title: randomDoc.title,
+      root: randomDoc.root
     });
 
 
@@ -269,14 +270,26 @@ document.addEventListener("DOMContentLoaded", function (event) {
 });
 //doc constructinator
 var Doc = function (options) {
-
+  var doc = this;
   this.pages = options.pages;
   this.hearingId = options.hearingId;
+  this.root = options.root
   this.title = options.title;
   this.currentPage = 0;
+  console.log("hello")
+  console.log(options.root);
+  get("texts/" + options.root + ".json").then(function (result) {
+    json.textContent = result;
+  });
+  window.setTimeout(function () {
+      json.style.display = "none";
+      otop.style.display = "block";
+      container.style.display = "block";
 
-  this.init();
-  this.newline;
+      doc.init();
+
+    }, 10000)
+    //this.newline;
 };
 
 
@@ -366,6 +379,9 @@ Doc.prototype.addWord = function (word) {
     ssize = word.lineHeight * .55;
     if (ssize > 40) {
       ssize = 40;
+    }
+    if (ssize < 16) {
+      ssize = 16;
     }
     word.span.fontSize = ssize + "px";
     if (word.text !== "? ") {

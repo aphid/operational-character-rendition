@@ -1,5 +1,6 @@
 var container, full, fullCtx, line, lineCtx, img, words, wat, type, typeCtx;
 var begin, end, linetrack, lines = [],
+  docs,
   text = [],
   txt,
   ls = [],
@@ -23,7 +24,7 @@ var word = function (options) {
     options.text = "?"
     options.fail = true;
   }
-  console.log("word #" + statement.words.length + ": " + options.text);
+  //console.log("word #" + statement.words.length + ": " + options.text);
   for (var opt in options) {
     this[opt] = options[opt];
   }
@@ -42,37 +43,39 @@ word.prototype.draw = function () {
       word.draw();
     }, 50);
   } else {
-    console.log("Drawing!" + this.text);
+    //console.log("Drawing!" + this.text);
     busy = true;
     if (word.endpos) {
-      read.style.fontSize = "15vh";
-
+      read.style.fontSize = "13vh";
+      var fsize;
       var delay = 1250;
       var wordw = word.endpos.x - word.pos.x;
       var wordh = word.endpos.y - word.pos.y;
       type.width = wordw || 1;
       type.height = wordh || 1;
-      console.log(wordw, wordh);
+      //console.log(wordw, wordh);
       typeCtx.clearRect(0, 0, type.width, type.height);
-      var post = "";
       txt.textContent = "";
       read.textContent = "";
       var readMsg = "";
+      var wlist = [];
       if (word.potentials.length > 1) {
         for (var i = 0; i < word.potentials.length; i++) {
           if (i !== word.potentials.length - 1) {
-            post = "//";
-            read.style.fontSize = "8vh";
+            fsize = 30 / word.potentials.length;
+            if (fsize < 8) {
+              fsize = 8;
+            }
             long = 5000;
           }
-          read.classList.add('word');
-
-          readMsg = readMsg + word.potentials[i].word + post;
+          wlist.push(word.potentials[i].word);
         }
+        read.style.fontSize = fsize + "vh";
+        readMsg = JSON.stringify(wlist);
       } else {
         readMsg = word.text;
       }
-      console.log(type.width, type.height, word.pos.x);
+      //console.log(type.width, type.height, word.pos.x);
 
       typeCtx.drawImage(img, word.pos.x, word.pos.y, type.width, type.height, 0, 0, type.width, type.height);
       read.textContent = readMsg;
@@ -139,8 +142,6 @@ document.addEventListener("DOMContentLoaded", function (event) {
   container = document.querySelector('#container');
   full = document.querySelector('#full');
   fullCtx = full.getContext('2d');
-  line = document.querySelector('#line');
-  lineCtx = line.getContext('2d');
   img = document.querySelector('img');
   words = document.querySelector('#words');
   var imgData;
@@ -157,14 +158,107 @@ document.addEventListener("DOMContentLoaded", function (event) {
     suspectdict = JSON.parse(values[1]);
     document.querySelector('#waiting').textContent = "";
 
-    /*statement = new Doc({
-  pages: ['questionnaire00.jpg', 'questionnaire01.jpg', 'questionnaire02.jpg', 'questionnaire03.jpg', 'page0.jpg', 'page1.jpg', 'page2.jpg'],
-    title: 'Buckley Statement',
-    hearingId: 'asdf'
-});*/
+    docs = [{
+        "title": "buckleyStatement",
+        "pages": ['questionnaire00.jpg', 'questionnaire01.jpg', 'questionnaire02.jpg', 'questionnaire03.jpg', 'page0.jpg', 'page1.jpg', 'page2.jpg']
+        },
+      {
+        "title": "litt",
+        "pages": ['090521_litt-0.jpg', '090521_litt-1.jpg', '090521_litt-2.jpg']
+}];
+    var littResponses = {
+      title: "littResponses",
+      root: "090521_littresponses",
+      last: 23
+    }
+    var clapperPost = {
+      title: "clapperPost",
+      root: "100720_clapperpost",
+      last: 23
+    };
+    var clapperQfrs = {
+      title: "clapperQfrs",
+      root: "100720_clapperqfrs",
+      last: 14
+    }
+    var prehearing = {
+      "title": "prehearing",
+      "root": "100921_prehearing",
+      "last": 8
+    }
+    var attach1 = {
+      "title": "attach1",
+      "root": "110203_attach1",
+      "last": 1
+    }
+    var attach21 = {
+      "title": "attach2(1)",
+      "root": "110203_attach2(1)",
+      "last": 2
+    }
+
+    var dni = {
+      "title": "dni",
+      "root": "110216_dni",
+      last: 33
+    }
+
+    var moreResponses = {
+      "title": "110623_responses",
+      "root": "110623_responses(1)",
+      "last": 6
+    }
+
+    var clapper1 = {
+      "title": "clapper1",
+      "root": "110913_clapper(1)",
+      "last": 10
+
+    }
+
+    var prehear = {
+      "title": "110922_prehearing(4)",
+      "root": "110922_prehearing(4)",
+      "last": 20
+
+    }
+
+    var prehear5 = {
+      "title": "130207_prehearing(5)",
+      "root": "130207_prehearing(5)",
+      "last": 27
+    }
+    var krasspre = {
+      "title": "131217_krassprehearing",
+      "root": "131217_krassprehearing",
+      "last": 10
+    }
+
+    docs.push(buildPages(littResponses));
+    docs.push(buildPages(clapperPost));
+    docs.push(buildPages(clapperQfrs));
+    docs.push(buildPages(prehearing));
+    docs.push(buildPages(attach1));
+    docs.push(buildPages(attach21));
+    docs.push(buildPages(dni));
+    docs.push(buildPages(moreResponses));
+    docs.push(buildPages(clapper1));
+    docs.push(buildPages(prehear));
+    docs.push(buildPages(prehear5));
+    docs.push(buildPages(krasspre));
+
+
+
+
+
+    randomDoc = docs[Math.floor(Math.random() * docs.length)];
+    //randomDoc = docs.pop();
+    console.log(randomDoc.title);
+
+
     statement = new Doc({
-      pages: ['texts/090521_litt-0.jpg', 'texts/090521_litt-1.jpg', 'texts/090521_litt-2.jpg'],
-      title: 'Litt statement'
+      pages: randomDoc.pages,
+      title: randomDoc.title
     });
 
 
@@ -186,6 +280,14 @@ var Doc = function (options) {
 };
 
 
+function buildPages(doc) {
+  doc.pages = []
+  console.log(doc);
+  for (i = 0; i < doc.last + 1; i++) {
+    doc.pages[i] = doc.root + "-" + i + ".jpg";
+  }
+  return doc;
+}
 
 
 
@@ -260,15 +362,20 @@ Doc.prototype.addWord = function (word) {
     //console.dir(word);
     var span = document.createElement('span');
     word.span = span;
-    span.style.fontSize = word.lineHeight * .6 + "px";
+    var ssize;
+    ssize = word.lineHeight * .55;
+    if (ssize > 40) {
+      ssize = 40;
+    }
+    word.span.fontSize = ssize + "px";
     if (word.text !== "? ") {
       this.words.push(word);
     }
     span.textContent = word.text + " "
     words.appendChild(span);
 
-    if (word.lineEnd) {
-      span.previousSibling.insertAdjacentHTML('beforeend', "<br/><br/>");
+    if (word.lineEnd && span.previousSibling) {
+      span.previousSibling.insertAdjacentHTML('afterend', "<br/><br/>");
     }
 
     words.scrollTop = words.scrollHeight;
@@ -327,7 +434,7 @@ Doc.prototype.drawLetters = function () {
     return false;
   }
   if (busy) {
-    console.log("busy");
+    //console.log("busy");
   } else {
     var startWord,
       matches = "";
@@ -362,7 +469,7 @@ Doc.prototype.drawLetters = function () {
         letter.wordEnd = true;
 
         if (letter.wordEnd) {
-          console.log("wordend, matches: " + matches);
+          //console.log("wordend, matches: " + matches);
           this.word.text = "" + this.word.text + letter.matches[0].letter;
         }
         if (letter.lineEnd) {
@@ -457,9 +564,14 @@ Doc.prototype.drawLetters = function () {
 
 Doc.prototype.loadPage = function () {
   var page;
-  words.appendChild(document.createElement('hr'));
+
+  if (this.currentPage > 0) {
+    words.appendChild(document.createElement('hr'));
+
+  }
+
   if (this.currentPage >= this.pages.length) {
-    return false;
+    location.reload();
   }
 
   if (!img.src) {
@@ -467,7 +579,9 @@ Doc.prototype.loadPage = function () {
     page = this.pages[0];
 
   } else if (this.currentPage >= this.pages.length - 1) {
-    return false;
+    console.log("starting over");
+    location.reload();
+
   } else {
     console.log(this.currentPage);
     this.currentPage = this.currentPage + 1;
@@ -475,7 +589,7 @@ Doc.prototype.loadPage = function () {
     console.log("iterating page, now " + this.currentPage);
     page = this.pages[this.currentPage];
   }
-  img.src = page;
+  img.src = "texts/" + page;
   console.log("loaded " + this.pages[this.currentPage]);
 };
 
@@ -493,6 +607,7 @@ Doc.prototype.getLines = function () {
       this.lines.push(line);
     }
   }
+
   return this;
 };
 

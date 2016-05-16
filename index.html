@@ -8,9 +8,12 @@
   <script src="textimony.js">
   </script>
   <style>
+    canvas {
+      position: relative;
+    }
+    
     body {
       margin: 0;
-      overflow: hidden;
     }
     
     #txt,
@@ -57,15 +60,18 @@
     #read {
       position: absolute;
       top: 0;
+      box-sizing: border-box;
+      padding: 0 3px;
       left: 50vw;
-      height: 100vh;
+      height: auto;
+      max-height: 100vh;
       width: 50vw;
       word-break: break-all;
       text-shadow: 2px 2px 0 black;
       background: transparent;
       color: white;
+      overflow: hidden;
       font-size: 15vh;
-      overflow-y: visible;
       z-index: 999;
     }
     
@@ -80,16 +86,22 @@
     
     #words {
       position: absolute;
+      box-sizing: border-box;
+      padding: 0 3px;
       background-color: black;
       color: white;
       top: 0;
       padding-top: 15vh;
       left: 50vw;
       width: 50vw;
-      height: 85vh;
+      height: 100vh;
       font-size: 14pt;
       font-family: monospace;
       overflow-y: scroll;
+    }
+    
+    #line {
+      display: none;
     }
   </style>
 </head>
@@ -98,8 +110,6 @@
   <div id="waiting">Loading...</div>
   <div id="top">
     <div id="read"></div>
-
-    <canvas id="line" height="1"></canvas>
     <h1 id="wat"></h1>
     <h1 id="txt"></h1>
 

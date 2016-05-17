@@ -11,8 +11,8 @@ var begin, end, linetrack, lines = [],
   count = 0;
 var suspect, dict;
 var statement;
-//var interval = 103;
-var interval = 50;
+var interval = 85;
+//var interval = 50;
 var stahp = false;
 var block = ['-', '.', '`', '--', '='];
 
@@ -51,7 +51,7 @@ word.prototype.draw = function () {
       read.style.fontSize = "13vh";
       var fsize;
       //var delay = 1250;
-      var delay = 250;
+      var delay = 1250;
       var wordw = word.endpos.x - word.pos.x;
       var wordh = word.endpos.y - word.pos.y;
       type.width = wordw || 1;

@@ -11,7 +11,8 @@ var begin, end, linetrack, lines = [],
   count = 0;
 var suspect, dict;
 var statement;
-var interval = 103;
+//var interval = 103;
+var interval = 50;
 var stahp = false;
 var block = ['-', '.', '`', '--', '='];
 
@@ -49,7 +50,8 @@ word.prototype.draw = function () {
     if (word.endpos) {
       read.style.fontSize = "13vh";
       var fsize;
-      var delay = 1250;
+      //var delay = 1250;
+      var delay = 250;
       var wordw = word.endpos.x - word.pos.x;
       var wordh = word.endpos.y - word.pos.y;
       type.width = wordw || 1;
@@ -288,7 +290,7 @@ var Doc = function (options) {
 
       doc.init();
 
-    }, 10000)
+    }, 1)
     //this.newline;
 };
 
@@ -387,13 +389,13 @@ Doc.prototype.addWord = function (word) {
     if (word.text !== "? ") {
       this.words.push(word);
     }
-    span.textContent = word.text + " "
-    words.appendChild(span);
+    span.textContent = word.text + " ";
+    var pageDiv = document.querySelector("#page" + this.currentPage);
+    pageDiv.appendChild(span);
 
     if (word.lineEnd && span.previousSibling) {
       span.previousSibling.insertAdjacentHTML('afterend', "<br/><br/>");
     }
-
     words.scrollTop = words.scrollHeight;
 
     if (word.text.length > 2) {
@@ -555,6 +557,7 @@ Doc.prototype.drawLetters = function () {
       typeCtx.clearRect(0, 0, type.width, type.height);
 
       typeCtx.drawImage(img, letter.x, letter.y, letter.width, letter.height, 0, 0, type.width, type.height);
+      read.textContent = "";
       txt.textContent = matches;
     } else {
       txt.textContent = "???";
@@ -580,11 +583,7 @@ Doc.prototype.drawLetters = function () {
 
 Doc.prototype.loadPage = function () {
   var page;
-
-  if (this.currentPage > 0) {
-    words.appendChild(document.createElement('hr'));
-
-  }
+  var pageDiv = document.createElement('div');
 
   if (this.currentPage >= this.pages.length) {
     location.reload();
@@ -604,7 +603,20 @@ Doc.prototype.loadPage = function () {
     console.log(this.currentPage);
     console.log("iterating page, now " + this.currentPage);
     page = this.pages[this.currentPage];
+    var pageDivs = document.querySelectorAll('.page');
+    for (var i = 0; i < pageDivs.length; i++) {
+      if (i < this.currentPage - 1) {
+        pageDivs[i].style.display = "none";
+      }
+    }
+    words.scrollTop = words.scrollHeight;
+
+
   }
+  pageDiv.classList.add('page');
+  pageDiv.id = "page" + this.currentPage;
+  words.appendChild(pageDiv);
+
   img.src = "texts/" + page;
   console.log("loaded " + this.pages[this.currentPage]);
 };

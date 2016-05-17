@@ -382,10 +382,11 @@ Doc.prototype.addWord = function (word) {
     if (ssize > 40) {
       ssize = 40;
     }
-    if (ssize < 16) {
-      ssize = 16;
+    if (ssize < 20) {
+      ssize = 20;
     }
-    word.span.fontSize = ssize + "px";
+    word.span.style.fontSize = ssize + "px";
+    console.log(word.span.style.fontSize);
     if (word.text !== "? ") {
       this.words.push(word);
     }

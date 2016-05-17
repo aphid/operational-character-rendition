@@ -67,6 +67,9 @@ body {
 }
 
 #json {
+  background: black;
+  color: white;
+  overflow: hidden;
   font-size: 15pt;
   font-family: monospace;
 }

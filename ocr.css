@@ -58,7 +58,7 @@ body {
   max-height: 100vh;
   width: 50vw;
   word-break: break-all;
-  text-shadow: 2px 2px 0 black;
+  text-shadow: 2px 2px 0 black, -2px -2px 0 black;
   background: transparent;
   color: white;
   overflow: hidden;

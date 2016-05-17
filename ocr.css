@@ -100,7 +100,7 @@ body {
   height: 100vh;
   font-size: 14pt;
   font-family: monospace;
-  overflow-y: scroll;
+  overflow: hidden;
 }
 
 #line {

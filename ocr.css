@@ -81,6 +81,10 @@ body {
   font-size: 80px;
 }
 
+#text {
+  font-size: 15vh;
+}
+
 #container {
   display: none;
   max-height: 85vh;

@@ -87,6 +87,12 @@ body {
   overflow: hidden;
 }
 
+html,
+body,
+* {
+  cursor: none;
+}
+
 #words {
   position: absolute;
   box-sizing: border-box;

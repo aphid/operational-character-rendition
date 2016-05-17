@@ -290,7 +290,7 @@ var Doc = function (options) {
 
       doc.init();
 
-    }, 1)
+    }, 10000)
     //this.newline;
 };
 

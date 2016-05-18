@@ -49,6 +49,7 @@ body {
 }
 
 #read {
+  letter-spacing: -0.05em;
   position: absolute;
   top: 0;
   box-sizing: border-box;
@@ -95,7 +96,10 @@ body {
 
 #container {
   display: none;
-  max-height: 85vh;
+  position: absolute;
+  top: 0;
+  left: 0;
+  max-height: 100vh;
   overflow: hidden;
 }
 
@@ -112,6 +116,7 @@ body,
   background-color: black;
   color: white;
   top: 0;
+  line-height: 1.1;
   padding-top: 15vh;
   left: 50vw;
   width: 50vw;

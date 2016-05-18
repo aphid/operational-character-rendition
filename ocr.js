@@ -395,7 +395,7 @@ Doc.prototype.addWord = function (word) {
     pageDiv.appendChild(span);
 
     if (word.lineEnd && span.previousSibling) {
-      span.previousSibling.insertAdjacentHTML('afterend', "<br/><br/>");
+      span.previousSibling.insertAdjacentHTML('afterend', "<br/>");
     }
     words.scrollTop = words.scrollHeight;
 

@@ -86,9 +86,9 @@ word.prototype.draw = function () {
     window.setTimeout(function () {
       word.span.style.display = "inline";
 
-      if (word.lineDiv.clientHeight > word.lineDiv.dataset.highest) {
-        word.lineDiv.dataset.highest = word.lineDiv.clientHeight;
-        word.lineDiv.style.height = word.lineDiv.clientHeight + "px";
+      if (word.lineDiv.offsetHeight > word.lineDiv.dataset.highest) {
+        word.lineDiv.dataset.highest = word.lineDiv.offsetHeight;
+        word.lineDiv.style.height = word.lineDiv.offsetHeight + "px";
       }
       busy = false;
     }, delay);
@@ -133,9 +133,9 @@ word.prototype.flip = function () {
   } else {
     span.style.color = "white";
   }
-  if (this.lineDiv.clientHeight > this.lineDiv.dataset.highest) {
-    this.lineDiv.dataset.highest = this.lineDiv.clientHeight;
-    this.lineDiv.style.height = this.lineDiv.clientHeight + "px";
+  if (this.lineDiv.offsetHeight > this.lineDiv.dataset.highest) {
+    this.lineDiv.dataset.highest = this.lineDiv.offsetHeight;
+    this.lineDiv.style.height = this.lineDiv.offsetHeight + "px";
   }
   words.scrollTop = words.scrollHeight;
   this.potpos++;
@@ -421,7 +421,7 @@ Doc.prototype.addWord = function (word) {
     word.span = span;
 
     word.lineDiv.appendChild(span);
-    word.lineDiv.dataset.highest = word.lineDiv.clientHeight;
+    word.lineDiv.dataset.highest = word.lineDiv.offsetHeight;
 
     words.scrollTop = words.scrollHeight;
 
@@ -435,9 +435,9 @@ Doc.prototype.addWord = function (word) {
           span.textContent = comp.words[0].word + " ";
 
 
-          if (word.lineDiv.clientHeight > word.lineDiv.dataset.highest) {
-            word.lineDiv.dataset.highest = word.lineDiv.clientHeight;
-            word.lineDiv.style.height = word.lineDiv.clientHeight + "px";
+          if (word.lineDiv.offsetHeight > word.lineDiv.dataset.highest) {
+            word.lineDiv.dataset.highest = word.lineDiv.offsetHeight;
+            word.lineDiv.style.height = word.lineDiv.offsetHeight + "px";
           }
         }
         word.rawResults = comp.words;
@@ -461,9 +461,9 @@ Doc.prototype.addWord = function (word) {
           span.textContent = comp.words[0].word + " ";
 
 
-          if (word.lineDiv.clientHeight > word.lineDiv.dataset.highest) {
-            word.lineDiv.dataset.highest = word.lineDiv.clientHeight;
-            word.lineDiv.style.height = word.lineDiv.clientHeight + "px";
+          if (word.lineDiv.offsetHeight > word.lineDiv.dataset.highest) {
+            word.lineDiv.dataset.highest = word.lineDiv.offsetHeight;
+            word.lineDiv.style.height = word.lineDiv.offsetHeight + "px";
           }
           //span.textContent = span.textContent + JSON.stringify(comp);
         }
@@ -510,7 +510,7 @@ Doc.prototype.drawLetters = function () {
     if (pct < 0) {
       pct = 0;
     }
-    full.style.top = "-" + (full.clientHeight * pct) +
+    full.style.top = "-" + (full.offsetHeight * pct) +
       "px";
 
     if (letter.matches.length) {
@@ -583,7 +583,7 @@ Doc.prototype.drawLetters = function () {
       fullCtx.fillRect(letter.x, letter.y, letter.width, letter.height);
       fullCtx.fillRect(letter.x, letter.y, letter.width, letter.height);
       var pct = (letter.y / img.height) - .2;
-      full.style.top = "-" + (full.clientHeight * pct) +
+      full.style.top = "-" + (full.offsetHeight * pct) +
         "px";
       //full.style.top = "-" + (letter.y - 430) + "px";
 

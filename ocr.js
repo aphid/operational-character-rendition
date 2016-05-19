@@ -387,14 +387,14 @@ Doc.prototype.addWord = function (word) {
   } else {
     console.log(word.lineNum);
     word.pageDiv = document.querySelector("#page" + this.currentPage);
-    if (!document.querySelector("#line" + word.lineNum)) {
+    if (!document.querySelector("#line" + this.currentPage + "_" + word.lineNum)) {
       word.lineDiv = document.createElement('div');
-      word.lineDiv.id = "line" + word.lineNum;
+      word.lineDiv.id = "line" + this.currentPage + "_" + word.lineNum;
       word.lineDiv.classList.add('line');
       word.pageDiv.appendChild(word.lineDiv);
 
     } else {
-      word.lineDiv = document.querySelector("#line" + word.lineNum);
+      word.lineDiv = document.querySelector("#line" + this.currentPage + "_" + word.lineNum);
     }
     //console.dir(word);
     var span = document.createElement('span');

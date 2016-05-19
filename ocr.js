@@ -105,10 +105,10 @@ word.prototype.pots = function () {
   }
   if (this.suspResults) {
     susps = this.suspResults;
-    for (var res of this.suspResults) {
+    for (var sus of this.suspResults) {
       this.potentials.push({
-        "word": res.word,
-        "distance": res.distance,
+        "word": sus.word,
+        "distance": sus.distance,
         "type": "suspicious"
       });
     }
@@ -121,10 +121,6 @@ word.prototype.pots = function () {
 word.prototype.flip = function () {
   var wd = this;
   var span = this.span;
-  this.potpos++;
-  if (this.potpos >= this.potentials.length) {
-    this.potpos = 0;
-  }
   var thispot = this.potentials[this.potpos];
 
   span.textContent = thispot.word + " ";
@@ -138,13 +134,18 @@ word.prototype.flip = function () {
     this.lineDiv.style.height = this.lineDiv.clientHeight + "px";
   }
   words.scrollTop = words.scrollHeight;
+  this.potpos++;
+  if (this.potpos >= this.potentials.length) {
+    this.potpos = 0;
+  }
 
   window.setTimeout(function () {
     /*if (thispot.type === "suspicious") {
       console.log("flipping from " + thispot.distance + " " + thispot.type + " " + thispot.word + " in " + (300 / thispot.distance + 250));
+      console.table(wd.potentials);
     }*/
     wd.flip();
-  }, 300 / thispot.distance + 250)
+  }, 300 / (thispot.distance || 1) + 250)
 
 };
 

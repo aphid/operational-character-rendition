@@ -84,6 +84,8 @@ word.prototype.draw = function () {
       read.textContent = readMsg;
     }
     window.setTimeout(function () {
+      word.span.style.display = "inline";
+
       busy = false;
     }, delay);
   }
@@ -396,7 +398,6 @@ Doc.prototype.addWord = function (word) {
     }
     //console.dir(word);
     var span = document.createElement('span');
-    word.span = span;
     var ssize;
     ssize = word.lineHeight * .55;
     if (ssize > 40) {
@@ -405,12 +406,15 @@ Doc.prototype.addWord = function (word) {
     if (ssize < 20) {
       ssize = 20;
     }
-    word.span.style.fontSize = ssize + "px";
-    console.log(word.span.style.fontSize);
+    span.style.fontSize = ssize + "px";
+    console.log(span.style.fontSize);
     if (word.text !== "? ") {
       this.words.push(word);
     }
     span.textContent = word.text + " ";
+    span.style.display = "none";
+    word.span = span;
+
     word.lineDiv.appendChild(span);
     word.lineDiv.dataset.highest = word.lineDiv.clientHeight;
 

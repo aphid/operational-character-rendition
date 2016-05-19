@@ -109,6 +109,11 @@ body,
   cursor: none;
 }
 
+.line {
+  margin: 5px 0;
+  min-height: 30px;
+}
+
 #words {
   position: absolute;
   box-sizing: border-box;

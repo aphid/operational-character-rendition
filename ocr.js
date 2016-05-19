@@ -131,10 +131,17 @@ word.prototype.flip = function () {
   } else {
     span.style.color = "white";
   }
+  if (this.lineDiv.clientHeight > this.lineDiv.dataset.highest) {
+    this.lineDiv.dataset.highest = this.lineDiv.clientHeight;
+    this.lineDiv.style.height = this.lineDiv.clientHeight + "px";
+  }
 
   window.setTimeout(function () {
+    if (thispot.type === "suspicious") {
+      console.log("flipping from " + thispot.distance + " " + thispot.type + " " + thispot.word + " in " + (300 / thispot.distance + 250));
+    }
     wd.flip();
-  }, 300 / thispot.distance + 100)
+  }, 300 / thispot.distance + 250)
 
 };
 
@@ -349,6 +356,7 @@ Doc.prototype.processLines = function () {
     var lineHeight = line.height;
     for (var j = 0; j < line.letters.length; j++) {
       var letter = line.letters[j];
+      letter.lineNum = line.num;
       if (j === line.letters.length - 1) {
         letter.wordEnd = true;
         letter.lineEnd = true;
@@ -374,6 +382,17 @@ Doc.prototype.addWord = function (word) {
   if (!word || word.fail) {
     return false;
   } else {
+    console.log(word.lineNum);
+    word.pageDiv = document.querySelector("#page" + this.currentPage);
+    if (!document.querySelector("#line" + word.lineNum)) {
+      word.lineDiv = document.createElement('div');
+      word.lineDiv.id = "line" + word.lineNum;
+      word.lineDiv.classList.add('line');
+      word.pageDiv.appendChild(word.lineDiv);
+
+    } else {
+      word.lineDiv = document.querySelector("#line" + word.lineNum);
+    }
     //console.dir(word);
     var span = document.createElement('span');
     word.span = span;
@@ -391,12 +410,9 @@ Doc.prototype.addWord = function (word) {
       this.words.push(word);
     }
     span.textContent = word.text + " ";
-    var pageDiv = document.querySelector("#page" + this.currentPage);
-    pageDiv.appendChild(span);
+    word.lineDiv.appendChild(span);
+    word.lineDiv.dataset.highest = word.lineDiv.clientHeight;
 
-    if (word.lineEnd && span.previousSibling) {
-      span.previousSibling.insertAdjacentHTML('afterend', "<br/>");
-    }
     words.scrollTop = words.scrollHeight;
 
     if (word.text.length > 2) {
@@ -494,7 +510,7 @@ Doc.prototype.drawLetters = function () {
         if (letter.lineEnd) {
           this.word.lineEnd = true;
         }
-
+        this.word.lineNum = letter.lineNum;
         this.word.lineHeight = letter.lineHeight;
 
         this.word.pos = {
@@ -618,6 +634,7 @@ Doc.prototype.loadPage = function () {
   pageDiv.id = "page" + this.currentPage;
   words.appendChild(pageDiv);
 
+
   img.src = "texts/" + page;
   console.log("loaded " + this.pages[this.currentPage]);
 };
@@ -631,9 +648,13 @@ Doc.prototype.getLines = function () {
   }).lines;
 
   //filter out small lines and lines with no characters
+  this.currentLine = 0;
   for (var line of lines) {
     if (line.height > 8 && line.letters.length) {
+      line.num = this.currentLine;
       this.lines.push(line);
+      this.currentLine++;
+
     }
   }
 

@@ -84,11 +84,15 @@ word.prototype.draw = function () {
       read.textContent = readMsg;
     }
     window.setTimeout(function () {
-      word.span.style.display = "inline";
-
+        word.span.style.display = "inline";
+      }
+      if (word.lineDiv.clientHeight > word.lineDiv.dataset.highest) {
+        word.lineDiv.dataset.highest = word.lineDiv.clientHeight;
+        word.lineDiv.style.height = word.lineDiv.clientHeight + "px";
+      }
       busy = false;
     }, delay);
-  }
+}
 };
 
 word.prototype.pots = function () {

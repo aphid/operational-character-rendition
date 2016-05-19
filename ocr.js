@@ -135,11 +135,12 @@ word.prototype.flip = function () {
     this.lineDiv.dataset.highest = this.lineDiv.clientHeight;
     this.lineDiv.style.height = this.lineDiv.clientHeight + "px";
   }
+  words.scrollTop = words.scrollHeight;
 
   window.setTimeout(function () {
-    if (thispot.type === "suspicious") {
+    /*if (thispot.type === "suspicious") {
       console.log("flipping from " + thispot.distance + " " + thispot.type + " " + thispot.word + " in " + (300 / thispot.distance + 250));
-    }
+    }*/
     wd.flip();
   }, 300 / thispot.distance + 250)
 

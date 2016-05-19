@@ -434,7 +434,11 @@ Doc.prototype.addWord = function (word) {
         } else {
           span.textContent = comp.words[0].word + " ";
 
-          //span.textContent = span.textContent + JSON.stringify(comp);
+
+          if (word.lineDiv.clientHeight > word.lineDiv.dataset.highest) {
+            word.lineDiv.dataset.highest = word.lineDiv.clientHeight;
+            word.lineDiv.style.height = word.lineDiv.clientHeight + "px";
+          }
         }
         word.rawResults = comp.words;
 
@@ -456,6 +460,11 @@ Doc.prototype.addWord = function (word) {
         } else {
           span.textContent = comp.words[0].word + " ";
 
+
+          if (word.lineDiv.clientHeight > word.lineDiv.dataset.highest) {
+            word.lineDiv.dataset.highest = word.lineDiv.clientHeight;
+            word.lineDiv.style.height = word.lineDiv.clientHeight + "px";
+          }
           //span.textContent = span.textContent + JSON.stringify(comp);
         }
         word.suspResults = comp.words;

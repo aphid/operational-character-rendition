@@ -32,6 +32,7 @@ body {
 }
 
 #chrs {
+  z-index: 99;
   width: 100vw;
   height: 15vh;
   margin: 0;
@@ -91,6 +92,8 @@ body {
 }
 
 #text {
+  text-shadow: 2 2 0 white;
+  text-shadow: -2 -2 0 white;
   font-size: 15vh;
 }
 
@@ -111,6 +114,7 @@ body,
 
 .line {
   min-height: 30px;
+  margin-bottom: 3px;
 }
 
 #words {
@@ -124,7 +128,6 @@ body,
   left: 50vw;
   width: 50vw;
   height: 100vh;
-  font-size: 14pt;
   font-family: monospace;
   overflow: hidden;
 }

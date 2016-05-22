@@ -88,7 +88,7 @@ word.prototype.draw = function () {
 
       if (word.lineDiv.offsetHeight > word.lineDiv.dataset.highest) {
         word.lineDiv.dataset.highest = word.lineDiv.offsetHeight;
-        word.lineDiv.style.height = word.lineDiv.offsetHeight + "px";
+        word.lineDiv.style.minHeight = word.lineDiv.offsetHeight + "px";
       }
       busy = false;
     }, delay);
@@ -135,7 +135,7 @@ word.prototype.flip = function () {
   }
   if (this.lineDiv.offsetHeight > this.lineDiv.dataset.highest) {
     this.lineDiv.dataset.highest = this.lineDiv.offsetHeight;
-    this.lineDiv.style.height = this.lineDiv.offsetHeight + "px";
+    this.lineDiv.style.minHeight = this.lineDiv.offsetHeight + "px";
   }
   words.scrollTop = words.scrollHeight;
   this.potpos++;
@@ -437,7 +437,7 @@ Doc.prototype.addWord = function (word) {
 
           if (word.lineDiv.offsetHeight > word.lineDiv.dataset.highest) {
             word.lineDiv.dataset.highest = word.lineDiv.offsetHeight;
-            word.lineDiv.style.height = word.lineDiv.offsetHeight + "px";
+            word.lineDiv.style.minHeight = word.lineDiv.offsetHeight + "px";
           }
         }
         word.rawResults = comp.words;
@@ -463,7 +463,7 @@ Doc.prototype.addWord = function (word) {
 
           if (word.lineDiv.offsetHeight > word.lineDiv.dataset.highest) {
             word.lineDiv.dataset.highest = word.lineDiv.offsetHeight;
-            word.lineDiv.style.height = word.lineDiv.offsetHeight + "px";
+            word.lineDiv.style.minHeight = word.lineDiv.offsetHeight + "px";
           }
           //span.textContent = span.textContent + JSON.stringify(comp);
         }

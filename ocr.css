@@ -115,6 +115,7 @@ body,
 .line {
   min-height: 30px;
   margin-bottom: 3px;
+  overflow: hidden;
 }
 
 #words {

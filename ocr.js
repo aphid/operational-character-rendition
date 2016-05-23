@@ -23,7 +23,7 @@ var word = function (options) {
     options.fail = true;
   }
   //console.log("word #" + statement.words.length + ": " + options.text);
-  for (var opt in [] options) {
+  for (var opt in options) {
     this[opt] = options[opt];
   }
   this.potentials = [];

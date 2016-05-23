@@ -18,28 +18,24 @@ var block = ['-', '.', '`', '--', '='];
 
 var word = function (options) {
   var wd = this;
-  if (!options.text || (block.indexOf(options.text.trim()) !== -1)) {
-    options.text = "?"
-    options.fail = true;
-  }
-  if (options.text.trim().length === 0) {
-    options.text = "?"
+  if (!options.text || (block.indexOf(options.text.trim()) !== -1) || options.text.trim().length === 0) {
+    options.text = "?";
     options.fail = true;
   }
   //console.log("word #" + statement.words.length + ": " + options.text);
-  for (var opt in options) {
-    this[opt] = options[opt];
-  }
-  this.potentials = [];
-  this.potpos = 0;
-  return wd;
-
-
+  for (var opt in []] options) {
+  this[opt] = options[opt];
 }
+this.potentials = [];
+this.potpos = 0;
+return wd;
+
+
+};
 
 word.prototype.draw = function () {
   var word = this;
-
+  var delay = 1250;
   if (busy) {
     window.setTimeout(function () {
       word.draw();
@@ -50,8 +46,6 @@ word.prototype.draw = function () {
     if (word.endpos) {
       read.style.fontSize = "13vh";
       var fsize;
-      //var delay = 1250;
-      var delay = 1250;
       var wordw = word.endpos.x - word.pos.x;
       var wordh = word.endpos.y - word.pos.y;
       type.width = wordw || 1;
@@ -69,7 +63,7 @@ word.prototype.draw = function () {
             if (fsize < 8) {
               fsize = 8;
             }
-            long = 5000;
+            delay = 5000;
           }
           wlist.push(word.potentials[i].word);
         }
@@ -149,7 +143,7 @@ word.prototype.flip = function () {
       console.table(wd.potentials);
     }*/
     wd.flip();
-  }, 300 / (thispot.distance || 1) + 250)
+  }, 300 / (thispot.distance || 1) + 250);
 
 };
 
@@ -187,7 +181,7 @@ document.addEventListener("DOMContentLoaded", function (event) {
       title: "littResponses",
       root: "090521_littresponses",
       last: 23
-    }
+    };
     var clapperPost = {
       title: "clapperPost",
       root: "100720_clapperpost",
@@ -197,59 +191,57 @@ document.addEventListener("DOMContentLoaded", function (event) {
       title: "clapperQfrs",
       root: "100720_clapperqfrs",
       last: 14
-    }
+    };
     var prehearing = {
       "title": "prehearing",
       "root": "100921_prehearing",
       "last": 8
-    }
+    };
     var attach1 = {
       "title": "attach1",
       "root": "110203_attach1",
       "last": 1
-    }
+    };
     var attach21 = {
       "title": "attach2(1)",
       "root": "110203_attach2(1)",
       "last": 2
-    }
+    };
 
     var dni = {
       "title": "dni",
       "root": "110216_dni",
       last: 33
-    }
+    };
 
     var moreResponses = {
       "title": "110623_responses",
       "root": "110623_responses(1)",
       "last": 6
-    }
+    };
 
     var clapper1 = {
       "title": "clapper1",
       "root": "110913_clapper(1)",
       "last": 10
-
-    }
+    };
 
     var prehear = {
       "title": "110922_prehearing(4)",
       "root": "110922_prehearing(4)",
       "last": 20
-
-    }
+    };
 
     var prehear5 = {
       "title": "130207_prehearing(5)",
       "root": "130207_prehearing(5)",
       "last": 27
-    }
+    };
     var krasspre = {
       "title": "131217_krassprehearing",
       "root": "131217_krassprehearing",
       "last": 10
-    }
+    };
 
     docs.push(buildPages(littResponses));
     docs.push(buildPages(clapperPost));
@@ -290,28 +282,28 @@ var Doc = function (options) {
   var doc = this;
   this.pages = options.pages;
   this.hearingId = options.hearingId;
-  this.root = options.root
+  this.root = options.root;
   this.title = options.title;
   this.currentPage = 0;
-  console.log("hello")
+  console.log("hello");
   console.log(options.root);
   get("texts/" + options.root + ".json").then(function (result) {
     json.textContent = result;
   });
   window.setTimeout(function () {
-      json.style.display = "none";
-      otop.style.display = "block";
-      container.style.display = "block";
+    json.style.display = "none";
+    otop.style.display = "block";
+    container.style.display = "block";
 
-      doc.init();
+    doc.init();
 
-    }, 10000)
-    //this.newline;
+  }, 10000);
+  //this.newline;
 };
 
 
 function buildPages(doc) {
-  doc.pages = []
+  doc.pages = [];
   console.log(doc);
   for (i = 0; i < doc.last + 1; i++) {
     doc.pages[i] = doc.root + "-" + i + ".jpg";
@@ -351,11 +343,11 @@ Doc.prototype.init = function () {
 Doc.prototype.process = function () {
   this.getLines().processLines();
 
-}
+};
 
 Doc.prototype.processLines = function () {
   var doc = this;
-  console.log("got " + this.lines.length + " lines, processing")
+  console.log("got " + this.lines.length + " lines, processing");
   for (var i = 0; i < this.lines.length; i++) {
     var line = this.lines[i];
 
@@ -404,7 +396,7 @@ Doc.prototype.addWord = function (word) {
     //console.dir(word);
     var span = document.createElement('span');
     var ssize;
-    ssize = word.lineHeight * .55;
+    ssize = word.lineHeight * 0.55;
     if (ssize > 40) {
       ssize = 40;
     }
@@ -424,17 +416,15 @@ Doc.prototype.addWord = function (word) {
     word.lineDiv.dataset.highest = word.lineDiv.offsetHeight;
 
     words.scrollTop = words.scrollHeight;
-
+    var comp;
     if (word.text.length > 2) {
 
-      var comp = compare(word.text.toLowerCase().replace(/[^a-zA-Z0-9]+/g, ""), rawdict);
+      comp = compare(word.text.toLowerCase().replace(/[^a-zA-Z0-9]+/g, ""), rawdict);
       if (comp) {
         if (comp.low === 0 || comp.words.length === 1) {
           span.textContent = comp.words[0].word + " ";
         } else {
           span.textContent = comp.words[0].word + " ";
-
-
           if (word.lineDiv.offsetHeight > word.lineDiv.dataset.highest) {
             word.lineDiv.dataset.highest = word.lineDiv.offsetHeight;
             word.lineDiv.style.minHeight = word.lineDiv.offsetHeight + "px";
@@ -452,7 +442,7 @@ Doc.prototype.addWord = function (word) {
     if (word.text.length > 2) {
 
       word.draw();
-      var comp = compare(word.text.toLowerCase().replace(/[^a-zA-Z0-9]+/g, ""), suspectdict);
+      comp = compare(word.text.toLowerCase().replace(/[^a-zA-Z0-9]+/g, ""), suspectdict);
       if (comp) {
         span.classList.add('suspect');
         if (comp.low === 0) {
@@ -483,9 +473,10 @@ Doc.prototype.addWord = function (word) {
 
 Doc.prototype.drawLetters = function () {
 
-  var doc = this;
+  var doc = this,
+    pct;
   if (stahp) {
-    return false;
+    window.setTimeout(doc.drawLetters, 1000);
   }
   if (busy) {
     //console.log("busy");
@@ -506,7 +497,7 @@ Doc.prototype.drawLetters = function () {
       console.log('no letter at ' + this.currentChr);
       return false;
     }
-    var pct = (letter.y / img.height) - .2;
+    pct = (letter.y / img.height) - 0.2;
     if (pct < 0) {
       pct = 0;
     }
@@ -541,15 +532,15 @@ Doc.prototype.drawLetters = function () {
           "x": lastlet.x + lastlet.width,
           "y": lastlet.y + lastlet.height
         };
+        var altword;
 
-
-        if (this.word.text == "" || this.word.text == "-") {
+        if (this.word.text === "" || this.word.text === "-") {
           this.word = {
             text: ''
           };
         } else if (this.word.text.includes('--')) {
           var idx = this.word.text.indexOf('--');
-          var altWord = JSON.parse(JSON.stringify(this.word));
+          altWord = JSON.parse(JSON.stringify(this.word));
           altWord.text = this.word.text.split('--')[1];
           altWord.pos = {
             "x": this.letters[this.currentChr - (altWord.text.length - 1)].x,
@@ -563,7 +554,7 @@ Doc.prototype.drawLetters = function () {
           this.addWord(new word(this.word));
           this.addWord(new word(altWord));
         } else if (this.word.text.includes(':')) {
-          var altWord = JSON.parse(JSON.stringify(this.word));
+          altWord = JSON.parse(JSON.stringify(this.word));
           altWord.text = this.word.text.split(':')[1];
           this.word.text = this.word.text.split(':')[0];
           this.addWord(new word(this.word));
@@ -582,7 +573,7 @@ Doc.prototype.drawLetters = function () {
       }
       fullCtx.fillRect(letter.x, letter.y, letter.width, letter.height);
       fullCtx.fillRect(letter.x, letter.y, letter.width, letter.height);
-      var pct = (letter.y / img.height) - .2;
+      pct = (letter.y / img.height) - .02;
       full.style.top = "-" + (full.offsetHeight * pct) +
         "px";
       //full.style.top = "-" + (letter.y - 430) + "px";
@@ -613,7 +604,7 @@ Doc.prototype.drawLetters = function () {
 
 
 
-  };
+  }
 };
 
 

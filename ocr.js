@@ -12,6 +12,7 @@ var begin, end, linetrack, lines = [],
 var suspect, dict;
 var statement;
 var interval = 85;
+var letterInterval = 100;
 //var interval = 50;
 var stahp = false;
 var block = ['-', '.', '`', '--', '='];
@@ -584,10 +585,13 @@ Doc.prototype.drawLetters = function () {
       typeCtx.clearRect(0, 0, type.width, type.height);
 
       typeCtx.drawImage(img, letter.x, letter.y, letter.width, letter.height, 0, 0, type.width, type.height);
+      read.style.fontSize = "15vh";
       read.textContent = "";
-      txt.textContent = matches;
+      read.textContent = matches;
     } else {
-      txt.textContent = "???";
+      read.style.fontSize = "15vh";
+
+      read.textContent = "???";
     }
 
   }
@@ -599,7 +603,7 @@ Doc.prototype.drawLetters = function () {
   } else {
     window.setTimeout(function () {
       doc.drawLetters();
-    }, interval);
+    }, letterInterval);
 
 
 

@@ -1,92 +1,96 @@
  body {
-   background: black;
-   margin: 0;
-   padding: 0;
-   position: absolute;
-   overflow: hidden;
+     background: black;
+     margin: 0;
+     padding: 0;
+     position: absolute;
+     overflow: hidden;
  }
-
+ 
  #waiting {
-   color: papayawhip;
-   font-size: 18pt;
+     color: papayawhip;
+     font-size: 18pt;
  }
-
+ 
  #line {
-   filter: invert(100%);
-   width: 100vw;
-   top: 0;
-   left: 0;
+     filter: invert(100%);
+     width: 100vw;
+     top: 0;
+     left: 0;
  }
-
+ 
  .suspect {
-   color: red;
+     color: red;
  }
-
+ 
+ #readdata {
+     font-size: 8pt;
+ }
+ 
  #container {
-   background: black;
-   overflow: hidden;
-   position: relative;
-   height: 100vh;
-   width: 100vw;
+     background: black;
+     overflow: hidden;
+     position: relative;
+     height: 100vh;
+     width: 100vw;
  }
-
+ 
  #full {
-   position: absolute;
-   top: 100px;
-   left: -400px;
-   filter: invert(100%);
-   -webkit-filter: invert(100%);
+     position: absolute;
+     top: 100px;
+     left: -400px;
+     filter: invert(100%);
+     -webkit-filter: invert(100%);
  }
-
+ 
  #top {
-   position: relative;
-   min-height: 53.85vh;
-   width: 100vw;
-   background: black;
+     position: relative;
+     min-height: 53.85vh;
+     width: 100vw;
+     background: black;
  }
-
+ 
  #chrs {
-   position: fixed;
-   top: 0;
-   left: 0;
-   width: 100vw;
-   height: 300px;
+     position: fixed;
+     top: 0;
+     left: 0;
+     width: 100vw;
+     height: 300px;
  }
-
+ 
  #type {
-   float: left;
-   min-width: 80px;
-   height: 53.85vh;
-   padding-top: 3px;
-   filter: invert(100%) contrast(400%);
-   -webkit-filter: invert(100%) contrast(400%);
+     float: left;
+     min-width: 80px;
+     height: 53.85vh;
+     padding-top: 3px;
+     filter: invert(100%) contrast(400%);
+     -webkit-filter: invert(100%) contrast(400%);
  }
-
+ 
  #text {
-   float: left;
-   top: -25px;
-   color: white;
-   font-size: 53.85vh;
-   height: 53.85vh;
-   vertical-align: text-top;
-   font-family: monospace;
-   filter: blur(2px);
-   -webkit-filter: blur(2px);
+     float: left;
+     top: -25px;
+     color: white;
+     font-size: 53.85vh;
+     height: 53.85vh;
+     vertical-align: text-top;
+     font-family: monospace;
+     filter: blur(2px);
+     -webkit-filter: blur(2px);
  }
-
+ 
  #words {
-   z-index: 99;
-   position: absolute;
-   top: 2px;
-   right: 5px;
-   width: 60vw;
-   font-family: monospace;
-   font-size: 1.3em;
-   line-height: 2em;
-   height: 53.85vh;
-   overflow-y: hidden;
-   text-align: right;
-   color: white;
-   filter: blur(0.1px);
-   -webkit-filter: blur(0.3px);
+     z-index: 99;
+     position: absolute;
+     top: 2px;
+     right: 5px;
+     width: 60vw;
+     font-family: monospace;
+     font-size: 1.3em;
+     line-height: 2em;
+     height: 53.85vh;
+     overflow-y: hidden;
+     text-align: right;
+     color: white;
+     filter: blur(0.1px);
+     -webkit-filter: blur(0.3px);
  }

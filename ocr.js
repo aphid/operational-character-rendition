@@ -15,17 +15,17 @@ var begin, end, linetrack, lines = [],
 var suspect, dict;
 var statement;
 var interval = 85;
-var letterInterval = 100;
+var letterInterval = 250;
 //var interval = 50;
 var stahp = false;
 var block = ['-', '.', '`', '--', '='];
 var util = {};
 
-util.wait = async function (thing, seconds) {
+util.wait = async function (ms) {
     return new Promise(resolve => {
         setTimeout(() => {
-            resolve(thing);
-        }, (seconds || 2) * 1000);
+            resolve();
+        }, (ms));
     });
 
 };
@@ -49,13 +49,9 @@ var word = function (options) {
 
 word.prototype.draw = async function () {
     var word = this;
-    this.span.style.display = "none";
-    var delay = 1250;
-    if (busy) {
-        window.setTimeout(function () {
-            word.draw();
-        }, 50);
-    } else {
+    return new Promise(async function (resolve) {
+        word.span.style.display = "none";
+        var delay = 1250;
         //console.log("Drawing!" + this.text);
         busy = true;
         if (word.endpos) {
@@ -89,75 +85,94 @@ word.prototype.draw = async function () {
                 readMsg = word.text;
             }
             //console.log(type.width, type.height, word.pos.x);
-
+            type.style.width = "100%";
+            type.style.auto = "auto";
             typeCtx.drawImage(img, word.pos.x, word.pos.y, type.width, type.height, 0, 0, type.width, type.height);
             read.textContent = readMsg;
         }
+        console.log("starting cycle", word.text)
         await word.setUpCycle();
-        console.log("ok");
+        console.log("ending cycle", word.text);
         //await (util.wait(delay))
         word.span.style.display = "inline";
-
         if (word.lineDiv.offsetHeight > word.lineDiv.dataset.highest) {
             word.lineDiv.dataset.highest = word.lineDiv.offsetHeight;
             word.lineDiv.style.minHeight = word.lineDiv.offsetHeight + "px";
         }
-        busy = false;
-    }
+        await util.wait(delay);
+        console.log("returning draw");
+        return resolve("finished");
+    });
 };
 
 word.prototype.setUpCycle = async function () {
-    var source = this.text.toLowerCase();
-    //console.log(this.potentials.length, ":", this.potentials);
-    if (this.potentials.length < 2) {
-        return util.wait(5);
-    }
-    this.cProcess = [this.word];
-    for (let word of this.potentials) {
-        var result = this.processLev(source, word);
-        word.process = result;
+    var wrd = this
 
-    }
-    for (let wd of this.potentials) {
-        this.cProcess.push(wd.word);
-        var src;
-        read.textContent = wd.word;
-        if (wd.type === "dict") {
-            src = "aspell linux dictionary"
-        } else if (wd.type === "suspect") {
-            src = "DHS Watchwords List";
-        } else if (wd.type === "witness") {
-            src = "Hearing Witness List";
-        } else if (wd.type === "committee") {
-            src = "Committee membership list";
+    return new Promise(async function (resolve) {
+        var source = wrd.text.toLowerCase();
+        //console.log(this.potentials.length, ":", this.potentials);
+        if (wrd.potentials.length < 2) {
+            await util.wait(1200);
         }
-        readdata.textContent = "match: " + src + " distance: " + wd.distance;
-        for (let proc of wd.process) {
-            let time = null;
-            if (this.cProcess.includes(proc)) {
-                console.log("woohoo");
-                time = 1000;
+        wrd.cProcess = [wrd.word];
+        //weed out potentials that match the word
+        if (wrd.potentials.length === 1 && wrd.potentials[0].distance === 0) {
+            return resolve();
+        }
+        for (let word of wrd.potentials) {
+            console.dir(word);
+            var result = wrd.processLev(source, word);
+            word.process = result;
+
+        }
+        console.log("??????????????" + wrd.potentials.length)
+
+        for (let wd of wrd.potentials) {
+            wrd.cProcess.push(wd.word);
+            var src;
+            read.textContent = wd.word;
+            if (wd.type === "dict") {
+                src = "aspell linux dictionary";
+                read.style.color = "papayaWhip";
+            } else if (wd.type === "suspect") {
+                src = "DHS Watchwords List";
+                read.style.color = "red";
+            } else if (wd.type === "witness") {
+                src = "Hearing Witness List";
+                read.style.color = "green";
+            } else if (wd.type === "committee") {
+                src = "Committee membership list";
+                read.style.color = "green";
+
             }
-            await readQueue(proc, time);
+            readdata.textContent = "match: " + src + " distance: " + wd.distance;
+            for (let proc of wd.process) {
+                let time = null;
+                if (wrd.cProcess.includes(proc)) {
+                    console.log("woohoo");
+                    time = 1000;
+                }
+                console.log("awaiting queue");
+                await readQueue(proc, time);
+                console.log("queue read");
+            }
         }
-    }
-    readdata.textContent = "";
+        readdata.textContent = "";
+        read.textContent = "";
+        console.log("returning cycle")
+        return resolve();
 
-    return Promise.resolve();
-
-
+    });
 };
 
-readQueue = function (wd, ms) {
+readQueue = async function (wd, ms) {
     read.textContent = wd;
     if (!ms) {
-        ms = 250;
+        ms = 125;
     }
-    return new Promise(resolve => {
-        setTimeout(() => {
-            resolve();
-        }, ms);
-    });
+    console.log("boop: ", wd);
+    await util.wait(ms);
+    return Promise.resolve();
 };
 
 //return an array of all the steps between source and word
@@ -166,19 +181,25 @@ word.prototype.processLev = function (source, word) {
     var a = source;
     var b = word.word;
     var lev = new Levenshtein(a, b);
+    console.log(source, word);
     var steps = lev.getSteps();
     var tmp = a;
     for (var step of steps) {
         if (step[0] === "substitute") {
+            console.log("subbing");
             //console.log(step[0], step[1], step[2]);
             tmp = tmp.substring(0, step[1] - 1) + b[step[2] - 1] + tmp.substring(step[1], a.length);
             process.push(tmp);
         } else if (step[0] === "insert") {
+            console.log("inserting");
+
             //console.log(step[0], step[1], step[2]);
             //console.log("adding ", b[step[2] - 1], " after " + a[step[1] - 1]);
             tmp = tmp.substring(0, step[1]) + b[step[2] - 1] + tmp.substring(step[1], tmp.length);
             process.push(tmp);
         } else if (step[0] === "delete") {
+            console.log("deleting");
+
             //console.log(step[0], step[1], step[2]);
             tmp = tmp.substring(0, step[1] - 1) + tmp.substring(step[1], a.length);
             process.push(tmp);
@@ -192,15 +213,9 @@ word.prototype.processLev = function (source, word) {
     return process;
 };
 
-word.cycle = function () {
-
-};
 
 
-
-word.prototype.pots = function () {
-    this.draw();
-
+word.prototype.pots = async function () {
     if (this.rawResults) {
         for (var res of this.rawResults) {
             this.potentials.push({
@@ -223,6 +238,9 @@ word.prototype.pots = function () {
     if (this.potentials.length > 1) {
         this.flip();
     }
+    await this.draw();
+
+    return Promise.resolve();
 };
 
 word.prototype.flip = function () {
@@ -233,6 +251,8 @@ word.prototype.flip = function () {
     span.textContent = thispot.word + " ";
     if (thispot.type === "suspicious") {
         span.style.color = "red";
+    } else if (thispot.type === "dict") {
+        span.style.color = "papayaWhip";
     } else {
         span.style.color = "white";
     }
@@ -353,6 +373,21 @@ document.addEventListener("DOMContentLoaded", function (event) {
             "root": "131217_krassprehearing",
             "last": 10
         };
+        var pompeo = {
+            "title": "170112_pre-hearing-011217",
+            "root": "170112_pre-hearing-011217",
+            "last": 39
+        };
+        var pompeoB = {
+            "title": "170112_pre-hearing-b-011217",
+            "root": "170112_pre-hearing-b-011217",
+            "last": 20
+        }
+        var pompeoQ = {
+            "title": "170112_questionnaire-011217",
+            "root": "170112_questionnaire-011217",
+            "last": 14
+        }
 
         docs.push(buildPages(littResponses));
         docs.push(buildPages(clapperPost));
@@ -366,7 +401,8 @@ document.addEventListener("DOMContentLoaded", function (event) {
         docs.push(buildPages(prehear5));
         docs.push(buildPages(krasspre));
         docs.push(buildPages(clapperQfrs));
-
+        docs.push(buildPages(pompeo));
+        docs.push(buildPages(pompeoB));
 
 
 
@@ -389,6 +425,7 @@ document.addEventListener("DOMContentLoaded", function (event) {
 
 });
 //doc constructinator
+
 var Doc = function (options) {
     var doc = this;
     this.pages = options.pages;
@@ -408,7 +445,7 @@ var Doc = function (options) {
 
         doc.init();
 
-    }, 10000);
+    }, 1000);
     //this.newline;
 };
 
@@ -488,233 +525,248 @@ Doc.prototype.processLines = function () {
 };
 
 
-
+//takes cluster of letters, "reads" and processes
 Doc.prototype.addWord = function (word) {
-    if (!word || word.fail) {
-        return false;
-    } else {
-        console.log(word.lineNum);
-        word.pageDiv = document.querySelector("#page" + this.currentPage);
-        if (!document.querySelector("#line" + this.currentPage + "_" + word.lineNum)) {
-            word.lineDiv = document.createElement('div');
-            word.lineDiv.id = "line" + this.currentPage + "_" + word.lineNum;
-            word.lineDiv.classList.add('line');
-            word.pageDiv.appendChild(word.lineDiv);
-
+    console.log("&&&&&&&&&&&&&&&& adding word " + word.text);
+    var doc = this;
+    return new Promise(async function (resolve) {
+        if (!word || word.fail) {
+            console.log("%%%%%%%%%%%% no word");
+            return resolve("no word");
         } else {
-            word.lineDiv = document.querySelector("#line" + this.currentPage + "_" + word.lineNum);
-        }
-        //console.dir(word);
-        var span = document.createElement('span');
-        span.style.display = "none";
-        var ssize;
-        ssize = word.lineHeight * 0.55;
-        if (ssize > 40) {
-            ssize = 40;
-        }
-        if (ssize < 20) {
-            ssize = 20;
-        }
-        span.style.fontSize = ssize + "px";
-        console.log(span.style.fontSize);
-        if (word.text !== "? ") {
-            this.words.push(word);
-        }
-        span.textContent = word.text + " ";
-        word.span = span;
-
-        word.lineDiv.appendChild(span);
-        word.lineDiv.dataset.highest = word.lineDiv.offsetHeight;
-
-        words.scrollTop = words.scrollHeight;
-        var comp;
-        if (word.text.length > 2) {
-
-            comp = compare(word.text.toLowerCase().replace(/[^a-zA-Z0-9]+/g, ""), rawdict);
-            if (comp) {
-                if (comp.low === 0 || comp.words.length === 1) {
-                    span.textContent = comp.words[0].word + " ";
-                } else {
-                    span.textContent = comp.words[0].word + " ";
-                    if (word.lineDiv.offsetHeight > word.lineDiv.dataset.highest) {
-                        word.lineDiv.dataset.highest = word.lineDiv.offsetHeight;
-                        word.lineDiv.style.minHeight = word.lineDiv.offsetHeight + "px";
-                    }
-                }
-                word.rawResults = comp.words;
+            console.log(word.lineNum);
+            word.pageDiv = document.querySelector("#page" + doc.currentPage);
+            //sees if we need a newline
+            if (!document.querySelector("#line" + doc.currentPage + "_" + word.lineNum)) {
+                word.lineDiv = document.createElement('div');
+                word.lineDiv.id = "line" + doc.currentPage + "_" + word.lineNum;
+                word.lineDiv.classList.add('line');
+                word.pageDiv.appendChild(word.lineDiv);
 
             } else {
-                word.compFailed = true;
-                span.classList.add('iffy');
+                word.lineDiv = document.querySelector("#line" + doc.currentPage + "_" + word.lineNum);
             }
-        }
+            word.rawResults = [];
+            var span = document.createElement('span');
+            span.style.display = "none";
+            var ssize;
+            ssize = word.lineHeight;
 
+            //kinda arbitrary size for text
+            if (ssize > 40) {
+                ssize = 40;
+            }
+            if (ssize < 15) {
+                ssize = 15;
+            }
+            span.style.fontSize = ssize + "px";
+            console.log(span.style.fontSize);
+            //i forget this use case
+            if (word.text !== "? ") {
+                doc.words.push(word);
+            }
+            //adds space
+            span.textContent = word.text + " ";
+            word.span = span;
 
-        if (word.text.length > 2) {
+            word.lineDiv.appendChild(span);
+            word.lineDiv.dataset.highest = word.lineDiv.offsetHeight;
+            //scrolls into view
+            words.scrollTop = words.scrollHeight;
+            var comp;
 
-            word.draw();
-            comp = compare(word.text.toLowerCase().replace(/[^a-zA-Z0-9]+/g, ""), suspectdict);
-            if (comp) {
-                span.classList.add('suspect');
-                if (comp.low === 0) {
-                    span.textContent = comp.words[0].word + " ";
-                } else {
-                    span.textContent = comp.words[0].word + " ";
+            if (word.text.length > 2) {
+                word.clean = word.text.toLowerCase().replace(/[^a-zA-Z0-9]+/g, "");
+                comp = compare(word.clean, rawdict);
+                if (comp) {
+                    //one result
+                    if (comp.low === 0 || comp.words.length === 1) {
+                        span.textContent = comp.words[0].word + " ";
+                    } else {
+                        span.textContent = comp.words[0].word + " ";
 
-
-                    if (word.lineDiv.offsetHeight > word.lineDiv.dataset.highest) {
-                        word.lineDiv.dataset.highest = word.lineDiv.offsetHeight;
-                        word.lineDiv.style.minHeight = word.lineDiv.offsetHeight + "px";
+                        //lolidk
+                        if (word.lineDiv.offsetHeight > word.lineDiv.dataset.highest) {
+                            word.lineDiv.dataset.highest = word.lineDiv.offsetHeight;
+                            word.lineDiv.style.minHeight = word.lineDiv.offsetHeight + "px";
+                        }
                     }
-                    //span.textContent = span.textContent + JSON.stringify(comp);
+
+                    word.rawResults = comp.words;
+                } else {
+                    console.log("no results for ", word.text, " in dict");
+                    word.compFailed = true;
+                    span.classList.add('iffy');
                 }
-                word.suspResults = comp.words;
+                comp = compare(word.clean, suspectdict, true);
+                if (comp) {
+                    span.classList.add('suspect');
+                    if (comp.low === 0) {
+                        span.textContent = comp.words[0].word + " ";
+                    } else {
+                        span.textContent = comp.words[0].word + " ";
 
+
+                        if (word.lineDiv.offsetHeight > word.lineDiv.dataset.highest) {
+                            word.lineDiv.dataset.highest = word.lineDiv.offsetHeight;
+                            word.lineDiv.style.minHeight = word.lineDiv.offsetHeight + "px";
+                        }
+                        //span.textContent = span.textContent + JSON.stringify(comp);
+                    }
+                    word.suspResults = comp.words;
+
+                } else {
+                    console.log("no results in susp for ", word.text);
+                    //word.compFailed = true;
+                    //span.classList.add('iffy');
+                }
+                await word.pots();
+                console.log("&&&&&& ending word", word.text)
+                return resolve();
             } else {
-                //word.compFailed = true;
-                //span.classList.add('iffy');
+                return resolve();
             }
-
-            word.pots();
         }
-    }
+    });
 };
 
-
-
-Doc.prototype.drawLetters = function () {
-
+Doc.prototype.drawLetters = async function () {
     var altWord;
     var doc = this,
         pct;
-    if (stahp) {
-        window.setTimeout(doc.drawLetters, 1000);
+    var startWord,
+        matches = "";
+    this.dLetters.push(this.letters[this.currentChr]);
+
+    this.currentChr++;
+    //we're at the end, start over.
+    if (this.currentChr >= this.letters.length) {
+        console.log("doc finished?")
+        this.dLetters = [];
+        this.init();
     }
-    if (busy) {
-        //console.log("busy");
-    } else {
-        var startWord,
-            matches = "";
-        this.dLetters.push(this.letters[this.currentChr]);
 
-        this.currentChr++;
-        if (this.currentChr >= this.letters.length) {
-            this.dLetters = [];
-            this.init();
+    var letter = this.letters[this.currentChr];
+    //console.dir(letter);
+    if (!letter) {
+        console.log('no letter at ' + this.currentChr);
+        return false;
+    }
+    pct = (letter.y / img.height) - 0.2;
+    if (pct < 0) {
+        pct = 0;
+    }
+    full.style.top = "-" + (full.offsetHeight * pct) +
+        "px";
+
+    if (letter.matches.length) {
+        for (var match of letter.matches) {
+
+            matches = matches + match.letter;
+            //console.log(matches);
         }
+        if (letter.wordEnd || matches.indexOf(' ') !== -1 || matches.indexOf(',') !== -1) {
+            letter.wordEnd = true;
 
-        var letter = this.letters[this.currentChr];
-        //console.dir(letter);
-        if (!letter) {
-            console.log('no letter at ' + this.currentChr);
-            return false;
-        }
-        pct = (letter.y / img.height) - 0.2;
-        if (pct < 0) {
-            pct = 0;
-        }
-        full.style.top = "-" + (full.offsetHeight * pct) +
-            "px";
-
-        if (letter.matches.length) {
-            for (var match of letter.matches) {
-
-                matches = matches + match.letter;
-                //console.log(matches);
+            if (letter.wordEnd) {
+                //console.log("wordend, matches: " + matches);
+                this.word.text = "" + this.word.text + letter.matches[0].letter;
             }
-            if (letter.wordEnd || matches.indexOf(' ') !== -1 || matches.indexOf(',') !== -1) {
-                letter.wordEnd = true;
+            if (letter.lineEnd) {
+                this.word.lineEnd = true;
+            }
+            this.word.lineNum = letter.lineNum;
+            this.word.lineHeight = letter.lineHeight;
 
-                if (letter.wordEnd) {
-                    //console.log("wordend, matches: " + matches);
-                    this.word.text = "" + this.word.text + letter.matches[0].letter;
-                }
-                if (letter.lineEnd) {
-                    this.word.lineEnd = true;
-                }
-                this.word.lineNum = letter.lineNum;
-                this.word.lineHeight = letter.lineHeight;
+            this.word.pos = {
+                "x": this.letters[this.currentChr - (this.word.text.length - 1)].x,
+                "y": this.letters[this.currentChr - (this.word.text.length - 1)].y
+            };
+            var lastlet = this.letters[this.currentChr];
+            this.word.endpos = {
+                "x": lastlet.x + lastlet.width,
+                "y": lastlet.y + lastlet.height
+            };
 
-                this.word.pos = {
-                    "x": this.letters[this.currentChr - (this.word.text.length - 1)].x,
-                    "y": this.letters[this.currentChr - (this.word.text.length - 1)].y
-                };
-                var lastlet = this.letters[this.currentChr];
-                this.word.endpos = {
-                    "x": lastlet.x + lastlet.width,
-                    "y": lastlet.y + lastlet.height
-                };
-
-                if (this.word.text === "" || this.word.text === "-") {
-                    this.word = {
-                        text: ''
-                    };
-                } else if (this.word.text.includes('--')) {
-                    var idx = this.word.text.indexOf('--');
-                    altWord = JSON.parse(JSON.stringify(this.word));
-                    altWord.text = this.word.text.split('--')[1];
-                    altWord.pos = {
-                        "x": this.letters[this.currentChr - (altWord.text.length - 1)].x,
-                        "y": this.letters[this.currentChr - (altWord.text.length - 1)].y
-                    };
-                    this.word.text = this.word.text.split('--')[0];
-                    this.word.endpos = {
-                        "x": this.letters[this.currentChr - (this.word.text.length - 1 + idx)].x,
-                        "y": this.letters[this.currentChr - (this.word.text.length - 1 + idx)].y
-                    };
-                    this.addWord(new word(this.word));
-                    this.addWord(new word(altWord));
-                } else if (this.word.text.includes(':')) {
-                    altWord = JSON.parse(JSON.stringify(this.word));
-                    altWord.text = this.word.text.split(':')[1];
-                    this.word.text = this.word.text.split(':')[0];
-                    this.addWord(new word(this.word));
-                    //ugh need to figure out positioning
-                    this.addWord(new word(altWord));
-                } else {
-                    this.addWord(new word(this.word));
-                }
-
+            if (this.word.text === "" || this.word.text === "-") {
                 this.word = {
                     text: ''
                 };
-
+            } else if (this.word.text.includes('--')) {
+                var idx = this.word.text.indexOf('--');
+                altWord = JSON.parse(JSON.stringify(this.word));
+                altWord.text = this.word.text.split('--')[1];
+                altWord.pos = {
+                    "x": this.letters[this.currentChr - (altWord.text.length - 1)].x,
+                    "y": this.letters[this.currentChr - (altWord.text.length - 1)].y
+                };
+                this.word.text = this.word.text.split('--')[0];
+                this.word.endpos = {
+                    "x": this.letters[this.currentChr - (this.word.text.length - 1 + idx)].x,
+                    "y": this.letters[this.currentChr - (this.word.text.length - 1 + idx)].y
+                };
+                await this.addWord(new word(this.word));
+                await this.addWord(new word(altWord));
+            } else if (this.word.text.includes(':')) {
+                altWord = JSON.parse(JSON.stringify(this.word));
+                altWord.text = this.word.text.split(':')[1];
+                this.word.text = this.word.text.split(':')[0];
+                await this.addWord(new word(this.word));
+                //ugh need to figure out positioning
+                await this.addWord(new word(altWord));
             } else {
-                this.word.text = "" + this.word.text + letter.matches[0].letter;
+                await this.addWord(new word(this.word));
             }
-            fullCtx.fillRect(letter.x, letter.y, letter.width, letter.height);
-            fullCtx.fillRect(letter.x, letter.y, letter.width, letter.height);
-            pct = (letter.y / img.height) - 0.02;
-            full.style.top = "-" + (full.offsetHeight * pct) +
-                "px";
-            //full.style.top = "-" + (letter.y - 430) + "px";
 
-            //full.style.left = "-" + (letter.x - 130) + "px";
-            type.width = letter.width;
-            type.height = letter.height;
-            typeCtx.clearRect(0, 0, type.width, type.height);
+            this.word = {
+                text: ''
+            };
 
-            typeCtx.drawImage(img, letter.x, letter.y, letter.width, letter.height, 0, 0, type.width, type.height);
-            read.style.fontSize = "15vh";
-            read.textContent = "";
-            read.textContent = matches;
+            //start of word
         } else {
-            read.style.fontSize = "15vh";
-
-            read.textContent = "???";
+            this.word.text = "" + this.word.text + letter.matches[0].letter;
         }
+        //blank letter image
+        fullCtx.fillRect(letter.x, letter.y, letter.width, letter.height);
+        fullCtx.fillRect(letter.x, letter.y, letter.width, letter.height);
+        pct = (letter.y / img.height) - 0.02;
+        full.style.top = "-" + (full.offsetHeight * pct) +
+            "px";
+        //full.style.top = "-" + (letter.y - 430) + "px";
 
+        //full.style.left = "-" + (letter.x - 130) + "px";
+        type.width = letter.width;
+        type.height = letter.height;
+        type.style.width = "auto";
+        type.style.height = "100%";
+        type.style.maxHeight = "25vh";
+        typeCtx.clearRect(0, 0, type.width, type.height);
+        //copy letter image
+        typeCtx.drawImage(img, letter.x, letter.y, letter.width, letter.height, 0, 0, type.width, type.height);
+        read.style.fontSize = "15vh";
+        read.style.color = "white";
+        //blank letter
+        read.textContent = "";
+        read.textContent = matches;
+    } else {
+        //letter unknown
+        read.style.fontSize = "15vh";
+        read.textContent = "???";
     }
 
+    //console.log("done drawing letter");
+
+
     if (this.dLetters.length === this.letters.length) {
+        console.log("length reached");
         console.log('done');
         this.dLetters = [];
         return true;
     } else {
-        window.setTimeout(function () {
-            doc.drawLetters();
-        }, letterInterval);
+        //console.log("another");
+        await util.wait(letterInterval);
 
+        doc.drawLetters();
 
 
 

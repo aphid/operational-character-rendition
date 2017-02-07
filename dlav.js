@@ -24,7 +24,7 @@ function hasNumber(myString) {
             myString));
 }
 
-var compare = function (ocr, dict) {
+var compare = function (ocr, dict, sus) {
     if (!ocr) {
         return false;
     }
@@ -34,8 +34,13 @@ var compare = function (ocr, dict) {
     var words = {};
     var ranked = [];
     var dictdiv = document.querySelector('#dict');
-    var compdist = Math.floor(ocr.length / 3) + 1;
-    //console.log(ocr, compdist);
+    var compdist;
+    if (sus) {
+        compdist = Math.floor(ocr.length / 3) + 1;
+    } else {
+        compdist = Math.floor(ocr.length / 4) + 1;
+    }
+    console.log(ocr, compdist);
     for (var word of dict) {
         var dist = distance(ocr, word);
 

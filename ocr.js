@@ -132,7 +132,7 @@ word.prototype.setUpCycle = async function () {
             var src;
             read.textContent = wd.word;
             if (wd.type === "dict") {
-                src = "aspell linux dictionary";
+                src = "aspell dictionary";
                 read.style.color = "papayaWhip";
             } else if (wd.type === "suspect") {
                 src = "DHS Watchwords List";
@@ -180,8 +180,12 @@ word.prototype.processLev = function (source, word) {
     var process = [source];
     var a = source;
     var b = word.word;
+
     var lev = new Levenshtein(a, b);
     console.log(source, word);
+    if (source === word) {
+        return ["source"];
+    }
     var steps = lev.getSteps();
     var tmp = a;
     for (var step of steps) {
@@ -670,7 +674,10 @@ Doc.prototype.drawLetters = async function () {
     this.currentChr++;
     //we're at the end, start over.
     if (this.currentChr >= this.letters.length) {
-        console.log("doc finished?")
+        console.log("doc finished?");
+        this.word.wordTop = 0;
+        this.word.wordBot = 0;
+
         this.dLetters = [];
         this.upImage();
         this.init();
@@ -735,6 +742,8 @@ Doc.prototype.drawLetters = async function () {
             } else if (this.word.text.includes('--')) {
                 var idx = this.word.text.indexOf('--');
                 altWord = JSON.parse(JSON.stringify(this.word));
+                altWord.wordTop = this.word.wordTop;
+                altWord.wordBot = this.word.wordBot;
                 altWord.text = this.word.text.split('--')[1];
                 altWord.pos = {
                     "x": this.letters[this.currentChr - (altWord.text.length - 1)].x,
@@ -814,6 +823,9 @@ Doc.prototype.drawLetters = async function () {
         console.log("length reached");
         console.log('done');
         this.dLetters = [];
+        await doc.upImage();
+        this.word.wordTop = 0;
+        this.word.wordBot = 0;
         return true;
     } else {
         //console.log("another");

@@ -47,6 +47,7 @@ var word = function (options) {
 
 };
 
+
 word.prototype.draw = async function () {
     var word = this;
     return new Promise(async function (resolve) {
@@ -58,7 +59,7 @@ word.prototype.draw = async function () {
             read.style.fontSize = "13vh";
             var fsize;
             var wordw = word.endpos.x - word.pos.x;
-            var wordh = word.endpos.y - word.pos.y;
+            var wordh = word.wordBot - word.wordTop;
             type.width = wordw || 1;
             type.height = wordh || 1;
             //console.log(wordw, wordh);
@@ -74,7 +75,6 @@ word.prototype.draw = async function () {
                         if (fsize < 8) {
                             fsize = 8;
                         }
-                        delay = 5000;
                     }
                     wlist.push(word.potentials[i].word);
                 }
@@ -87,7 +87,7 @@ word.prototype.draw = async function () {
             //console.log(type.width, type.height, word.pos.x);
             type.style.width = "100%";
             type.style.auto = "auto";
-            typeCtx.drawImage(img, word.pos.x, word.pos.y, type.width, type.height, 0, 0, type.width, type.height);
+            typeCtx.drawImage(img, word.pos.x, word.wordTop, type.width, type.height, 0, 0, type.width, type.height);
             read.textContent = readMsg;
         }
         console.log("starting cycle", word.text)
@@ -210,6 +210,9 @@ word.prototype.processLev = function (source, word) {
     if (!process.includes(b)) {
         process.push(b);
     }
+    if (!process.length) {
+        console.log("process 0");
+    }
     return process;
 };
 
@@ -243,7 +246,7 @@ word.prototype.pots = async function () {
     return Promise.resolve();
 };
 
-word.prototype.flip = function () {
+word.prototype.flip = async function () {
     var wd = this;
     var span = this.span;
     var thispot = this.potentials[this.potpos];
@@ -265,14 +268,13 @@ word.prototype.flip = function () {
     if (this.potpos >= this.potentials.length) {
         this.potpos = 0;
     }
-
-    window.setTimeout(function () {
-        /*if (thispot.type === "suspicious") {
-          console.log("flipping from " + thispot.distance + " " + thispot.type + " " + thispot.word + " in " + (300 / thispot.distance + 250));
-          console.table(wd.potentials);
-        }*/
-        wd.flip();
-    }, 300 / (thispot.distance || 1) + 250);
+    var wTime = (300 / (thispot.distance || 1)) + 250 + (Math.random() * 100);
+    await util.wait(wTime);
+    /*if (thispot.type === "suspicious") {
+      console.log("flipping from " + thispot.distance + " " + thispot.type + " " + thispot.word + " in " + (300 / thispot.distance + 250));
+      console.table(wd.potentials);
+    }*/
+    wd.flip();
 
 };
 
@@ -449,6 +451,33 @@ var Doc = function (options) {
     //this.newline;
 };
 
+Doc.prototype.upImage = function () {
+    form = {
+        "page": this.currentPage,
+        "pageImg": full.toDataURL(),
+        "root": this.root,
+        "title": this.title
+    };
+
+    var sData = JSON.stringify(form);
+    try {
+        fetch("https://illegible.us:3000", {
+                method: 'post',
+                body: sData
+            })
+            .then(json)
+            .then(function (data) {
+                console.log('Request succeeded with JSON response', data);
+            })
+            .catch(function (error) {
+                console.log('Request failed', error);
+            });
+    } catch (e) {
+        console.log("fetch catch backup", e);
+    }
+
+};
+
 
 function buildPages(doc) {
     doc.pages = [];
@@ -550,15 +579,15 @@ Doc.prototype.addWord = function (word) {
             var span = document.createElement('span');
             span.style.display = "none";
             var ssize;
-            ssize = word.lineHeight;
+            ssize = word.lineHeight * .7;
 
             //kinda arbitrary size for text
-            if (ssize > 40) {
-                ssize = 40;
+            /* if (ssize > 30) {
+                ssize = 30;
             }
             if (ssize < 15) {
                 ssize = 15;
-            }
+            }*/
             span.style.fontSize = ssize + "px";
             console.log(span.style.fontSize);
             //i forget this use case
@@ -576,7 +605,8 @@ Doc.prototype.addWord = function (word) {
             var comp;
 
             if (word.text.length > 2) {
-                word.clean = word.text.toLowerCase().replace(/[^a-zA-Z0-9]+/g, "");
+                word.clean = word.text.replace(/[^a-zA-Z0-9]+/g, "");
+                //word.clean = word.text;
                 comp = compare(word.clean, rawdict);
                 if (comp) {
                     //one result
@@ -637,16 +667,24 @@ Doc.prototype.drawLetters = async function () {
     var startWord,
         matches = "";
     this.dLetters.push(this.letters[this.currentChr]);
-
     this.currentChr++;
     //we're at the end, start over.
     if (this.currentChr >= this.letters.length) {
         console.log("doc finished?")
         this.dLetters = [];
+        this.upImage();
         this.init();
     }
 
     var letter = this.letters[this.currentChr];
+
+    if (letter.lineNum !== doc.currentLine) {
+        this.word.wordTop = 0;
+        this.word.wordBot = 0;
+        this.currentLine = letter.lineNum;
+    }
+
+
     //console.dir(letter);
     if (!letter) {
         console.log('no letter at ' + this.currentChr);
@@ -690,7 +728,9 @@ Doc.prototype.drawLetters = async function () {
 
             if (this.word.text === "" || this.word.text === "-") {
                 this.word = {
-                    text: ''
+                    text: '',
+                    wordTop: 0,
+                    wordBot: 0
                 };
             } else if (this.word.text.includes('--')) {
                 var idx = this.word.text.indexOf('--');
@@ -719,7 +759,9 @@ Doc.prototype.drawLetters = async function () {
             }
 
             this.word = {
-                text: ''
+                text: '',
+                wordTop: 0,
+                wordBot: 0
             };
 
             //start of word
@@ -727,6 +769,17 @@ Doc.prototype.drawLetters = async function () {
             this.word.text = "" + this.word.text + letter.matches[0].letter;
         }
         //blank letter image
+
+        if (!this.word.wordTop || this.word.wordTop > letter.y) {
+            console.log("moving top");
+            this.word.wordTop = letter.y;
+        }
+        if (!this.word.wordBot || this.word.wordBot < letter.y + letter.height) {
+            console.log("moving bot");
+
+            this.word.wordBot = letter.y + letter.height;
+        }
+
         fullCtx.fillRect(letter.x, letter.y, letter.width, letter.height);
         fullCtx.fillRect(letter.x, letter.y, letter.width, letter.height);
         pct = (letter.y / img.height) - 0.02;

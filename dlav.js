@@ -36,13 +36,15 @@ var compare = function (ocr, dict, sus) {
     var dictdiv = document.querySelector('#dict');
     var compdist;
     if (sus) {
-        compdist = Math.floor(ocr.length / 3) + 1;
+        compdist = Math.floor(ocr.length / 4) + 1;
     } else {
         compdist = Math.floor(ocr.length / 4) + 1;
     }
     console.log(ocr, compdist);
     for (var word of dict) {
-        var dist = distance(ocr, word);
+        var lowcr = ocr.toLowerCase();
+        var low = word.toLowerCase();
+        var dist = distance(lowcr, low);
 
         if (dist === 0) {
             console.log("perfect match");

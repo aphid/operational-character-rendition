@@ -154,9 +154,9 @@ Word.prototype.processLev = function (source, wd) {
     var b = wd.word;
     console.log("#########", a, b, "#########");
     console.log(source, wd);
-    /* if (a === b || a === undefined || b === undefined) {
+    if (a === b) {
         return ["source"];
-    }*/
+    }
     var lev = new Levenshtein(a, b);
     var steps = lev.getSteps();
     var tmp = a;

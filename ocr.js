@@ -58,8 +58,7 @@ Word.prototype.draw = async function () {
                 }
                 //read.style.fontSize = fsize + "vh";
                 //readMsg = JSON.stringify(wlist);
-            }
-            else {
+            } else {
                 readMsg = wd.text;
             }
             //console.log(type.width, type.height, word.pos.x);
@@ -108,16 +107,13 @@ Word.prototype.setUpCycle = async function () {
         if (wd.type === "dict") {
             src = "aspell dictionary";
             read.style.color = "papayaWhip";
-        }
-        else if (wd.type === "suspect") {
+        } else if (wd.type === "suspect") {
             src = "DHS Watchwords List";
             read.style.color = "red";
-        }
-        else if (wd.type === "witness") {
+        } else if (wd.type === "witness") {
             src = "Hearing Witness List";
             read.style.color = "green";
-        }
-        else if (wd.type === "committee") {
+        } else if (wd.type === "committee") {
             src = "Committee membership list";
             read.style.color = "green";
         }
@@ -166,21 +162,18 @@ Word.prototype.processLev = function (source, wd) {
             //console.log(step[0], step[1], step[2]);
             tmp = tmp.substring(0, step[1] - 1) + b[step[2] - 1] + tmp.substring(step[1], a.length);
             process.push(tmp);
-        }
-        else if (step[0] === "insert") {
+        } else if (step[0] === "insert") {
             console.log("inserting");
             //console.log(step[0], step[1], step[2]);
             //console.log("adding ", b[step[2] - 1], " after " + a[step[1] - 1]);
             tmp = tmp.substring(0, step[1]) + b[step[2] - 1] + tmp.substring(step[1], tmp.length);
             process.push(tmp);
-        }
-        else if (step[0] === "delete") {
+        } else if (step[0] === "delete") {
             console.log("deleting");
             //console.log(step[0], step[1], step[2]);
             tmp = tmp.substring(0, step[1] - 1) + tmp.substring(step[1], a.length);
             process.push(tmp);
-        }
-        else {
+        } else {
             console.log("oh word", step[0], step[1], step[2]);
         }
     }
@@ -198,14 +191,11 @@ Word.prototype.color = function (index = 0) {
     if (!wd.type) {
         wd.type = unknown;
         this.span.color = "white";
-    }
-    else if (wd.type === "suspicious") {
+    } else if (wd.type === "suspicious") {
         this.span.style.color = "red";
-    }
-    else if (wd.type === "dict") {
+    } else if (wd.type === "dict") {
         this.span.style.color = "papayaWhip";
-    }
-    else {
+    } else {
         this.span.style.color = "white";
     }
 };
@@ -213,18 +203,18 @@ Word.prototype.pots = async function () {
     if (this.rawResults) {
         for (var res of this.rawResults) {
             this.potentials.push({
-                "word": res.word
-                , "distance": res.distance
-                , "type": "dict"
+                "word": res.word,
+                "distance": res.distance,
+                "type": "dict"
             });
         }
     }
     if (this.suspResults) {
         for (var sus of this.suspResults) {
             this.potentials.push({
-                "word": sus.word
-                , "distance": sus.distance
-                , "type": "suspicious"
+                "word": sus.word,
+                "distance": sus.distance,
+                "type": "suspicious"
             });
         }
     }
@@ -241,11 +231,9 @@ Word.prototype.flip = async function () {
     span.textContent = thispot.word + " ";
     if (thispot.type === "suspicious") {
         span.style.color = "red";
-    }
-    else if (thispot.type === "dict") {
+    } else if (thispot.type === "dict") {
         span.style.color = "papayaWhip";
-    }
-    else {
+    } else {
         span.style.color = "white";
     }
     if (this.lineDiv.offsetHeight > this.lineDiv.dataset.highest) {
@@ -286,87 +274,87 @@ document.addEventListener("DOMContentLoaded", function () {
         rawdict = JSON.parse(values[0]);
         suspectdict = JSON.parse(values[1]);
         docs = [{
-                "title": "buckleyStatement"
-                , "pages": ["questionnaire00.jpg", "questionnaire01.jpg", "questionnaire02.jpg", "questionnaire03.jpg", "page0.jpg", "page1.jpg", "page2.jpg"]
+                "title": "buckleyStatement",
+                "pages": ["questionnaire00.jpg", "questionnaire01.jpg", "questionnaire02.jpg", "questionnaire03.jpg", "page0.jpg", "page1.jpg", "page2.jpg"]
         }
             , {
-                "title": "litt"
-                , "pages": ["090521_litt-0.jpg", "090521_litt-1.jpg", "090521_litt-2.jpg"]
+                "title": "litt",
+                "pages": ["090521_litt-0.jpg", "090521_litt-1.jpg", "090521_litt-2.jpg"]
 }];
         var littResponses = {
-            title: "littResponses"
-            , root: "090521_littresponses"
-            , last: 23
+            title: "littResponses",
+            root: "090521_littresponses",
+            last: 23
         };
         var clapperPost = {
-            title: "clapperPost"
-            , root: "100720_clapperpost"
-            , last: 23
+            title: "clapperPost",
+            root: "100720_clapperpost",
+            last: 23
         };
         var clapperQfrs = {
-            title: "clapperQfrs"
-            , root: "100720_clapperqfrs"
-            , last: 14
+            title: "clapperQfrs",
+            root: "100720_clapperqfrs",
+            last: 14
         };
         var prehearing = {
-            "title": "prehearing"
-            , "root": "100921_prehearing"
-            , "last": 8
+            "title": "prehearing",
+            "root": "100921_prehearing",
+            "last": 8
         };
         var attach1 = {
-            "title": "attach1"
-            , "root": "110203_attach1"
-            , "last": 1
+            "title": "attach1",
+            "root": "110203_attach1",
+            "last": 1
         };
         var attach21 = {
-            "title": "attach2(1)"
-            , "root": "110203_attach2(1)"
-            , "last": 2
+            "title": "attach2(1)",
+            "root": "110203_attach2(1)",
+            "last": 2
         };
         var dni = {
-            "title": "dni"
-            , "root": "110216_dni"
-            , last: 33
+            "title": "dni",
+            "root": "110216_dni",
+            last: 33
         };
         var moreResponses = {
-            "title": "110623_responses"
-            , "root": "110623_responses(1)"
-            , "last": 6
+            "title": "110623_responses",
+            "root": "110623_responses(1)",
+            "last": 6
         };
         var clapper1 = {
-            "title": "clapper1"
-            , "root": "110913_clapper(1)"
-            , "last": 10
+            "title": "clapper1",
+            "root": "110913_clapper(1)",
+            "last": 10
         };
         var prehear = {
-            "title": "110922_prehearing(4)"
-            , "root": "110922_prehearing(4)"
-            , "last": 20
+            "title": "110922_prehearing(4)",
+            "root": "110922_prehearing(4)",
+            "last": 20
         };
         var prehear5 = {
-            "title": "130207_prehearing(5)"
-            , "root": "130207_prehearing(5)"
-            , "last": 27
+            "title": "130207_prehearing(5)",
+            "root": "130207_prehearing(5)",
+            "last": 27
         };
         var krasspre = {
-            "title": "131217_krassprehearing"
-            , "root": "131217_krassprehearing"
-            , "last": 10
+            "title": "131217_krassprehearing",
+            "root": "131217_krassprehearing",
+            "last": 10
         };
         var pompeo = {
-            "title": "170112_pre-hearing-011217"
-            , "root": "170112_pre-hearing-011217"
-            , "last": 39
+            "title": "170112_pre-hearing-011217",
+            "root": "170112_pre-hearing-011217",
+            "last": 39
         };
         var pompeoB = {
-            "title": "170112_pre-hearing-b-011217"
-            , "root": "170112_pre-hearing-b-011217"
-            , "last": 20
+            "title": "170112_pre-hearing-b-011217",
+            "root": "170112_pre-hearing-b-011217",
+            "last": 20
         };
         var pompeoQ = {
-            "title": "170112_questionnaire-011217"
-            , "root": "170112_questionnaire-011217"
-            , "last": 14
+            "title": "170112_questionnaire-011217",
+            "root": "170112_questionnaire-011217",
+            "last": 14
         };
         docs.push(buildPages(littResponses));
         docs.push(buildPages(clapperPost));
@@ -386,9 +374,9 @@ document.addEventListener("DOMContentLoaded", function () {
         //randomDoc = docs.pop();
         console.log(randomDoc.title);
         statement = new Doc({
-            pages: randomDoc.pages
-            , title: randomDoc.title
-            , root: randomDoc.root
+            pages: randomDoc.pages,
+            title: randomDoc.title,
+            root: randomDoc.root
         });
     });
 });
@@ -415,23 +403,22 @@ var Doc = function (options) {
 };
 Doc.prototype.upImage = function () {
     form = {
-        "page": this.currentPage
-        , "pageImg": full.toDataURL()
-        , "root": this.root
-        , "title": this.title
+        "page": this.currentPage,
+        "pageImg": full.toDataURL(),
+        "root": this.root,
+        "title": this.title
     };
     var sData = JSON.stringify(form);
     try {
         fetch("https://illegible.us:3000", {
-            method: "post"
-            , body: sData
+            method: "post",
+            body: sData
         }).then(json).then(function (data) {
             console.log("Request succeeded with JSON response", data);
         }).catch(function (error) {
             console.log("Request failed", error);
         });
-    }
-    catch (e) {
+    } catch (e) {
         console.log("fetch catch backup", e);
     }
 };
@@ -457,15 +444,28 @@ Doc.prototype.init = function () {
     this.currentChr = 0;
     var doc = this;
     console.log("init");
-    document.querySelector("img").onload = function () {
-        full.width = this.width;
-        full.height = this.height;
-        fullCtx.clearRect(0, 0, full.width, full.height);
-        fullCtx.drawImage(this, 0, 0);
+    document.querySelector("img").onload = async function () {
+        await util.copyImage(this);
         doc.process();
     };
     this.loadPage();
 };
+
+
+util.copyImage = async function (img) {
+    full.width = img.width;
+    full.height = img.height;
+    fullCtx.clearRect(0, 0, full.width, full.height);
+    var line = 0;
+    while (line < img.height) {
+        //fullCtx.drawImage(this, 0, 0);
+        fullCtx.drawImage(img, 0, line, img.width, 1, 0, line, full.width, 1);
+        await util.wait(7);
+        line++;
+    }
+    return Promise.resolve();
+}
+
 Doc.prototype.process = function () {
     this.getLines().processLines();
 };
@@ -487,8 +487,7 @@ Doc.prototype.processLines = function () {
             if (letter.height > 100 || letter.width > 200) {
                 //big letter, idk.
                 this.letters.push(letter);
-            }
-            else {
+            } else {
                 this.letters.push(letter);
             }
         }
@@ -503,8 +502,7 @@ Doc.prototype.addWord = function (word) {
         if (!word || word.fail) {
             console.log("%%%%%%%%%%%% no word");
             return resolve("no word");
-        }
-        else {
+        } else {
             console.log(word.lineNum);
             word.pageDiv = document.querySelector("#page" + doc.currentPage);
             //sees if we need a newline
@@ -513,8 +511,7 @@ Doc.prototype.addWord = function (word) {
                 word.lineDiv.id = "line" + doc.currentPage + "_" + word.lineNum;
                 word.lineDiv.classList.add("line");
                 word.pageDiv.appendChild(word.lineDiv);
-            }
-            else {
+            } else {
                 word.lineDiv = document.querySelector("#line" + doc.currentPage + "_" + word.lineNum);
             }
             word.rawResults = [];
@@ -522,13 +519,13 @@ Doc.prototype.addWord = function (word) {
             span.style.display = "none";
             var ssize;
             ssize = word.lineHeight * .7;
-            //kinda arbitrary size for text
-            /* if (ssize > 30) {
-                ssize = 30;
+            if (ssize > 50) {
+                ssize = 50;
             }
             if (ssize < 15) {
                 ssize = 15;
-            }*/
+            }
+
             span.style.fontSize = ssize + "px";
             console.log(span.style.fontSize);
             //i forget this use case
@@ -551,8 +548,7 @@ Doc.prototype.addWord = function (word) {
                     //one result
                     if (comp.low === 0 || comp.words.length === 1) {
                         span.textContent = comp.words[0].word + " ";
-                    }
-                    else {
+                    } else {
                         span.textContent = comp.words[0].word + " ";
                         //lolidk
                         if (word.lineDiv.offsetHeight > word.lineDiv.dataset.highest) {
@@ -561,8 +557,7 @@ Doc.prototype.addWord = function (word) {
                         }
                     }
                     word.rawResults = comp.words;
-                }
-                else {
+                } else {
                     console.log("no results for ", word.text, " in dict");
                     word.compFailed = true;
                     span.classList.add("iffy");
@@ -572,8 +567,7 @@ Doc.prototype.addWord = function (word) {
                     span.classList.add("suspect");
                     if (comp.low === 0) {
                         span.textContent = comp.words[0].word + " ";
-                    }
-                    else {
+                    } else {
                         span.textContent = comp.words[0].word + " ";
                         if (word.lineDiv.offsetHeight > word.lineDiv.dataset.highest) {
                             word.lineDiv.dataset.highest = word.lineDiv.offsetHeight;
@@ -582,8 +576,7 @@ Doc.prototype.addWord = function (word) {
                         //span.textContent = span.textContent + JSON.stringify(comp);
                     }
                     word.suspResults = comp.words;
-                }
-                else {
+                } else {
                     console.log("no results in susp for ", word.text);
                     //word.compFailed = true;
                     //span.classList.add("iffy");
@@ -591,8 +584,7 @@ Doc.prototype.addWord = function (word) {
                 await word.pots();
                 console.log("&&&&&& ending word", word.text);
                 return resolve();
-            }
-            else {
+            } else {
                 return resolve();
             }
         }
@@ -600,8 +592,8 @@ Doc.prototype.addWord = function (word) {
 };
 Doc.prototype.drawLetters = async function () {
     var altWord;
-    var doc = this
-        , pct;
+    var doc = this,
+        pct;
     var matches = "";
     this.dLetters.push(this.letters[this.currentChr]);
     this.currentChr++;
@@ -647,58 +639,54 @@ Doc.prototype.drawLetters = async function () {
             this.word.lineNum = letter.lineNum;
             this.word.lineHeight = letter.lineHeight;
             this.word.pos = {
-                "x": this.letters[this.currentChr - (this.word.text.length - 1)].x
-                , "y": this.letters[this.currentChr - (this.word.text.length - 1)].y
+                "x": this.letters[this.currentChr - (this.word.text.length - 1)].x,
+                "y": this.letters[this.currentChr - (this.word.text.length - 1)].y
             };
             var lastlet = this.letters[this.currentChr];
             this.word.endpos = {
-                "x": lastlet.x + lastlet.width
-                , "y": lastlet.y + lastlet.height
+                "x": lastlet.x + lastlet.width,
+                "y": lastlet.y + lastlet.height
             };
             if (this.word.text === "" || this.word.text === "-") {
                 this.word = {
-                    text: ""
-                    , wordTop: 0
-                    , wordBot: 0
+                    text: "",
+                    wordTop: 0,
+                    wordBot: 0
                 };
-            }
-            else if (this.word.text.includes("--")) {
+            } else if (this.word.text.includes("--")) {
                 var idx = this.word.text.indexOf("--");
                 altWord = JSON.parse(JSON.stringify(this.word));
                 altWord.wordTop = this.word.wordTop;
                 altWord.wordBot = this.word.wordBot;
                 altWord.text = this.word.text.split("--")[1];
                 altWord.pos = {
-                    "x": this.letters[this.currentChr - (altWord.text.length - 1)].x
-                    , "y": this.letters[this.currentChr - (altWord.text.length - 1)].y
+                    "x": this.letters[this.currentChr - (altWord.text.length - 1)].x,
+                    "y": this.letters[this.currentChr - (altWord.text.length - 1)].y
                 };
                 this.word.text = this.word.text.split("--")[0];
                 this.word.endpos = {
-                    "x": this.letters[this.currentChr - (this.word.text.length - 1 + idx)].x
-                    , "y": this.letters[this.currentChr - (this.word.text.length - 1 + idx)].y
+                    "x": this.letters[this.currentChr - (this.word.text.length - 1 + idx)].x,
+                    "y": this.letters[this.currentChr - (this.word.text.length - 1 + idx)].y
                 };
                 await this.addWord(new Word(this.word));
                 await this.addWord(new Word(altWord));
-            }
-            else if (this.word.text.includes(":")) {
+            } else if (this.word.text.includes(":")) {
                 altWord = JSON.parse(JSON.stringify(this.word));
                 altWord.text = this.word.text.split(":")[1];
                 this.word.text = this.word.text.split(":")[0];
                 await this.addWord(new Word(this.word));
                 //ugh need to figure out positioning
                 await this.addWord(new Word(altWord));
-            }
-            else {
+            } else {
                 await this.addWord(new Word(this.word));
             }
             this.word = {
-                text: ""
-                , wordTop: 0
-                , wordBot: 0
+                text: "",
+                wordTop: 0,
+                wordBot: 0
             };
             //start of word
-        }
-        else {
+        } else {
             this.word.text = "" + this.word.text + letter.matches[0].letter;
         }
         //blank letter image
@@ -729,8 +717,7 @@ Doc.prototype.drawLetters = async function () {
         //blank letter
         read.textContent = "";
         read.textContent = matches;
-    }
-    else {
+    } else {
         //letter unknown
         read.style.fontSize = "15vh";
         read.textContent = "???";
@@ -744,8 +731,7 @@ Doc.prototype.drawLetters = async function () {
         this.word.wordTop = 0;
         this.word.wordBot = 0;
         return true;
-    }
-    else {
+    } else {
         //console.log("another");
         await util.wait(letterInterval);
         return doc.drawLetters();
@@ -760,12 +746,10 @@ Doc.prototype.loadPage = function () {
     if (!img.src) {
         console.log("no image, starting out, page 0");
         page = this.pages[0];
-    }
-    else if (this.currentPage >= this.pages.length - 1) {
+    } else if (this.currentPage >= this.pages.length - 1) {
         console.log("starting over");
         location.reload();
-    }
-    else {
+    } else {
         console.log(this.currentPage);
         this.currentPage = this.currentPage + 1;
         console.log(this.currentPage);
@@ -814,8 +798,7 @@ function get(url) {
             if (req.status === 200) {
                 // Resolve the promise with the response text
                 resolve(req.response);
-            }
-            else {
+            } else {
                 // Otherwise reject with the status text
                 // which will hopefully be a meaningful error
                 reject(Error(req.statusText));

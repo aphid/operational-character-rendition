@@ -108,61 +108,59 @@ word.prototype.draw = async function () {
 word.prototype.setUpCycle = async function () {
     var wrd = this
 
-    return new Promise(async function (resolve) {
-        var source = wrd.text.toLowerCase();
-        //console.log(this.potentials.length, ":", this.potentials);
-        if (wrd.potentials.length < 2) {
-            await util.wait(1200);
-        }
-        wrd.cProcess = [wrd.word];
-        //weed out potentials that match the word
-        if (wrd.potentials.length === 1 && wrd.potentials[0].distance === 0) {
-            return resolve();
-        }
-        for (let word of wrd.potentials) {
-            console.dir(word);
-            var result = wrd.processLev(source, word);
-            word.process = result;
+    var source = wrd.text.toLowerCase();
+    //console.log(this.potentials.length, ":", this.potentials);
+    if (wrd.potentials.length < 2) {
+        await util.wait(1200);
+    }
+    wrd.cProcess = [wrd.word];
+    //weed out potentials that match the word
+    if (wrd.potentials.length === 1 && wrd.potentials[0].distance === 0) {
+        return Promise.resolve();
+    }
+    for (let word of wrd.potentials) {
+        console.dir(word);
+        var result = wrd.processLev(source, word);
+        word.process = result;
+
+    }
+    console.log("??????????????" + wrd.potentials.length)
+    console.log(wrd);
+    for (let wd of wrd.potentials) {
+        wrd.cProcess.push(wd.word);
+        var src;
+        read.textContent = wd.word;
+        if (wd.type === "dict") {
+            src = "aspell dictionary";
+            read.style.color = "papayaWhip";
+        } else if (wd.type === "suspect") {
+            src = "DHS Watchwords List";
+            read.style.color = "red";
+        } else if (wd.type === "witness") {
+            src = "Hearing Witness List";
+            read.style.color = "green";
+        } else if (wd.type === "committee") {
+            src = "Committee membership list";
+            read.style.color = "green";
 
         }
-        console.log("??????????????" + wrd.potentials.length)
-
-        for (let wd of wrd.potentials) {
-            wrd.cProcess.push(wd.word);
-            var src;
-            read.textContent = wd.word;
-            if (wd.type === "dict") {
-                src = "aspell dictionary";
-                read.style.color = "papayaWhip";
-            } else if (wd.type === "suspect") {
-                src = "DHS Watchwords List";
-                read.style.color = "red";
-            } else if (wd.type === "witness") {
-                src = "Hearing Witness List";
-                read.style.color = "green";
-            } else if (wd.type === "committee") {
-                src = "Committee membership list";
-                read.style.color = "green";
-
+        readdata.textContent = "match: " + src + " distance: " + wd.distance;
+        for (let proc of wd.process) {
+            let time = null;
+            if (wrd.cProcess.includes(proc)) {
+                console.log("woohoo");
+                time = 1000;
             }
-            readdata.textContent = "match: " + src + " distance: " + wd.distance;
-            for (let proc of wd.process) {
-                let time = null;
-                if (wrd.cProcess.includes(proc)) {
-                    console.log("woohoo");
-                    time = 1000;
-                }
-                console.log("awaiting queue");
-                await readQueue(proc, time);
-                console.log("queue read");
-            }
+            console.log("awaiting queue");
+            await readQueue(proc, time);
+            console.log("queue read");
         }
-        readdata.textContent = "";
-        read.textContent = "";
-        console.log("returning cycle")
-        return resolve();
+    }
+    readdata.textContent = "";
+    read.textContent = "";
+    console.log("returning cycle")
+    return Promise.resolve();
 
-    });
 };
 
 readQueue = async function (wd, ms) {
@@ -183,7 +181,7 @@ word.prototype.processLev = function (source, word) {
 
     var lev = new Levenshtein(a, b);
     console.log(source, word);
-    if (source === word) {
+    if (a === b) {
         return ["source"];
     }
     var steps = lev.getSteps();
@@ -220,7 +218,22 @@ word.prototype.processLev = function (source, word) {
     return process;
 };
 
+word.prototype.color = function (index = 0) {
+    console.dir(this.potentials);
 
+    var wd = this.potentials[index];
+    if (!wd.type) {
+        wd.type = unknown;
+        this.span.color = "white";
+    } else if (wd.type === "suspicious") {
+        this.span.style.color = "red";
+    } else if (wd.type === "dict") {
+        this.span.style.color = "papayaWhip";
+    } else {
+        this.span.style.color = "white";
+    }
+
+};
 
 word.prototype.pots = async function () {
     if (this.rawResults) {
@@ -242,7 +255,7 @@ word.prototype.pots = async function () {
             });
         }
     }
-    if (this.potentials.length > 1) {
+    if (this.potentials.length >= 1) {
         this.flip();
     }
     await this.draw();

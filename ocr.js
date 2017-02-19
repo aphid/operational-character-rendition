@@ -1,8 +1,14 @@
 /*global compare: true, OCRAD: true; */
 var container, full, fullCtx, img, words, type, typeCtx, rawdict, suspectdict, randomDoc, otop, json, txt, read, statement;
+
+//TIMINGS
 var interval = 85;
 var letterInterval = 250;
-//var interval = 50;
+//interval = 5;
+//letterInterval = 25;
+var cycleInterval = 1200;
+
+
 var block = ["-", ".", "`", "--", "="];
 var util = {};
 util.wait = async function (ms) {
@@ -86,11 +92,13 @@ Word.prototype.setUpCycle = async function () {
     var source = wrd.text.toLowerCase();
     //console.log(this.potentials.length, ":", this.potentials);
     if (wrd.potentials.length < 2) {
-        await util.wait(1200);
+        await util.wait(cycleInterval);
     }
     wrd.cProcess = [wrd.word];
     //weed out potentials that match the word
     if (wrd.potentials.length === 1 && wrd.potentials[0].distance === 0) {
+        readdata.textContent = "";
+        read.textContent = "";
         return Promise.resolve();
     }
     for (let wd of wrd.potentials) {
@@ -121,7 +129,6 @@ Word.prototype.setUpCycle = async function () {
         for (let proc of wd.process) {
             let time = null;
             if (wrd.cProcess.includes(proc)) {
-                console.log("woohoo");
                 time = 1000;
             }
             console.log("awaiting queue");
@@ -148,11 +155,11 @@ Word.prototype.processLev = function (source, wd) {
     var process = [source];
     var a = source;
     var b = wd.word;
+    if (a === b) {
+        return [a];
+    }
     console.log("#########", a, b, "#########");
     console.log(source, wd);
-    if (a === b) {
-        return ["source"];
-    }
     var lev = new Levenshtein(a, b);
     var steps = lev.getSteps();
     var tmp = a;
@@ -183,6 +190,8 @@ Word.prototype.processLev = function (source, wd) {
     if (!process.length) {
         console.log("process 0");
     }
+    console.log("________________________");
+    console.log(process);
     return process;
 };
 Word.prototype.color = function (index = 0) {
@@ -445,6 +454,9 @@ Doc.prototype.init = function () {
     var doc = this;
     console.log("init");
     document.querySelector("img").onload = async function () {
+        typeCtx.clearRect(0, 0, type.height, type.width);
+        read.textContent = "";
+        console.log("copying img");
         await util.copyImage(this);
         doc.process();
     };
@@ -460,7 +472,7 @@ util.copyImage = async function (img) {
     while (line < img.height) {
         //fullCtx.drawImage(this, 0, 0);
         fullCtx.drawImage(img, 0, line, img.width, 1, 0, line, full.width, 1);
-        await util.wait(7);
+        await util.wait(1);
         line++;
     }
     return Promise.resolve();
@@ -604,7 +616,7 @@ Doc.prototype.drawLetters = async function () {
         this.word.wordBot = 0;
         this.dLetters = [];
         this.upImage();
-        this.init();
+        return this.init();
     }
     var letter = this.letters[this.currentChr];
     if (letter.lineNum !== doc.currentLine) {
@@ -766,6 +778,7 @@ Doc.prototype.loadPage = function () {
     pageDiv.classList.add("page");
     pageDiv.id = "page" + this.currentPage;
     words.appendChild(pageDiv);
+    img.src = '';
     img.src = "texts/" + page;
     console.log("loaded " + this.pages[this.currentPage]);
 };

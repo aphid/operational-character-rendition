@@ -454,7 +454,7 @@ Doc.prototype.init = function () {
     var doc = this;
     console.log("init");
     document.querySelector("img").onload = async function () {
-        typeCtx.clearRect(0, 0, type.height, type.width);
+        typeCtx.clearRect(0, 0, type.width, type.height);
         read.textContent = "";
         console.log("copying img");
         await util.copyImage(this);

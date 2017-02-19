@@ -2,10 +2,7 @@
 var container, full, fullCtx, img, words, type, typeCtx, rawdict, suspectdict, randomDoc, otop, json, txt, read, statement;
 
 //TIMINGS
-var interval = 85;
-var letterInterval = 250;
-//interval = 5;
-//letterInterval = 25;
+var letterInterval = 225;
 var cycleInterval = 1200;
 
 

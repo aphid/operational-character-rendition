@@ -451,9 +451,11 @@ Doc.prototype.init = function () {
     var doc = this;
     console.log("init");
     document.querySelector("img").onload = async function () {
+
         typeCtx.clearRect(0, 0, type.width, type.height);
         read.textContent = "";
         console.log("copying img");
+        full.style.top = "0";
         await util.copyImage(this);
         doc.process();
     };
@@ -469,11 +471,13 @@ util.copyImage = async function (img) {
     while (line < img.height) {
         //fullCtx.drawImage(this, 0, 0);
         fullCtx.drawImage(img, 0, line, img.width, 1, 0, line, full.width, 1);
-        await util.wait(1);
         line++;
+        if (line % 3 === 0) {
+            await util.wait(16);
+        }
     }
     return Promise.resolve();
-}
+};
 
 Doc.prototype.process = function () {
     this.getLines().processLines();

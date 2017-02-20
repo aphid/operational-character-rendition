@@ -472,9 +472,10 @@ util.copyImage = async function (img) {
         //fullCtx.drawImage(this, 0, 0);
         fullCtx.drawImage(img, 0, line, img.width, 1, 0, line, full.width, 1);
         line++;
+        /*
         if (line % 3 === 0) {
             await util.wait(16);
-        }
+        }*/
     }
     return Promise.resolve();
 };

@@ -537,8 +537,8 @@ Doc.prototype.addWord = function (word) {
             if (ssize > 50) {
                 ssize = 50;
             }
-            if (ssize < 15) {
-                ssize = 15;
+            if (ssize < 25) {
+                ssize = 25;
             }
 
             span.style.fontSize = ssize + "px";

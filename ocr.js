@@ -468,15 +468,16 @@ util.copyImage = async function (img) {
     full.height = img.height;
     fullCtx.clearRect(0, 0, full.width, full.height);
     var line = 0;
+    /*
     while (line < img.height) {
         //fullCtx.drawImage(this, 0, 0);
         fullCtx.drawImage(img, 0, line, img.width, 1, 0, line, full.width, 1);
         line++;
-        /*
         if (line % 3 === 0) {
             await util.wait(16);
-        }*/
     }
+    */
+    fullCtx.drawImage(img, 0, 0, img.width, img.height);
     return Promise.resolve();
 };
 

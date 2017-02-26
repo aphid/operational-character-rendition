@@ -39,10 +39,40 @@ body {
     overflow-x: visible;
 }
 
+#console {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    width: 100vw;
+    height: 6vh;
+    font-size: 4vh;
+    color: rgba(248, 248, 255, 0.63);
+    font-family: monospace;
+    background-color: rgba(0, 0, 0, 0.8);
+    border-top: 1px solid #666
+}
+
+#data {
+    position: absolute;
+    left: 2px;
+    top: 2px;
+}
+
+#pages {
+    position: absolute;
+    right: 2px;
+    top: 2px;
+}
+
+#console div {
+    display: inline-block
+}
+
+;
 #type {
     position: absolute;
     float: left;
-    max-width: 100%;
+    max-width: 50%;
     height: auto;
     max-height: 25vh;
     mix-blend-mode: multiply;

@@ -65,14 +65,14 @@ Word.prototype.draw = async function () {
                 readMsg = wd.text;
             }
             //console.log(type.width, type.height, word.pos.x);
-            type.style.width = "100%";
-            type.style.auto = "auto";
+            type.style.width = "50%";
+            type.style.maxHeight = "25vh";
             typeCtx.drawImage(img, wd.pos.x, wd.wordTop, type.width, type.height, 0, 0, type.width, type.height);
             read.textContent = readMsg;
         }
-        console.log("starting cycle", wd.text);
+        //console.log("starting cycle", wd.text);
         await wd.setUpCycle();
-        console.log("ending cycle", wd.text);
+        //console.log("ending cycle", wd.text);
         //await (util.wait(delay))
         wd.span.style.display = "inline";
         if (wd.lineDiv.offsetHeight > wd.lineDiv.dataset.highest) {
@@ -143,7 +143,6 @@ readQueue = async function (wd, ms) {
     if (!ms) {
         ms = 125;
     }
-    console.log("boop: ", wd);
     await util.wait(ms);
     return Promise.resolve();
 };
@@ -398,6 +397,11 @@ var Doc = function (options) {
     console.log(options.root);
     get("texts/" + options.root + ".json").then(function (result) {
         json.textContent = result;
+        if (result) {
+            doc.metadata = JSON.parse(result)[0];
+            this.dataIndex = 0;
+            doc.cycleData();
+        }
     });
     window.setTimeout(function () {
         json.style.display = "none";
@@ -407,6 +411,20 @@ var Doc = function (options) {
     }, 1000);
     //this.newline;
 };
+
+Doc.prototype.cycleData = async function () {
+    if (this.dataIndex < (Object.keys(this.metadata).length - 1)) {
+        this.dataIndex++;
+    } else {
+        this.dataIndex = 0;
+    }
+
+    document.querySelector("#data").textContent = Object.keys(this.metadata)[this.dataIndex] + ": " + Object.values(this.metadata)[this.dataIndex];
+    await util.wait(8000);
+
+    this.cycleData();
+}
+
 Doc.prototype.upImage = function () {
     form = {
         "page": this.currentPage,
@@ -706,11 +724,9 @@ Doc.prototype.drawLetters = async function () {
         }
         //blank letter image
         if (!this.word.wordTop || this.word.wordTop > letter.y) {
-            console.log("moving top");
             this.word.wordTop = letter.y;
         }
         if (!this.word.wordBot || this.word.wordBot < letter.y + letter.height) {
-            console.log("moving bot");
             this.word.wordBot = letter.y + letter.height;
         }
         fullCtx.fillRect(letter.x, letter.y, letter.width, letter.height);
@@ -757,6 +773,9 @@ Doc.prototype.loadPage = function () {
     var pageDiv = document.createElement("div");
     if (this.currentPage >= this.pages.length) {
         location.reload();
+    }
+    if (this.metadata) {
+        document.querySelector("#pages").textContent = "Page: " + (this.currentPage + 1) + " / " + this.metadata.PageCount;
     }
     if (!img.src) {
         console.log("no image, starting out, page 0");

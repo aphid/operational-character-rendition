@@ -48,7 +48,7 @@ body {
     font-size: 4vh;
     color: rgba(248, 248, 255, 0.63);
     font-family: monospace;
-    background-color: rgba(0, 0, 0, 0.8);
+    background-color: rgba(0, 0, 0);
     border-top: 1px solid #666
 }
 
@@ -68,7 +68,6 @@ body {
     display: inline-block
 }
 
-;
 #type {
     position: absolute;
     float: left;
@@ -80,7 +79,6 @@ body {
     image-rendering: -moz-crisp-edges;
     image-rendering: -o-crisp-edges;
     image-rendering: pixelated;
-    image-rendering: crisp-edges;
 }
 
 #read {

@@ -99,7 +99,7 @@ Word.prototype.setUpCycle = async function () {
         return Promise.resolve();
     }
     for (let wd of wrd.potentials) {
-        console.dir(wd);
+        //console.dir(wd);
         var result = wrd.processLev(source, wd);
         wd.process = result;
     }
@@ -155,7 +155,7 @@ Word.prototype.processLev = function (source, wd) {
         return [a];
     }
     console.log("#########", a, b, "#########");
-    console.log(source, wd);
+    //console.log(source, wd);
     var lev = new Levenshtein(a, b);
     var steps = lev.getSteps();
     var tmp = a;
@@ -258,7 +258,7 @@ Word.prototype.flip = async function () {
     }*/
     wd.flip();
 };
-document.addEventListener("DOMContentLoaded", function () {
+document.addEventListener("DOMContentLoaded", async function () {
     console.log("setting up");
     //set up all the things.  fold thes into the object at some point
     container = document.querySelector("#container");
@@ -275,116 +275,118 @@ document.addEventListener("DOMContentLoaded", function () {
     json = document.querySelector("#json");
     type = document.querySelector("#type");
     typeCtx = type.getContext("2d");
-    Promise.all([get("dict.json"), get("suspect.json")]).then(function (values) {
-        rawdict = JSON.parse(values[0]);
-        suspectdict = JSON.parse(values[1]);
-        docs = [{
-                "title": "buckleyStatement",
-                "pages": ["questionnaire00.jpg", "questionnaire01.jpg", "questionnaire02.jpg", "questionnaire03.jpg", "page0.jpg", "page1.jpg", "page2.jpg"]
+    var dicts = await Promise.all([get("dict.json"), get("suspect.json")]);
+    //console.dir(dicts);
+    rawdict = JSON.parse(dicts[0]);
+    suspectdict = JSON.parse(dicts[1]);
+    docs = [{
+            "title": "buckleyStatement",
+            "pages": ["questionnaire00.jpg", "questionnaire01.jpg", "questionnaire02.jpg", "questionnaire03.jpg", "page0.jpg", "page1.jpg", "page2.jpg"]
         }
             , {
-                "title": "litt",
-                "pages": ["090521_litt-0.jpg", "090521_litt-1.jpg", "090521_litt-2.jpg"]
+            "title": "litt",
+            "pages": ["090521_litt-0.jpg", "090521_litt-1.jpg", "090521_litt-2.jpg"]
 }];
-        var littResponses = {
-            title: "littResponses",
-            root: "090521_littresponses",
-            last: 23
-        };
-        var clapperPost = {
-            title: "clapperPost",
-            root: "100720_clapperpost",
-            last: 23
-        };
-        var clapperQfrs = {
-            title: "clapperQfrs",
-            root: "100720_clapperqfrs",
-            last: 14
-        };
-        var prehearing = {
-            "title": "prehearing",
-            "root": "100921_prehearing",
-            "last": 8
-        };
-        var attach1 = {
-            "title": "attach1",
-            "root": "110203_attach1",
-            "last": 1
-        };
-        var attach21 = {
-            "title": "attach2(1)",
-            "root": "110203_attach2(1)",
-            "last": 2
-        };
-        var dni = {
-            "title": "dni",
-            "root": "110216_dni",
-            last: 33
-        };
-        var moreResponses = {
-            "title": "110623_responses",
-            "root": "110623_responses(1)",
-            "last": 6
-        };
-        var clapper1 = {
-            "title": "clapper1",
-            "root": "110913_clapper(1)",
-            "last": 10
-        };
-        var prehear = {
-            "title": "110922_prehearing(4)",
-            "root": "110922_prehearing(4)",
-            "last": 20
-        };
-        var prehear5 = {
-            "title": "130207_prehearing(5)",
-            "root": "130207_prehearing(5)",
-            "last": 27
-        };
-        var krasspre = {
-            "title": "131217_krassprehearing",
-            "root": "131217_krassprehearing",
-            "last": 10
-        };
-        var pompeo = {
-            "title": "170112_pre-hearing-011217",
-            "root": "170112_pre-hearing-011217",
-            "last": 39
-        };
-        var pompeoB = {
-            "title": "170112_pre-hearing-b-011217",
-            "root": "170112_pre-hearing-b-011217",
-            "last": 20
-        };
-        var pompeoQ = {
-            "title": "170112_questionnaire-011217",
-            "root": "170112_questionnaire-011217",
-            "last": 14
-        };
-        docs.push(buildPages(littResponses));
-        docs.push(buildPages(clapperPost));
-        docs.push(buildPages(prehearing));
-        docs.push(buildPages(attach1));
-        docs.push(buildPages(attach21));
-        docs.push(buildPages(dni));
-        docs.push(buildPages(moreResponses));
-        docs.push(buildPages(clapper1));
-        docs.push(buildPages(prehear));
-        docs.push(buildPages(prehear5));
-        docs.push(buildPages(krasspre));
-        docs.push(buildPages(clapperQfrs));
-        docs.push(buildPages(pompeo));
-        docs.push(buildPages(pompeoB));
-        randomDoc = docs[Math.floor(Math.random() * docs.length)];
-        //randomDoc = docs.pop();
-        console.log(randomDoc.title);
-        statement = new Doc({
-            pages: randomDoc.pages,
-            title: randomDoc.title,
-            root: randomDoc.root
-        });
+    var littResponses = {
+        title: "littResponses",
+        root: "090521_littresponses",
+        last: 23
+    };
+    var clapperPost = {
+        title: "clapperPost",
+        root: "100720_clapperpost",
+        last: 23
+    };
+    var clapperQfrs = {
+        title: "clapperQfrs",
+        root: "100720_clapperqfrs",
+        last: 14
+    };
+    var prehearing = {
+        "title": "prehearing",
+        "root": "100921_prehearing",
+        "last": 8
+    };
+    var attach1 = {
+        "title": "attach1",
+        "root": "110203_attach1",
+        "last": 1
+    };
+    var attach21 = {
+        "title": "attach2(1)",
+        "root": "110203_attach2(1)",
+        "last": 2
+    };
+    var dni = {
+        "title": "dni",
+        "root": "110216_dni",
+        last: 33
+    };
+    var moreResponses = {
+        "title": "110623_responses",
+        "root": "110623_responses(1)",
+        "last": 6
+    };
+    var clapper1 = {
+        "title": "clapper1",
+        "root": "110913_clapper(1)",
+        "last": 10
+    };
+    var prehear = {
+        "title": "110922_prehearing(4)",
+        "root": "110922_prehearing(4)",
+        "last": 20
+    };
+    var prehear5 = {
+        "title": "130207_prehearing(5)",
+        "root": "130207_prehearing(5)",
+        "last": 27
+    };
+    var krasspre = {
+        "title": "131217_krassprehearing",
+        "root": "131217_krassprehearing",
+        "last": 10
+    };
+    var pompeo = {
+        "title": "170112_pre-hearing-011217",
+        "root": "170112_pre-hearing-011217",
+        "last": 39
+    };
+    var pompeoB = {
+        "title": "170112_pre-hearing-b-011217",
+        "root": "170112_pre-hearing-b-011217",
+        "last": 20
+    };
+    var pompeoQ = {
+        "title": "170112_questionnaire-011217",
+        "root": "170112_questionnaire-011217",
+        "last": 14
+    };
+    docs.push(buildPages(littResponses));
+    docs.push(buildPages(clapperPost));
+    docs.push(buildPages(prehearing));
+    docs.push(buildPages(attach1));
+    docs.push(buildPages(attach21));
+    docs.push(buildPages(dni));
+    docs.push(buildPages(moreResponses));
+    docs.push(buildPages(clapper1));
+    docs.push(buildPages(prehear));
+    docs.push(buildPages(prehear5));
+    docs.push(buildPages(krasspre));
+    docs.push(buildPages(clapperQfrs));
+    docs.push(buildPages(pompeo));
+    docs.push(buildPages(pompeoB));
+    randomDoc = docs[Math.floor(Math.random() * docs.length)];
+    //randomDoc = docs.pop();
+    console.log(randomDoc.title);
+    statement = new Doc({
+        pages: randomDoc.pages,
+        title: randomDoc.title,
+        root: randomDoc.root
     });
+
 });
+
 //doc constructinator
 var Doc = function (options) {
     var doc = this;
@@ -529,11 +531,11 @@ Doc.prototype.processLines = function () {
 };
 //takes cluster of letters, "reads" and processes
 Doc.prototype.addWord = function (word) {
-    console.log("&&&&&&&&&&&&&&&& adding word " + word.text);
+    //console.log("&&&&&&&&&&&&&&&& adding word " + word.text);
     var doc = this;
     return new Promise(async function (resolve) {
         if (!word || word.fail) {
-            console.log("%%%%%%%%%%%% no word");
+            //console.log("%%%%%%%%%%%% no word");
             return resolve("no word");
         } else {
             console.log(word.lineNum);

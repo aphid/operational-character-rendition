@@ -403,8 +403,13 @@ var Doc = function (options) {
             doc.metadata = JSON.parse(result)[0];
             this.dataIndex = 0;
             doc.cycleData();
+        } else {
+            document.querySelector('#console').style.display = "none";
         }
+    }).catch(function () {
+        document.querySelector('#console').style.display = "none";
     });
+
     window.setTimeout(function () {
         json.style.display = "none";
         otop.style.display = "block";

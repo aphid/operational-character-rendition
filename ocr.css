@@ -20,10 +20,6 @@ body {
     display: block;
 }
 
-.iffy {
-    /*color: aqua; */
-}
-
 #page {
     display: none;
     top: 0;
@@ -65,7 +61,7 @@ body {
 }
 
 #console div {
-    display: inline-block
+    display: inline-block;
 }
 
 #type {
@@ -147,8 +143,6 @@ body {
     overflow: hidden;
 }
 
-html,
-body,
 * {
     cursor: none;
 }

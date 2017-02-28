@@ -402,6 +402,8 @@ var Doc = function (options) {
         if (result) {
             doc.metadata = JSON.parse(result)[0];
             this.dataIndex = 0;
+            words.style.height = "94vh";
+
             doc.cycleData();
         } else {
             document.querySelector('#console').style.display = "none";
@@ -745,6 +747,7 @@ Doc.prototype.drawLetters = async function () {
         type.width = letter.width;
         type.height = letter.height;
         type.style.width = "auto";
+        type.style.imageRendering = "-moz-crisp-edges";
         type.style.height = "100%";
         type.style.maxHeight = "25vh";
         typeCtx.clearRect(0, 0, type.width, type.height);

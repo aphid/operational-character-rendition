@@ -5,6 +5,7 @@ var container, full, fullCtx, img, words, type, typeCtx, rawdict, suspectdict, r
 var letterInterval = 225;
 var cycleInterval = 1200;
 
+var wWorker;
 
 var block = ["-", ".", "`", "--", "="];
 var util = {};
@@ -103,8 +104,8 @@ Word.prototype.setUpCycle = async function () {
         var result = wrd.processLev(source, wd);
         wd.process = result;
     }
-    console.log("??????????????" + wrd.potentials.length);
-    console.log(wrd);
+    //console.log("??????????????" + wrd.potentials.length);
+    //console.log(wrd);
     for (let wd of wrd.potentials) {
         wrd.cProcess.push(wd.word);
         var src;
@@ -128,9 +129,9 @@ Word.prototype.setUpCycle = async function () {
             if (wrd.cProcess.includes(proc)) {
                 time = 1000;
             }
-            console.log("awaiting queue");
+            //console.log("awaiting queue");
             await readQueue(proc, time);
-            console.log("queue read");
+            //console.log("queue read");
         }
     }
     readdata.textContent = "";
@@ -154,25 +155,25 @@ Word.prototype.processLev = function (source, wd) {
     if (a === b) {
         return [a];
     }
-    console.log("#########", a, b, "#########");
+    //console.log("#########", a, b, "#########");
     //console.log(source, wd);
     var lev = new Levenshtein(a, b);
     var steps = lev.getSteps();
     var tmp = a;
     for (var step of steps) {
         if (step[0] === "substitute") {
-            console.log("subbing");
+            //console.log("subbing");
             //console.log(step[0], step[1], step[2]);
             tmp = tmp.substring(0, step[1] - 1) + b[step[2] - 1] + tmp.substring(step[1], a.length);
             process.push(tmp);
         } else if (step[0] === "insert") {
-            console.log("inserting");
+            //console.log("inserting");
             //console.log(step[0], step[1], step[2]);
             //console.log("adding ", b[step[2] - 1], " after " + a[step[1] - 1]);
             tmp = tmp.substring(0, step[1]) + b[step[2] - 1] + tmp.substring(step[1], tmp.length);
             process.push(tmp);
         } else if (step[0] === "delete") {
-            console.log("deleting");
+            //console.log("deleting");
             //console.log(step[0], step[1], step[2]);
             tmp = tmp.substring(0, step[1] - 1) + tmp.substring(step[1], a.length);
             process.push(tmp);
@@ -186,12 +187,12 @@ Word.prototype.processLev = function (source, wd) {
     if (!process.length) {
         console.log("process 0");
     }
-    console.log("________________________");
-    console.log(process);
+    //console.log("________________________");
+    //console.log(process);
     return process;
 };
 Word.prototype.color = function (index = 0) {
-    console.dir(this.potentials);
+    //console.dir(this.potentials);
     var wd = this.potentials[index];
     if (!wd.type) {
         wd.type = unknown;
@@ -259,6 +260,17 @@ Word.prototype.flip = async function () {
     wd.flip();
 };
 document.addEventListener("DOMContentLoaded", async function () {
+    wWorker = new Worker('dist.js');
+    wWorker.onmessage = function (result) {
+        if (result.data === "ready") {
+            init();
+        } else {
+            return Promise.resolve(result.data);
+        }
+    }
+});
+
+var init = async function () {
     console.log("setting up");
     //set up all the things.  fold thes into the object at some point
     container = document.querySelector("#container");
@@ -385,7 +397,7 @@ document.addEventListener("DOMContentLoaded", async function () {
         root: randomDoc.root
     });
 
-});
+};
 
 //doc constructinator
 var Doc = function (options) {
@@ -585,7 +597,9 @@ Doc.prototype.addWord = function (word) {
             if (word.text.length > 2) {
                 word.clean = word.text.replace(/[^a-zA-Z0-9]+/g, "");
                 //word.clean = word.text;
-                comp = compare(word.clean, rawdict);
+                console.time(word.clean);
+                comp = await compare(word.clean, "raw");
+                console.timeEnd(word.clean);
                 if (comp) {
                     //one result
                     if (comp.low === 0 || comp.words.length === 1) {
@@ -604,7 +618,7 @@ Doc.prototype.addWord = function (word) {
                     word.compFailed = true;
                     span.classList.add("iffy");
                 }
-                comp = compare(word.clean, suspectdict, true);
+                comp = await compare(word.clean, "susp");
                 if (comp) {
                     span.classList.add("suspect");
                     if (comp.low === 0) {
@@ -857,3 +871,16 @@ function get(url) {
         req.send();
     });
 }
+
+var compare = async function (word, dict) {
+    return new Promise(function (resolve) {
+
+        wWorker.postMessage({
+            word: word,
+            dict: dict
+        });
+        wWorker.onmessage = function (result) {
+            resolve(result.data);
+        }
+    });
+};

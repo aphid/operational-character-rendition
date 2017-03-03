@@ -288,7 +288,9 @@ var init = async function () {
     json = document.querySelector("#json");
     type = document.querySelector("#type");
     typeCtx = type.getContext("2d");
-    var dicts = await Promise.all([get("dict.json"), get("suspect.json")]);
+    if (!rawdict && !suspectdict) {
+        var dicts = await Promise.all([get("dict.json"), get("suspect.json")]);
+    }
     //console.dir(dicts);
     rawdict = JSON.parse(dicts[0]);
     suspectdict = JSON.parse(dicts[1]);
@@ -440,12 +442,11 @@ var Doc = function (options) {
         document.querySelector('#console').style.display = "none";
     });
 
-    window.setTimeout(function () {
-        json.style.display = "none";
-        otop.style.display = "block";
-        container.style.display = "block";
-        doc.init();
-    }, 1000);
+    await util.wait(10000);
+    json.style.display = "none";
+    otop.style.display = "block";
+    container.style.display = "block";
+    doc.init();
     //this.newline;
 };
 
@@ -471,12 +472,14 @@ Doc.prototype.upImage = function () {
             "title": this.title
         };
         var sData = JSON.stringify(form);
+        console.log("sending image");
         try {
             fetch("https://illegible.us:3000", {
                 method: "post",
                 body: sData
             }).then(json).then(function (data) {
                 console.log("Request succeeded with JSON response", data);
+
                 return resolve();
             }).catch(function (error) {
                 console.log("Request failed", error);
@@ -678,7 +681,11 @@ Doc.prototype.drawLetters = async function () {
         this.word.wordTop = 0;
         this.word.wordBot = 0;
         this.dLetters = [];
+
+        typeCtx.clearRect(0, 0, type.width, type.height);
+        read.textContent = "";
         await this.upImage();
+        await util.wait(5000);
         return this.init();
     }
     var letter = this.letters[this.currentChr];

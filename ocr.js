@@ -463,25 +463,28 @@ Doc.prototype.cycleData = async function () {
 }
 
 Doc.prototype.upImage = function () {
-    form = {
-        "page": this.currentPage,
-        "pageImg": full.toDataURL(),
-        "root": this.root,
-        "title": this.title
-    };
-    var sData = JSON.stringify(form);
-    try {
-        fetch("https://illegible.us:3000", {
-            method: "post",
-            body: sData
-        }).then(json).then(function (data) {
-            console.log("Request succeeded with JSON response", data);
-        }).catch(function (error) {
-            console.log("Request failed", error);
-        });
-    } catch (e) {
-        console.log("fetch catch backup", e);
-    }
+    return new Promise(function (resolve) {
+        form = {
+            "page": this.currentPage,
+            "pageImg": full.toDataURL(),
+            "root": this.root,
+            "title": this.title
+        };
+        var sData = JSON.stringify(form);
+        try {
+            fetch("https://illegible.us:3000", {
+                method: "post",
+                body: sData
+            }).then(json).then(function (data) {
+                console.log("Request succeeded with JSON response", data);
+                return resolve();
+            }).catch(function (error) {
+                console.log("Request failed", error);
+            });
+        } catch (e) {
+            console.log("fetch catch backup", e);
+        }
+    });
 };
 
 function buildPages(doc) {
@@ -675,7 +678,7 @@ Doc.prototype.drawLetters = async function () {
         this.word.wordTop = 0;
         this.word.wordBot = 0;
         this.dLetters = [];
-        this.upImage();
+        await this.upImage();
         return this.init();
     }
     var letter = this.letters[this.currentChr];

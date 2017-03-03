@@ -442,12 +442,12 @@ var Doc = function (options) {
         document.querySelector('#console').style.display = "none";
     });
 
-    window.timeout(function () {
+    window.setTimeout(function () {
         json.style.display = "none";
         otop.style.display = "block";
         container.style.display = "block";
         doc.init();
-    }, 10000);
+    }, 8000);
     //this.newline;
 };
 

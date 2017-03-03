@@ -121,6 +121,7 @@ body {
     top: 2px;
     right: 2px;
     font-size: 15pt;
+    visibility: hidden;
 }
 
 .page {

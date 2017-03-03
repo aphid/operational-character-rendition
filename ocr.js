@@ -271,6 +271,7 @@ document.addEventListener("DOMContentLoaded", async function () {
 });
 
 var init = async function () {
+
     console.log("setting up");
     //set up all the things.  fold thes into the object at some point
     container = document.querySelector("#container");
@@ -388,13 +389,28 @@ var init = async function () {
     docs.push(buildPages(clapperQfrs));
     docs.push(buildPages(pompeo));
     docs.push(buildPages(pompeoB));
-    randomDoc = docs[Math.floor(Math.random() * docs.length)];
-    //randomDoc = docs.pop();
-    console.log(randomDoc.title);
+    var url = new URL(window.location.href);
+    var thedoc;
+    if (url.searchParams.get("title")) {
+        var tDoc = url.searchParams.get("title");
+        for (let doc of docs) {
+            if (doc.title === tDoc) {
+                thedoc = doc;
+            }
+        }
+    } else {
+
+        thedoc = docs[Math.floor(Math.random() * docs.length)];
+        //randomDoc = docs.pop();
+    }
+    console.log(thedoc.title);
+
+
+
     statement = new Doc({
-        pages: randomDoc.pages,
-        title: randomDoc.title,
-        root: randomDoc.root
+        pages: thedoc.pages,
+        title: thedoc.title,
+        root: thedoc.root
     });
 
 };
@@ -470,7 +486,7 @@ Doc.prototype.upImage = function () {
 
 function buildPages(doc) {
     doc.pages = [];
-    console.log(doc);
+    //    console.log(doc);
     for (var i = 0; i < doc.last + 1; i++) {
         doc.pages[i] = doc.root + "-" + i + ".jpg";
     }
@@ -793,23 +809,43 @@ Doc.prototype.drawLetters = async function () {
     }
 };
 Doc.prototype.loadPage = function () {
+
+    if (!this.url) {
+        this.url = new URL(window.location.href);
+    }
     var page;
     var pageDiv = document.createElement("div");
-    if (this.currentPage >= this.pages.length) {
-        location.reload();
-    }
-    if (this.metadata) {
-        document.querySelector("#pages").textContent = "Page: " + (this.currentPage + 1) + " / " + this.metadata.PageCount;
-    }
+
+    var urlPage = this.url.searchParams.get("page") || 0;
+    console.log(urlPage);
+
     if (!img.src) {
-        console.log("no image, starting out, page 0");
-        page = this.pages[0];
+        console.log("no image, starting out, page", urlPage);
+        this.currentPage = parseInt(urlPage, 10);
+        page = this.pages[urlPage];
     } else if (this.currentPage >= this.pages.length - 1) {
         console.log("starting over");
         location.reload();
+        /*
+    } else if (this.url.searchParams.get("page") < this.pages.length) {
+        console.log("page exists");
+        this.currentPage = this.url.searchParams.get("page");
+        console.log(this.currentPage);
+        this.url.searchParams.delete('page');
+        this.url.searchParams.append('page', this.currentPage);
+        */
     } else {
         console.log(this.currentPage);
-        this.currentPage = this.currentPage + 1;
+        this.currentPage = parseInt(this.currentPage + 1, 10);
+
+
+        this.url.searchParams.delete('page');
+
+        this.url.searchParams.delete("title");
+        this.url.searchParams.append("title", this.title)
+        this.url.searchParams.append("page", this.currentPage);
+        console.log(this.url.href);
+        window.location.href = this.url.href;
         console.log(this.currentPage);
         console.log("iterating page, now " + this.currentPage);
         page = this.pages[this.currentPage];
@@ -821,6 +857,10 @@ Doc.prototype.loadPage = function () {
         }
         words.scrollTop = words.scrollHeight;
     }
+    if (this.metadata) {
+        document.querySelector("#pages").textContent = "Page: " + (this.currentPage) + " / " + (parseInt(this.metadata.PageCount, 10) - 1);
+    }
+    console.log(this.currentPage);
     pageDiv.classList.add("page");
     pageDiv.id = "page" + this.currentPage;
     words.appendChild(pageDiv);

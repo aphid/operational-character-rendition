@@ -360,7 +360,7 @@ var init = async function () {
     var krasspre = {
         "title": "131217_krassprehearing",
         "root": "131217_krassprehearing",
-        "last": 10
+        "last": 15
     };
     var pompeo = {
         "title": "170112_pre-hearing-011217",
@@ -392,7 +392,7 @@ var init = async function () {
     docs.push(buildPages(pompeo));
     docs.push(buildPages(pompeoB));
     var url = new URL(window.location.href);
-    var thedoc;
+    var thedoc = docs[Math.floor(Math.random() * docs.length)];
     if (url.searchParams.get("title")) {
         var tDoc = url.searchParams.get("title");
         for (let doc of docs) {
@@ -400,10 +400,6 @@ var init = async function () {
                 thedoc = doc;
             }
         }
-    } else {
-
-        thedoc = docs[Math.floor(Math.random() * docs.length)];
-        //randomDoc = docs.pop();
     }
     console.log(thedoc.title);
 
@@ -836,7 +832,7 @@ Doc.prototype.loadPage = function () {
         page = this.pages[urlPage];
     } else if (this.currentPage >= this.pages.length - 1) {
         console.log("starting over");
-        location.reload();
+        window.location.href = this.url.host + statement.url.pathname;
         /*
     } else if (this.url.searchParams.get("page") < this.pages.length) {
         console.log("page exists");

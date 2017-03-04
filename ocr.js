@@ -711,7 +711,8 @@ Doc.prototype.drawLetters = async function () {
 
         typeCtx.clearRect(0, 0, type.width, type.height);
         read.textContent = "";
-        await Promise.all(this.upImage(), this.upWords());
+        await this.upImage()
+        await this.upWords();
         await util.wait(3000);
         return this.init();
     }

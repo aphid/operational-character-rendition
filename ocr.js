@@ -302,6 +302,7 @@ var init = async function () {
             "title": "litt",
             "pages": ["090521_litt-0.jpg", "090521_litt-1.jpg", "090521_litt-2.jpg"]
 }];
+    docs = [];
     var littResponses = {
         title: "littResponses",
         root: "090521_littresponses",
@@ -391,6 +392,7 @@ var init = async function () {
     docs.push(buildPages(clapperQfrs));
     docs.push(buildPages(pompeo));
     docs.push(buildPages(pompeoB));
+    docs.push(buildPages(pompeoQ));
     var url = new URL(window.location.href);
     var thedoc = docs[Math.floor(Math.random() * docs.length)];
     if (url.searchParams.get("title")) {
@@ -428,7 +430,7 @@ var Doc = function (options) {
         if (result) {
             doc.metadata = JSON.parse(result)[0];
             this.dataIndex = 0;
-            words.style.height = "94vh";
+            //words.style.height = "94vh";
 
             doc.cycleData();
         } else {
@@ -460,7 +462,9 @@ Doc.prototype.cycleData = async function () {
     this.cycleData();
 }
 Doc.prototype.upWords = function () {
-
+    
+    //not gallery version, don't save
+    return Promise.resolve();
     form = {
         "page": this.currentPage,
         "words": this.words,
@@ -490,6 +494,8 @@ Doc.prototype.upWords = function () {
 };
 
 Doc.prototype.upImage = function () {
+    //for nongallery version, don't save findings
+    return Promise.resolve()
     form = {
         "page": this.currentPage,
         "pageImg": full.toDataURL(),

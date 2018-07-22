@@ -1,10 +1,10 @@
 /*global compare: true, OCRAD: true; */
-var container, full, fullCtx, img, words, type, typeCtx, rawdict, suspectdict, randomDoc, otop, json, txt, read, statement;
+var container, full, fullCtx, img, words, type, typeCtx, rawdict, suspectdict, randomDoc, otop, json, txt, read, statement, url;
 
 //TIMINGS
 var letterInterval = 225;
 var cycleInterval = 1200;
-
+var startDelay = 0;
 var wWorker;
 
 var block = ["-", ".", "`", "--", "="];
@@ -260,6 +260,7 @@ Word.prototype.flip = async function () {
     wd.flip();
 };
 document.addEventListener("DOMContentLoaded", async function () {
+    console.log("DOM loaded");
     wWorker = new Worker('dist.js');
     wWorker.onmessage = function (result) {
         if (result.data === "ready") {
@@ -291,108 +292,65 @@ var init = async function () {
     if (!rawdict && !suspectdict) {
         var dicts = await Promise.all([get("dict.json"), get("suspect.json")]);
     }
+    url = new URL(window.location.href);
+
     //console.dir(dicts);
     rawdict = JSON.parse(dicts[0]);
     suspectdict = JSON.parse(dicts[1]);
-    docs = [{
-            "title": "buckleyStatement",
-            "pages": ["questionnaire00.jpg", "questionnaire01.jpg", "questionnaire02.jpg", "questionnaire03.jpg", "page0.jpg", "page1.jpg", "page2.jpg"]
-        }
-            , {
-            "title": "litt",
-            "pages": ["090521_litt-0.jpg", "090521_litt-1.jpg", "090521_litt-2.jpg"]
-}];
+    
     docs = [];
-    var littResponses = {
-        title: "littResponses",
-        root: "090521_littresponses",
-        last: 23
+    var targetDoc = url.searchParams.get("document") || false;
+    var targetPage = url.searchParams.get("page") || 0;
+    var hearings = await get("hearings.json");
+    hearings = JSON.parse(hearings);
+    var candidates = [];
+    var pick;
+    for (var h of hearings.hearings){
+        for (var w of h.witnesses){
+            for (var p of w.pdfs){
+              if (p.needsScan){
+		let cand = {};
+		//console.log(p);
+		cand.meta = JSON.stringify(h);
+		cand.last = p.metadata.pageCount - 1;
+		//FIX THIS IN SCRAPER JEEZ
+		cand.root = p.localPath.replace("/var/www","https://").replace(".pdf","").replace(".PDF","").replace(".txt","/").replace("html","").replace("illegible.us","oversightmachin.es") + "/";
+		cand.title = p.localName.replace(".pdf","").replace(".PDF","");
+		candidates.push(cand);
+	      }
+            }
+        }
+    }
+    if (targetDoc){
+	    console.log("searching for", targetDoc);
+      for (var c of candidates){
+         console.log(c.title);
+	 if(targetDoc === c.title){
+	 console.log("MATCHED PICK");
+         pick = c;
+	 }
+      }
+      if (!pick){
+         console.log("document not found");
+      }
+    } else {
+    pick = candidates[Math.floor(Math.random() * 10)];
+    }
+    var doc = { title: pick.title, root: pick.root,  last: pick.last, hTitle: pick.hTitle, meta: pick.meta}
+
+    var hqfr = {
+         title: "180509_0930_HASPEL_UNCLASS-QFRRESPONSE_15MAY18_UPDATED",
+	 root: "https://oversightmachin.es/oversee/media/text/180509_0930_HASPEL_UNCLASS-QFRRESPONSE_15MAY18_UPDATED/",
+	 last: 75 
     };
-    var clapperPost = {
-        title: "clapperPost",
-        root: "100720_clapperpost",
-        last: 23
-    };
-    var clapperQfrs = {
-        title: "clapperQfrs",
-        root: "100720_clapperqfrs",
-        last: 14
-    };
-    var prehearing = {
-        "title": "prehearing",
-        "root": "100921_prehearing",
-        "last": 8
-    };
-    var attach1 = {
-        "title": "attach1",
-        "root": "110203_attach1",
-        "last": 1
-    };
-    var attach21 = {
-        "title": "attach2(1)",
-        "root": "110203_attach2(1)",
-        "last": 2
-    };
-    var dni = {
-        "title": "dni",
-        "root": "110216_dni",
-        last: 33
-    };
-    var moreResponses = {
-        "title": "110623_responses",
-        "root": "110623_responses(1)",
-        "last": 6
-    };
-    var clapper1 = {
-        "title": "clapper1",
-        "root": "110913_clapper(1)",
-        "last": 10
-    };
-    var prehear = {
-        "title": "110922_prehearing(4)",
-        "root": "110922_prehearing(4)",
-        "last": 20
-    };
-    var prehear5 = {
-        "title": "130207_prehearing(5)",
-        "root": "130207_prehearing(5)",
-        "last": 27
-    };
-    var krasspre = {
-        "title": "131217_krassprehearing",
-        "root": "131217_krassprehearing",
-        "last": 15
-    };
-    var pompeo = {
-        "title": "170112_pre-hearing-011217",
-        "root": "170112_pre-hearing-011217",
-        "last": 39
-    };
-    var pompeoB = {
-        "title": "170112_pre-hearing-b-011217",
-        "root": "170112_pre-hearing-b-011217",
-        "last": 20
-    };
-    var pompeoQ = {
-        "title": "170112_questionnaire-011217",
-        "root": "170112_questionnaire-011217",
-        "last": 14
-    };
-    docs.push(buildPages(littResponses));
-    docs.push(buildPages(clapperPost));
-    docs.push(buildPages(prehearing));
-    docs.push(buildPages(attach1));
-    docs.push(buildPages(attach21));
-    docs.push(buildPages(dni));
-    docs.push(buildPages(moreResponses));
-    docs.push(buildPages(clapper1));
-    docs.push(buildPages(prehear));
-    docs.push(buildPages(prehear5));
-    docs.push(buildPages(krasspre));
-    docs.push(buildPages(clapperQfrs));
-    docs.push(buildPages(pompeo));
-    docs.push(buildPages(pompeoB));
-    docs.push(buildPages(pompeoQ));
+    var qgh = {
+	title: "180509_0930_q-ghaspel-050918",
+	root: "https://oversightmachin.es/oversee/media/text/180509_0930_q-ghaspel-050918/",
+	last: 12
+    }
+    //console.log(doc);
+    docs.push(buildPages(doc));
+    
     var url = new URL(window.location.href);
     var thedoc = docs[Math.floor(Math.random() * docs.length)];
     if (url.searchParams.get("title")) {
@@ -410,7 +368,8 @@ var init = async function () {
     statement = new Doc({
         pages: thedoc.pages,
         title: thedoc.title,
-        root: thedoc.root
+        root: thedoc.root,
+	meta: thedoc.meta
     });
 
 };
@@ -422,6 +381,7 @@ var Doc = function (options) {
     this.hearingId = options.hearingId;
     this.root = options.root;
     this.title = options.title;
+    document.title = "operational character rendition: " + this.title;
     this.currentPage = 0;
     console.log("hello");
     console.log(options.root);
@@ -445,7 +405,7 @@ var Doc = function (options) {
         otop.style.display = "block";
         container.style.display = "block";
         doc.init();
-    }, 8000);
+    }, startDelay);
     //this.newline;
 };
 
@@ -457,14 +417,12 @@ Doc.prototype.cycleData = async function () {
     }
 
     document.querySelector("#data").textContent = Object.keys(this.metadata)[this.dataIndex] + ": " + Object.values(this.metadata)[this.dataIndex];
-    await util.wait(8000);
+    //await util.wait(8000);
 
     this.cycleData();
 }
 Doc.prototype.upWords = function () {
-    
-    //not gallery version, don't save
-    return Promise.resolve();
+    let url = this.url.searchParams.get("event");
     form = {
         "page": this.currentPage,
         "words": this.words,
@@ -494,8 +452,8 @@ Doc.prototype.upWords = function () {
 };
 
 Doc.prototype.upImage = function () {
-    //for nongallery version, don't save findings
-    return Promise.resolve()
+
+    let url = this.url.searchParams.get("event");
     form = {
         "page": this.currentPage,
         "pageImg": full.toDataURL(),
@@ -527,11 +485,13 @@ function buildPages(doc) {
     doc.pages = [];
     //    console.log(doc);
     for (var i = 0; i < doc.last + 1; i++) {
-        doc.pages[i] = doc.root + "-" + i + ".jpg";
+	let n = i+"";
+        doc.pages[i] = doc.root + doc.title + "_" + n.padStart(3,"0") + ".jpg";
     }
     return doc;
 }
 Doc.prototype.init = function () {
+    console.log("does this run?");
     this.lines = [];
     this.text = "";
     this.letters = [];
@@ -542,10 +502,12 @@ Doc.prototype.init = function () {
     this.dLetters = [];
     this.currentLine = 0;
     this.currentChr = 0;
+    this.url = new URL(window.location.href);
+
     var doc = this;
     console.log("init");
     document.querySelector("img").onload = async function () {
-
+        
         typeCtx.clearRect(0, 0, type.width, type.height);
         read.textContent = "";
         console.log("copying img");
@@ -562,15 +524,14 @@ util.copyImage = async function (img) {
     full.height = img.height;
     fullCtx.clearRect(0, 0, full.width, full.height);
     var line = 0;
-    /*
     while (line < img.height) {
         //fullCtx.drawImage(this, 0, 0);
         fullCtx.drawImage(img, 0, line, img.width, 1, 0, line, full.width, 1);
         line++;
         if (line % 3 === 0) {
             await util.wait(16);
+        }
     }
-    */
     fullCtx.drawImage(img, 0, 0, img.width, img.height);
     return Promise.resolve();
 };
@@ -853,10 +814,18 @@ Doc.prototype.drawLetters = async function () {
     }
 };
 Doc.prototype.loadPage = function () {
-
-    if (!this.url) {
-        this.url = new URL(window.location.href);
+    //ugh this is a mess, need to separate out:
+    //if first load update url with paramters
+    
+    if (!this.url.searchParams.get("document")){
+	   this.url.searchParams.append('document', this.title);
     }
+	    if (!this.url.searchParams.get("page")){
+            this.url.searchParams.append('page', this.currentPage);
+    }
+
+    console.log(this.url);
+    history.pushState({}, this.title, this.url.search);
     var page;
     var pageDiv = document.createElement("div");
 
@@ -867,19 +836,20 @@ Doc.prototype.loadPage = function () {
         console.log("no image, starting out, page", urlPage);
         this.currentPage = parseInt(urlPage, 10);
         page = this.pages[urlPage];
+	    console.log(page);
     } else if (this.currentPage >= this.pages.length - 1) {
-        console.log("starting over");
-        window.location.href = this.url.host + statement.url.pathname;
-        /*
+        console.log("starting over, end of document reached");
+	 window.location.href = this.url.host + statement.url.pathname;
+	
     } else if (this.url.searchParams.get("page") < this.pages.length) {
-        console.log("page exists");
-        this.currentPage = this.url.searchParams.get("page");
+        console.log("page exists within range, url already set");
+        this.currentPage = this.url.searchParams.get("page"); 
         console.log(this.currentPage);
         this.url.searchParams.delete('page');
         this.url.searchParams.append('page', this.currentPage);
-        */
-    } else {
-        console.log(this.currentPage);
+    }  else { 
+        //window.location.assign("https://oversightmachin.es/oversee/");
+	console.log(this.currentPage);
         this.currentPage = parseInt(this.currentPage + 1, 10);
 
 
@@ -889,7 +859,7 @@ Doc.prototype.loadPage = function () {
         this.url.searchParams.append("title", this.title)
         this.url.searchParams.append("page", this.currentPage);
         console.log(this.url.href);
-        window.location.href = this.url.href;
+        //window.location.href = this.url.href;
         console.log(this.currentPage);
         console.log("iterating page, now " + this.currentPage);
         page = this.pages[this.currentPage];
@@ -909,7 +879,7 @@ Doc.prototype.loadPage = function () {
     pageDiv.id = "page" + this.currentPage;
     words.appendChild(pageDiv);
     img.src = '';
-    img.src = "texts/" + page;
+    img.src = page;
     console.log("loaded " + this.pages[this.currentPage]);
 };
 Doc.prototype.getLines = function () {

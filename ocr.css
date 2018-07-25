@@ -122,7 +122,16 @@ body {
     top: 2px;
     right: 2px;
     font-size: 15pt;
-    visibility: hidden;
+}
+
+#source,
+#distance {
+    padding-top: 5px;
+    padding-right: 3px;
+    text-align: right;
+    text-shadow: black 1px 1px 1px;
+    font-size: 1.1em;
+    background: rgba(0, 0, 0, 0.5);
 }
 
 .page {

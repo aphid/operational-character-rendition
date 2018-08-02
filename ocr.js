@@ -13,10 +13,10 @@ var timings = {
     read: 125,
     start: 0
 };
-/*
+
 for (let t in timings) {
-    timings[t] = t * 0.6;
-}*/
+    timings[t] = t * 0.1;
+}
 
 //characters to block
 var block = ["-", ".", "`", "--", "="];
@@ -80,7 +80,11 @@ Word.prototype.draw = async function () {
                 //readMsg = JSON.stringify(wlist);
             } else {
                 readMsg = wd.text;
-            }
+            	var src = getSource(wd.type);
+		//read.style.color = src.color;
+		//datadistance.textContent = "Levenshtein distance: 0";
+                //datasource.textContent = "Match: " + src.type;
+	    }
             //console.log(type.width, type.height, word.pos.x);
             type.style.width = "50%";
             type.style.maxHeight = "25vh";
@@ -125,21 +129,9 @@ Word.prototype.setUpCycle = async function () {
     //console.log(wrd);
     for (let wd of wrd.potentials) {
         wrd.cProcess.push(wd.word);
-        var src;
-        read.textContent = wd.word;
-        if (wd.type === "dict") {
-            src = "aspell dictionary";
-            read.style.color = "papayaWhip";
-        } else if (wd.type === "suspicious") {
-            src = "DHS watchwords List";
-            read.style.color = "red";
-        } else if (wd.type === "witness") {
-            src = "hearing witness list";
-            read.style.color = "green";
-        } else if (wd.type === "committee") {
-            src = "SSCI Committee member";
-            read.style.color = "blue";
-        }
+	var src = getSource(wd.type);
+	read.style.color = src.color;
+	src = src.type;
         datasource.textContent = "Match: " + src;
         datadistance.textContent = "Levenshtein distance: " + wd.distance;
         for (let proc of wd.process) {
@@ -289,6 +281,24 @@ document.addEventListener("DOMContentLoaded", async function () {
         }
     }
 });
+var getSource = function (type) {
+   var src = {};
+	if (type === "dict") {
+            src.type = "aspell dictionary";
+            src.color = "papayaWhip";
+        } else if (type === "suspicious") {
+            src.type = "DHS watchwords List";
+            src.color = "red";
+        } else if (type === "witness") {
+            src.type = "hearing witness list";
+            src.color = "green";
+        } else if (type === "committee") {
+            src.type = "SSCI Committee member";
+            src.color = "blue";
+        }
+   return src;
+
+};
 
 var init = async function () {
 
@@ -354,7 +364,7 @@ var init = async function () {
             console.log("document not found");
         }
     } else {
-        pick = candidates[Math.floor(Math.random() * 10)];
+        pick = candidates[Math.floor(Math.random() * candidates.length)];
     }
     var doc = {
         title: pick.title,
@@ -520,11 +530,12 @@ Doc.prototype.init = function () {
     this.url = new URL(window.location.href);
 
     this.url.searchParams.set('document', this.title);
-    var pageparam = this.url.searchParams.get('page')
+    var pageparam = parseInt(this.url.searchParams.get('page'),10);
+    console.log("comparing ", pageparam, " from url ", this.currentPage, " currentPage");
     if (pageparam && pageparam < this.pages.length) {
         if (this.currentPage > pageparam) {
             this.url.searchParams.set('page', this.currentPage);
-
+	   
         } else {
             this.currentPage = pageparam;
         }
@@ -535,8 +546,7 @@ Doc.prototype.init = function () {
 
     }
 
-
-    history.pushState({}, this.title, this.url.search);
+    history.pushState({}, (this.title + "_" + this.currentPage), this.url.search);
 
     var doc = this;
     console.log("init");

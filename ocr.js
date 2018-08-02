@@ -11,11 +11,15 @@ var timings = {
     word: 1225,
     cycle: 1225,
     read: 125,
-    start: 0
+    start: 0,
+    wCycle: 300,
+    wordInterval: 1000,
+    imgDelay: 16,
+    docFinished: 1000000
 };
 /*
 for (let t in timings) {
-    timings[t] = t * 0.6;
+    timings[t] = timings[t] * 0.01;
 }*/
 
 //characters to block
@@ -145,7 +149,7 @@ Word.prototype.setUpCycle = async function () {
         for (let proc of wd.process) {
             let time = null;
             if (wrd.cProcess.includes(proc)) {
-                time = 1000;
+                time = timings.wordInterval;
             }
             //console.log("awaiting queue");
             await readQueue(proc, time);
@@ -549,6 +553,8 @@ Doc.prototype.init = function () {
         full.style.top = "0";
         await util.copyImage(this);
         doc.process();
+    }, {
+        once: true
     });
     this.loadPage();
 };
@@ -564,7 +570,7 @@ util.copyImage = async function (img) {
         fullCtx.drawImage(img, 0, line, img.width, 1, 0, line, full.width, 1);
         line++;
         if (line % 3 === 0) {
-            await util.wait(16);
+            await util.wait(timers.imgDelay);
         }
     }
     fullCtx.drawImage(img, 0, 0, img.width, img.height);
@@ -576,8 +582,7 @@ Doc.prototype.process = function () {
     console.log("processing image");
     this.getLines().processLines();
 };
-Doc.prototype.processLines = function () {
-    var doc = this;
+Doc.prototype.processLines = async function () {
     console.log("got " + this.lines.length + " lines, processing");
     for (var i = 0; i < this.lines.length; i++) {
         var line = this.lines[i];
@@ -599,7 +604,7 @@ Doc.prototype.processLines = function () {
             }
         }
     }
-    doc.drawLetters();
+    await this.drawLetters();
 };
 //takes cluster of letters, "reads" and processes
 Doc.prototype.addWord = function (word) {
@@ -706,6 +711,7 @@ Doc.prototype.drawLetters = async function () {
     var matches = "";
     this.dLetters.push(this.letters[this.currentChr]);
     this.currentChr++;
+    console.log(this.currentChr, this.letters.length);
     //we"re at the end, start over.
     if (this.currentChr >= this.letters.length) {
         console.log("doc finished?");
@@ -713,11 +719,12 @@ Doc.prototype.drawLetters = async function () {
         this.word.wordBot = 0;
         this.dLetters = [];
 
+
         typeCtx.clearRect(0, 0, type.width, type.height);
         read.textContent = "";
         await this.upImage()
         await this.upWords();
-        await util.wait(3000);
+        await util.wait(timings.docFinished);
         console.log(this.currentPage);
         this.currentPage = this.currentPage + 1;
         console.log(this.currentPage);

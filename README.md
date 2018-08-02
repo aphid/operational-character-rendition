@@ -10,9 +10,8 @@ This work is part of a series of browser-based "oversight machines" I've  been d
 
 
 Selected Materials:
-SSCI Documents (PDF) obtained from http://www.intelligence.senate.gov
-aspell dictonary: http://wordlist.aspell.net/dicts/
-DHS flagged word list: https://gist.github.com/jm3/2815378)
-OCRAD.js: https://github.com/antimatter15/ocrad.js
-Browser (Firefox)
 
+* SSCI Documents (PDF) obtained from http://www.intelligence.senate.gov
+* aspell dictonary: http://wordlist.aspell.net/dicts/
+* DHS flagged word list: https://gist.github.com/jm3/2815378)
+* OCRAD.js: https://github.com/antimatter15/ocrad.js

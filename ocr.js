@@ -1,7 +1,6 @@
 /*global compare: true, OCRAD: true; */
-var container, full, fullCtx, img, words, type, typeCtx, rawdict, suspectdict, randomDoc, otop, json, txt, read, statement, url, wworker;
+var container, full, fullCtx, img, words, type, typeCtx, rawdict, suspectdict, otop, json, txt, read;
 
-var witnesses = [];
 var util = {};
 
 //TIMINGS
@@ -17,6 +16,12 @@ var timings = {
     imgDelay: 16,
     docFinished: 1000000
 };
+
+util.paused = false;
+
+util.pause = function () {
+    util.pause = !util.pause;
+}
 /*
 for (let t in timings) {
     timings[t] = timings[t] * 0.01;
@@ -342,7 +347,7 @@ var init = async function () {
     for (var h of hearings.hearings) {
         for (var w of h.witnesses) {
             for (var p of w.pdfs) {
-                if (p.needsScan) {
+                if (!p.hasText) {
                     let cand = {};
                     //console.log(p);
                     cand.meta = JSON.stringify(h);
@@ -617,7 +622,8 @@ Doc.prototype.processLines = async function () {
     await this.drawLetters();
 };
 //takes cluster of letters, "reads" and processes
-Doc.prototype.addWord = function (word) {
+Doc.prototype.addWord = async function (word) {
+
     //console.log("&&&&&&&&&&&&&&&& adding word " + word.text);
     var doc = this;
     return new Promise(async function (resolve) {
@@ -715,6 +721,10 @@ Doc.prototype.addWord = function (word) {
     });
 };
 Doc.prototype.drawLetters = async function () {
+    if (util.paused) {
+        await util.wait(3);
+        return await this.drawLetters();
+    }
     var altWord;
     var doc = this,
         pct;

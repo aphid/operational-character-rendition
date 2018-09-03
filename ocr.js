@@ -14,7 +14,7 @@ var timings = {
     wCycle: 300,
     wordInterval: 1000,
     imgDelay: 16,
-    docFinished: 1000000
+    docFinished: 10000
 };
 
 util.paused = false;
@@ -22,10 +22,10 @@ util.paused = false;
 util.pause = function () {
     util.pause = !util.pause;
 }
-/*
+
 for (let t in timings) {
-    timings[t] = timings[t] * 0.01;
-}*/
+    timings[t] = timings[t] * 0.6;
+}
 
 //characters to block
 var block = ["-", ".", "`", "--", "="];
@@ -284,7 +284,7 @@ document.addEventListener("DOMContentLoaded", async function () {
     wWorker = new Worker('dist.js');
     wWorker.onmessage = function (result) {
         if (result.data === "ready") {
-            init();
+            begin();
         } else {
             return Promise.resolve(result.data);
         }
@@ -309,7 +309,7 @@ var getSource = function (type) {
 
 };
 
-var init = async function () {
+var begin = async function () {
 
     console.log("setting up");
     //set up all the things.  fold thes into the object at some point
@@ -477,6 +477,7 @@ Doc.prototype.upWords = function () {
                 return resolve();
             }).catch(function (error) {
                 console.log("Request failed", error);
+                return resolve();
             });
         } catch (e) {
             console.log("fetch catch backup", e);
@@ -508,6 +509,7 @@ Doc.prototype.upImage = function () {
                 return resolve();
             }).catch(function (error) {
                 console.log("Request failed", error);
+                return resolve();
             });
         } catch (e) {
             console.log("fetch catch backup", e);
@@ -541,15 +543,13 @@ Doc.prototype.init = function () {
     this.url.searchParams.set('document', this.title);
     var pageparam = parseInt(this.url.searchParams.get('page'), 10);
     console.log("comparing ", pageparam, " from url ", this.currentPage, " currentPage");
-    if (pageparam && pageparam < this.pages.length) {
+    if (typeof pageparam !== "undefined" && pageparam < this.pages.length) {
         if (this.currentPage > pageparam) {
             this.url.searchParams.set('page', this.currentPage);
-
         } else {
             this.currentPage = pageparam;
         }
-    }
-    if (!pageparam) {
+    } else {
         this.currentPage = 0;
         this.url.searchParams.set('page', this.currentPage);
 
@@ -746,7 +746,7 @@ Doc.prototype.drawLetters = async function () {
         await this.upWords();
         await util.wait(timings.docFinished);
         console.log(this.currentPage);
-        this.currentPage = this.currentPage + 1;
+        this.currentPage++;
         console.log(this.currentPage);
 
         return this.init();

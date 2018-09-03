@@ -15,12 +15,12 @@ var timings = {
     wCycle: 300,
     wordInterval: 1000,
     imgDelay: 16,
-    docFinished: 1000000
+    docFinished: 10000
 };
-/*
+
 for (let t in timings) {
-    timings[t] = timings[t] * 0.01;
-}*/
+    timings[t] = timings[t] * 0.6;
+}
 
 //characters to block
 var block = ["-", ".", "`", "--", "="];
@@ -342,7 +342,7 @@ var init = async function () {
     for (var h of hearings.hearings) {
         for (var w of h.witnesses) {
             for (var p of w.pdfs) {
-                if (p.needsScan) {
+                if (!p.hasText) {
                     let cand = {};
                     //console.log(p);
                     cand.meta = JSON.stringify(h);

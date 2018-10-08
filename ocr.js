@@ -373,7 +373,8 @@ var begin = async function () {
             console.log("document not found");
         }
     } else {
-        pick = candidates[Math.floor(Math.random() * candidates.length)];
+        //pick = candidates[Math.floor(Math.random() * candidates.length)];
+	pick = candidates[0];
     }
     var doc = {
         title: pick.title,

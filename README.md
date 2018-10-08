@@ -1,5 +1,7 @@
 operational character rendition (OCR)
 
+live (WIP) https://oversightmachin.es/ocr
+
 A collection of public domain documents published by the Senate Select  Committee on Intelligence (SSCI) is computationally "read" and compared  to two authoritative lexicons: a standard spelling dictionary and a list of  flagged words for social media used by the Department of Homeland  Security. This comparison uses the Levenshtein Distance, a metric that  measures 'distance' between two strings by quantifying how many changes  (addition, subtraction, or changing of a letter) are needed to reach one  from the other. If no exact match is found, all proximate candidates are displayed.  
 
 These are poor images, unsearchable low quality scans released with no text layer, despite being composed on word  processors. These *undocuments* range from questionnaires by nominees for  positions under the Director of National Intelligence to briefings about  interrogation techniques and extraordinary rendition.  

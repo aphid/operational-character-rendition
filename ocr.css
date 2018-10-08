@@ -117,6 +117,7 @@ body {
 }
 
 #readdata {
+    visibility: hidden;
     letter-spacing: normal;
     position: absolute;
     top: 2px;

@@ -351,7 +351,7 @@ var begin = async function () {
                     let cand = {};
                     //console.log(p);
                     cand.meta = JSON.stringify(h);
-                    cand.last = p.metadata.pageCount - 1;
+                    cand.last = (p.metadata.pageCount || p.metadata.PageCount) - 1;
                     //FIX THIS IN SCRAPER JEEZ
                     cand.root = p.localPath.replace("/var/www", "https://").replace(".pdf", "").replace(".PDF", "").replace(".txt", "/").replace("html", "").replace("illegible.us", "oversightmachin.es") + "/";
                     cand.title = p.localName.replace(".pdf", "").replace(".PDF", "");
@@ -419,6 +419,11 @@ var Doc = function (options) {
     this.currentPage = 0;
     console.log("hello");
     console.log(options.root);
+
+    //IDK WHAT THIS IS FOR TODO FIX
+    if (options.root[options.root.length - 1] === "/") {
+        options.root = options.root.substring(0, options.root.length - 1)
+    }
     let jsonURL = "texts/" + options.root + ".json";
     aFetch(jsonURL).then((result) => {
         if (!result) {

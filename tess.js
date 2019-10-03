@@ -770,9 +770,16 @@ Doc.prototype.addWord = async function (word) {
         if (ssize < 25) {
             ssize = 25;
         }
-
-        span.style.fontSize = ssize + "px";
-        span.style.fontSize = word.font_size * (full.offsetWidth / img.width) + "px";
+	
+        //span.style.fontSize = ssize + "px";
+        let scaleSize = word.font_size * (full.offsetWidth / img.width);
+	scaleSize = parseFloat(Math.floor(scaleSize));
+	if (scaleSize < 15) {
+	    scaleSize = 15;
+	}
+	scaleSize = scaleSize + "px";
+	console.log(scaleSize);
+	span.style.fontSize = scaleSize;
         //console.log(span.style.fontSize);
         //i forget this use case
         if (word.text !== "? ") {

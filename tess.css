@@ -17,9 +17,7 @@ body {
     position: relative;
     overflow: hidden;
     z-index: -1;
-    clip-path: inset(0 0 100%);
-    transition: clip-path 1s;
-
+    display: block;
 }
 
 #page {
@@ -66,8 +64,6 @@ body {
 #console div {
     display: inline-block;
 }
-
-
 
 #type {
     position: absolute;
@@ -121,6 +117,7 @@ body {
 }
 
 #readdata {
+    visibility: hidden;
     letter-spacing: normal;
     position: absolute;
     top: 2px;
@@ -184,4 +181,3 @@ body {
 #line {
     display: none;
 }
-span { transition: color 0.16s ease;}

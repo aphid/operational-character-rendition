@@ -2,20 +2,14 @@
 <html>
 
 <head>
-    <script src="lib/tesseract/tesseract.min.js"></script>
+    <title>operational character rendition</title>
     <script src="lib/levenshtein.js"></script>
-
-    <!-- need some logic here to pick between tesseract and OCRAD, tess/ocr-ad.js, css stays the same.-->
-    <script src="lib/fitty.min.js">
-    </script>
-
-    <script src="tess.js">
+    <script src="ocrad.js"></script>
+    <script src="ocr.js">
 
 
     </script>
     <link rel="stylesheet" href="ocr.css">
-    <link rel="stylesheet" href="fonts.css">
-
 </head>
 
 <body>
@@ -56,5 +50,8 @@
     </div>
 </body>
 
+<script src="lib/fitty.minjs">
+    fitty("#read");
+</script>
 
 </html>

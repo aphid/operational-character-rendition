@@ -279,8 +279,7 @@ Word.prototype.flip = async function () {
     }*/
     wd.flip();
 };
-document.addEventListener("DOMContentLoaded", async function () {
-    console.log("DOM loaded");
+if (document.readyState == "complete" || document.readyState == "interactive") {
     wWorker = new Worker('dist.js');
     wWorker.onmessage = function (result) {
         if (result.data === "ready") {
@@ -289,7 +288,20 @@ document.addEventListener("DOMContentLoaded", async function () {
             return Promise.resolve(result.data);
         }
     }
-});
+} else {
+    document.addEventListener("DOMContentLoaded", async function () {
+        console.log("DOM loaded");
+        wWorker = new Worker('dist.js');
+        wWorker.onmessage = function (result) {
+            if (result.data === "ready") {
+                begin();
+            } else {
+                return Promise.resolve(result.data);
+            }
+        }
+    });
+
+}
 var getSource = function (type) {
     var src = {};
     if (type === "dict") {
@@ -374,7 +386,7 @@ var begin = async function () {
         }
     } else {
         //pick = candidates[Math.floor(Math.random() * candidates.length)];
-	pick = candidates[0];
+        pick = candidates[0];
     }
     var doc = {
         title: pick.title,

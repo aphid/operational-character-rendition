@@ -1,4 +1,4 @@
-/*global compare: true, OCRAD: true; */
+
 var container, full, fullCtx, img, words, type, typeCtx, rawdict, suspectdict, otop, json, txt, read;
 
 var util = {};
@@ -56,9 +56,75 @@ var Word = function (options) {
 };
 
 Word.prototype.draw = async function () {
+    //by this time linediv should be at the appropriate height and left indentation
+
     //console.log("DRAWING WORD", this.text)
     var wd = this;
     wd.span.style.display = "none";
+    if (this.is_serif) {
+        wd.span.style.fontFamily = "serif";
+    } else if (this.is_monospace) {
+        wd.span.style.fontFamily = "monospace";
+    } else {
+        wd.span.style.fontFamily = "monospace";
+    }
+
+    if (this.is_bold) {
+        wd.span.style.fontWeight = "bold";
+    }
+    if (this.is_italic) {
+        wd.span.style.fontStyle = "italic"
+    }
+    if (this.is_underlined) {
+        wd.span.style.fontStyle = "italic"
+    }
+
+    if (this.is_smallcaps) {
+        wd.span.style.fontVariant = "smallcaps";
+    }
+    let pct = parseFloat(full.offsetHeight / img.height).toFixed(2);
+
+    this.ppos = {};
+    this.ppos.x = (parseInt(this.bbox.x0) * pct);
+    this.ppos.y = parseInt(this.bbox.y0 * pct);
+    this.ppos.w = parseInt(this.bbox.x1 - this.bbox.x0) * pct;
+    this.ppos.h = parseInt(this.bbox.y1 - this.bbox.y0) * pct;
+
+
+
+    if (statement.lastWord && statement.lastWord.lineTop == this.lineTop) {
+        console.log("------------")
+        console.log(this.ppos);
+        console.log(statement.lastWord.ppos);
+
+        let lastEdge = statement.lastWord.ppos.x + statement.lastWord.ppos.w;
+        let widdiff = Math.abs(this.ppos.x - lastEdge);
+        console.log("(((((((((((((", widdiff)
+        let gap = parseInt(wd.font_size / 3);
+        let newVal = statement.lastWord.ppos.x + statement.lastWord.ppos.w + gap;
+        if (widdiff < 7 || lastEdge > this.ppos.x) {
+            console.log("heyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyy", widdiff, gap);
+
+            console.log(newVal);
+            wd.ppos.x = newVal;
+        } else if
+            (widdiff > wd.fontSize * 2) {
+            console.log("heyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyy", widdiff, gap);
+            wd.ppos.x = newVal;
+
+
+        }
+        wd.parent.style.marginLeft = (wd.ppos.x - (statement.lastWord.ppos.x + statement.lastWord.ppos.w)) + "px";
+
+    } else {
+        wd.parent.style.left = 0;
+    }
+
+    //wd.parent.style.top = wd.ppos.y + "px";
+    wd.parent.style.width = wd.ppos.w + "px";
+    wd.parent.style.height = wd.ppos.h + "px";
+    wd.parent.style.position = "relative";
+    //fitty(wd.span, { multiLine: false, maxSize: 60 }).fit() ;
     var delay = timings.word;
     //console.log("Drawing!" + this.text);
     busy = true;
@@ -105,12 +171,19 @@ Word.prototype.draw = async function () {
     await wd.setUpCycle();
     //console.log("ending cycle", wd.text);
     //await (util.wait(delay))
-    wd.span.style.display = "inline";
+    wd.span.style.display = "inline-block";
+    //fitty(wd.span, { maxHeight: wd.ppos.h });
+
+
+    /*
     if (wd.lineDiv.offsetHeight > wd.lineDiv.dataset.highest) {
         wd.lineDiv.dataset.highest = wd.lineDiv.offsetHeight;
         wd.lineDiv.style.minHeight = wd.lineDiv.offsetHeight + "px";
-    }
+    } */
     await util.wait(delay);
+    if (statement.pause == true) {
+        await util.wait(500000);
+    }
     console.log("returning draw");
 };
 
@@ -250,8 +323,12 @@ Word.prototype.pots = async function () {
         this.flip();
     }
     await this.draw();
+    if (util.paused) {
+        await util.wait(500000);
+    }
     return Promise.resolve();
 };
+
 Word.prototype.flip = async function () {
     var wd = this;
     var span = this.span;
@@ -281,8 +358,8 @@ Word.prototype.flip = async function () {
     }*/
     wd.flip();
 };
-document.addEventListener("DOMContentLoaded", async function () {
-    console.log("DOM loaded");
+console.log(document.readyState);
+if (document.readyState == "complete" || document.readyState == "interactive") {
     wWorker = new Worker('dist.js');
     wWorker.onmessage = function (result) {
         if (result.data === "ready") {
@@ -291,7 +368,20 @@ document.addEventListener("DOMContentLoaded", async function () {
             return Promise.resolve(result.data);
         }
     }
-});
+} else {
+    document.addEventListener("DOMContentLoaded", async function () {
+        console.log("DOM loaded");
+        wWorker = new Worker('dist.js');
+        wWorker.onmessage = function (result) {
+            if (result.data === "ready") {
+                begin();
+            } else {
+                return Promise.resolve(result.data);
+            }
+        }
+    });
+
+}
 var getSource = function (type) {
     var src = {};
     if (type === "dict") {
@@ -349,11 +439,12 @@ var begin = async function () {
     for (var h of hearings.hearings) {
         for (var w of h.witnesses) {
             for (var p of w.pdfs) {
-                if (!p.hasText) {
+                if (!p.hasText || p.needsScan) {
                     let cand = {};
                     //console.log(p);
                     cand.meta = JSON.stringify(h);
-                    cand.last = p.metadata.pageCount - 1;
+                    let pc = p.metadata.pageCount || p.metadata.PageCount;
+                    cand.last = pc - 1;
                     //FIX THIS IN SCRAPER JEEZ
                     cand.root = p.localPath.replace("/var/www", "https://").replace(".pdf", "").replace(".PDF", "").replace(".txt", "/").replace("html", "").replace("illegible.us", "oversightmachin.es") + "/";
                     cand.title = p.localName.replace(".pdf", "").replace(".PDF", "");
@@ -365,17 +456,24 @@ var begin = async function () {
     if (targetDoc && targetDoc !== "new") {
         console.log("searching for", targetDoc);
         for (var c of candidates) {
-            console.log(c.title);
+            //console.log(c.title);
             if (targetDoc === c.title) {
                 console.log("MATCHED PICK");
                 pick = c;
             }
         }
+        console.log("**********************", pick);
         if (!pick) {
             console.log("document not found");
         }
     } else {
         pick = candidates[Math.floor(Math.random() * candidates.length)];
+    }
+    console.log(typeof pick.meta);
+    if (typeof pick.meta == "string") {
+        pick.meta = JSON.parse(pick.meta);
+        console.log(pick.meta);
+
     }
     var doc = {
         title: pick.title,
@@ -413,6 +511,7 @@ var begin = async function () {
 //doc constructinator
 var Doc = function (options) {
     var doc = this;
+    this.mode = "tess";
     this.pages = options.pages;
     this.hearingId = options.hearingId;
     this.root = options.root;
@@ -469,42 +568,55 @@ Doc.prototype.cycleData = async function () {
     } else {
         this.dataIndex = 0;
     }
-
+ 
     document.querySelector("#data").textContent = Object.keys(this.metadata)[this.dataIndex] + ": " + Object.values(this.metadata)[this.dataIndex];
     //await util.wait(8000);
-
+ 
     this.cycleData();
     */
 }
+
+const getCircularReplacer = () => {
+    const seen = new WeakSet();
+    return (key, value) => {
+        if (typeof value === "object" && value !== null) {
+            if (seen.has(value)) {
+                return;
+            }
+            seen.add(value);
+        }
+        return value;
+    };
+};
+
+
 Doc.prototype.upWords = async function () {
     let url = this.url.searchParams.get("event");
     form = {
         "page": this.currentPage,
         "words": this.words,
         "root": this.root,
-        "title": this.title
+        "title": this.title,
+        "mode": this.mode
     };
 
-    var sData = JSON.stringify(form);
+    var sData = JSON.stringify(form, getCircularReplacer());
     console.log("sending json");
     try {
         let resp = await fetch("https://illegible.us:3000", {
             method: "post",
             body: sData
         });
-        let data = resp.json();
+        let data = await resp.json();
         console.log("Request succeeded with JSON response", data);
 
         return Promise.resolve();
 
-        console.log("Request failed", error);
-        return resolve();
 
     } catch (e) {
         //todo add to visible console
         console.log("request failed");
         return Promise.resolve();
-        console.log("fetch catch backup", e);
     }
 
 };
@@ -516,17 +628,18 @@ Doc.prototype.upImage = async function () {
         "page": this.currentPage,
         "pageImg": full.toDataURL(),
         "root": this.root,
-        "title": this.title
+        "title": this.title,
+        "mode": this.mode
     };
 
-    var sData = JSON.stringify(form);
+    var sData = JSON.stringify(form, getCircularReplacer());
     console.log("sending image");
     try {
         let resp = await fetch("https://illegible.us:3000", {
             method: "post",
             body: sData
         });
-        let data = resp.json();
+        let data = await resp.json();
         console.log("Request succeeded with JSON response", data);
 
         return Promise.resolve();
@@ -536,7 +649,6 @@ Doc.prototype.upImage = async function () {
         //todo add to visible console
         console.log("request failed");
         return Promise.resolve();
-        console.log("fetch catch backup", e);
     }
 };
 
@@ -549,9 +661,15 @@ function buildPages(doc) {
     }
     return doc;
 }
+
 Doc.prototype.init = function () {
+
+
+
+
     console.log("does this run?");
     this.lines = [];
+    this.mode = "tesseract";
     this.text = "";
     this.letters = [];
     this.words = [];
@@ -564,6 +682,7 @@ Doc.prototype.init = function () {
     this.url = new URL(window.location.href);
 
     this.url.searchParams.set('document', this.title);
+    this.url.searchParams.set("mode", this.mode)
     var pageparam = parseInt(this.url.searchParams.get('page'), 10);
     console.log("comparing ", pageparam, " from url ", this.currentPage, " currentPage");
     if (typeof pageparam !== "undefined" && pageparam < this.pages.length) {
@@ -582,6 +701,9 @@ Doc.prototype.init = function () {
 
     var doc = this;
     console.log("init");
+    full.style.transition = "clip-path 1s";
+    full.style.clipPath = "inset(0 0 100%)";
+
     document.querySelector("img").addEventListener("load", async function () {
 
         //typeCtx.clearRect(0, 0, type.width, type.height);
@@ -628,15 +750,18 @@ Doc.prototype.process = async function () {
     const worker = new TesseractWorker({
         //init_oem: OEM.TESSERACT_ONLY,
         workerPath: "lib/tesseract/worker.min.js",
+        langPath: 'lib/tesseract/lang-data',
         corePath: 'lib/tesseract/tesseract-core.wasm.js'
     });
 
     worker
         .recognize(img, "eng", {
+            /*
             tessedit_enable_doc_dict: 0,
             load_system_dawg: 0,
             load_freq_dawg: 0,
             load_punc_dawg: 0
+            */
         })
 
         .progress((progress) => {
@@ -651,35 +776,53 @@ Doc.prototype.process = async function () {
             }
         })
         .then(async (result) => {
+            full.style.transition = "clip-path 0s";
+
             console.log(result.words.length);
             doc.rawLines = result.lines;
             await doc.processWords();
         }).finally(async function () {
             console.log("oof");
+
             await doc.upImage()
             await doc.upWords();
             await util.wait(timings.docFinished);
-            console.log(this.currentPage);
-            doc.currentPage++;
-            console.log(this.currentPage);
 
+            document.querySelector("#page" + doc.currentPage).style.borderBottom = "1px solid #333";
+            doc.currentPage++;
+
+            typeCtx.clearRect(0, 0, type.width, type.height);
             doc.init();
+
         });
 
 
 };
 Doc.prototype.processWords = async function () {
     console.log("got " + this.rawLines.length + " lines, processing");
+    let pct = parseFloat(full.offsetWidth / img.width).toFixed(2);
+
+
+    let lineTop = this.rawLines[0].bbox.y0 * pct;
+    let thisPage = document.querySelector("#page" + this.currentPage);
+    let offset = (lineTop * (full.offsetHeight / img.height) + "px");
+    console.log(thisPage, offset, lineTop);
+    thisPage.style.paddingTop = offset;
 
     for (let l = 0; l < this.rawLines.length; l++) {
-        console.log("reading line", l)
+        //console.log("reading line", l)
         let line = this.rawLines[l];
 
 
         for (let w = 0; w < line.words.length; w++) {
             let word = line.words[w];
-
+            word.line = l;
+            if (l > 0) {
+                word.prevLine = this.rawLines[l - 1];
+            }
             word.lineNum = l;
+            word.lineTop = line.bbox.y0 / img.height;
+
             word.leftpct = line.bbox.x0 / img.width;
             if (w == line.words.length - 1) {
                 //probably nothing
@@ -696,6 +839,10 @@ Doc.prototype.processWords = async function () {
         typeCtx.clearRect(0, 0, type.width, type.height);
         read.textContent = "";
         await word.showLetters(this);
+        if (word.lineNum > this.currentLine) {
+            this.currentLine++;
+            //alert(this.currentLine);
+        }
     }
 
 };
@@ -746,100 +893,133 @@ Doc.prototype.addWord = async function (word) {
         //console.log("%%%%%%%%%%%% no word");
         console.log(word);
         return false;
-    } else {
-        // console.log(word.lineNum);
-        word.pageDiv = document.querySelector("#page" + doc.currentPage);
-        //sees if we need a newline
-        if (!document.querySelector("#line" + doc.currentPage + "_" + word.lineNum)) {
-            word.lineDiv = document.createElement("div");
-            word.lineDiv.id = "line" + doc.currentPage + "_" + word.lineNum;
-            word.lineDiv.classList.add("line");
-            word.lineDiv.style.marginLeft = (word.leftpct * 100 - 5) + "%";
-            word.pageDiv.appendChild(word.lineDiv);
-        } else {
-            word.lineDiv = document.querySelector("#line" + doc.currentPage + "_" + word.lineNum);
-        }
-        word.rawResults = [];
-        var span = document.createElement("span");
-        span.style.display = "none";
-        var ssize;
-        ssize = word.lineHeight * .7;
-        if (ssize > 50) {
-            ssize = 50;
-        }
-        if (ssize < 25) {
-            ssize = 25;
-        }
-	
-        //span.style.fontSize = ssize + "px";
-        let scaleSize = word.font_size * (full.offsetWidth / img.width);
-	scaleSize = parseFloat(Math.floor(scaleSize));
-	if (scaleSize < 15) {
-	    scaleSize = 15;
-	}
-	scaleSize = scaleSize + "px";
-	console.log(scaleSize);
-	span.style.fontSize = scaleSize;
-        //console.log(span.style.fontSize);
-        //i forget this use case
-        if (word.text !== "? ") {
-            //doc.words.push(word);
-        }
-        //adds space
-        span.textContent = word.text + " ";
-        word.span = span;
-        word.lineDiv.appendChild(span);
-        word.lineDiv.dataset.highest = word.lineDiv.offsetHeight;
-        //scrolls into view
-        words.scrollTop = words.scrollHeight;
-        var comp;
-        word.clean = word.text.replace(/[^a-zA-Z0-9]+/g, "");
-        //word.clean = word.text;
-        //console.time(word.clean);
-        comp = await compare(word.clean, "raw");
-        //console.timeEnd(word.clean);
-        if (comp) {
-            //one result
-            if (comp.low === 0 || comp.words.length === 1) {
-                span.textContent = comp.words[0].word + " ";
-            } else {
-                span.textContent = comp.words[0].word + " ";
-                //lolidk
-                if (word.lineDiv.offsetHeight > word.lineDiv.dataset.highest) {
-                    word.lineDiv.dataset.highest = word.lineDiv.offsetHeight;
-                    word.lineDiv.style.minHeight = word.lineDiv.offsetHeight + "px";
-                }
-            }
-            word.rawResults = comp.words;
-        } else {
-            console.log("no results for ", word.text, " in dict");
-            word.compFailed = true;
-            span.classList.add("iffy");
-        }
-        comp = await compare(word.clean, "susp");
-        if (comp) {
-            span.classList.add("suspect");
-            if (comp.low === 0) {
-                span.textContent = comp.words[0].word + " ";
-            } else {
-                span.textContent = comp.words[0].word + " ";
-                if (word.lineDiv.offsetHeight > word.lineDiv.dataset.highest) {
-                    word.lineDiv.dataset.highest = word.lineDiv.offsetHeight;
-                    word.lineDiv.style.minHeight = word.lineDiv.offsetHeight + "px";
-                }
-                //span.textContent = span.textContent + JSON.stringify(comp);
-            }
-            word.suspResults = comp.words;
-        } else {
-            //console.log("no results in susp for ", word.text);
-            //word.compFailed = true;
-            //span.classList.add("iffy");
-        }
-        await word.pots();
-        //console.log("&&&&&& ending word", word.text);
-
     }
+
+    // console.log(word.lineNum);
+    word.pageDiv = document.querySelector("#page" + doc.currentPage);
+    //sees if we need a newline
+    if (!document.querySelector("#line" + doc.currentPage + "_" + word.lineNum)) {
+        word.lineDiv = document.createElement("div");
+        word.lineDiv.id = "line" + doc.currentPage + "_" + word.lineNum;
+        word.lineDiv.classList.add("line");
+        let ml = ((word.leftpct * 100 - 5) || 1) + "%";
+        word.lineDiv.style.marginLeft = ml;
+        //word.lineDiv.style.marginTop = word.lineTop + "px";
+        word.pageDiv.appendChild(word.lineDiv);
+
+
+        // wd.calculatePcts();
+        let pct = parseFloat(full.offsetHeight / img.height).toFixed(2);
+        let prevLT;
+        if (word.prevLine) {
+            console.log(word.prevLine);
+            prevLT = word.prevLine.bbox.y1 * pct;
+            //+ prevLT.clientHeight;
+        } else {
+            prevLT = 0;
+        }
+        //console.log(word.bbox.y0 * pct, word.lineTop, prevLT)
+        let lineDif = parseInt((word.bbox.y0 * pct) - prevLT);
+
+        //alert(lineDif);
+        console.log("moving 907");
+        /* FIX THIS */
+        word.lineDiv.style.marginTop = lineDif + "px";
+
+    } else {
+        word.lineDiv = document.querySelector("#line" + doc.currentPage + "_" + word.lineNum);
+    }
+    word.rawResults = [];
+
+    var parent = document.createElement("div");
+
+    parent.style.display = "inline-block";
+    var ssize;
+    ssize = word.lineHeight * .7;
+    if (ssize > 50) {
+        ssize = 50;
+    }
+    if (ssize < 25) {
+        ssize = 25;
+    }
+
+    //span.style.fontSize = ssize + "px";
+    let scaleSize = word.font_size * (full.offsetWidth / img.width);
+    scaleSize = parseFloat(Math.floor(scaleSize));
+
+    scaleSize = scaleSize + "px";
+    console.log(scaleSize);
+    parent.style.fontSize = scaleSize;
+    //console.log(span.style.fontSize);
+    //i forget this use case
+    if (word.text !== "? ") {
+        //doc.words.push(word);
+    }
+    //parent.style.border = "1px solid orange";
+    word.parent = parent;
+    let span = document.createElement("span");
+    word.span = word.parent.appendChild(span);
+    word.span.display = "none";
+    word.span.textContent = word.text + " ";
+    //adds space
+
+
+
+    word.lineDiv.appendChild(word.parent);
+    word.lineDiv.dataset.highest = word.lineDiv.offsetHeight;
+    //scrolls into view
+    words.scrollTop = words.scrollHeight;
+    var comp;
+    word.clean = word.text.replace(/[^a-zA-Z0-9]+/g, "");
+    //word.clean = word.text;
+    //console.time(word.clean);
+    comp = await compare(word.clean, "raw");
+    //console.timeEnd(word.clean);
+    if (comp) {
+        //one result
+        if (comp.low === 0 || comp.words.length === 1) {
+            word.span.textContent = comp.words[0].word + " ";
+        } else {
+            word.span.textContent = comp.words[0].word + " ";
+            //lolidk
+            if (word.lineDiv.offsetHeight > word.lineDiv.dataset.highest) {
+                word.lineDiv.dataset.highest = word.lineDiv.offsetHeight;
+                word.lineDiv.style.minHeight = word.lineDiv.offsetHeight + "px";
+            }
+        }
+        word.rawResults = comp.words;
+    } else {
+        console.log("no results for ", word.text, " in dict");
+        word.compFailed = true;
+        word.span.classList.add("iffy");
+    }
+    comp = await compare(word.clean, "susp");
+    if (comp) {
+        word.span.classList.add("suspect");
+        if (comp.low === 0) {
+            word.span.textContent = comp.words[0].word + " ";
+        } else {
+            word.span.textContent = comp.words[0].word + " ";
+            if (word.lineDiv.offsetHeight > word.lineDiv.dataset.highest) {
+                word.lineDiv.dataset.highest = word.lineDiv.offsetHeight;
+                word.lineDiv.style.minHeight = word.lineDiv.offsetHeight + "px";
+            }
+            //span.textContent = span.textContent + JSON.stringify(comp);
+        }
+        word.suspResults = comp.words;
+    } else {
+        //console.log("no results in susp for ", word.text);
+        //word.compFailed = true;
+        //span.classList.add("iffy");
+    }
+
+    await word.pots();
+    //console.log("&&&&&& ending word", word.text);
+
+    doc.lastWord = word;
+
 };
+
 
 Doc.prototype.loadPage = async function () {
     //ugh this is a mess, need to separate out:
@@ -859,7 +1039,7 @@ Doc.prototype.loadPage = async function () {
 
     var urlPage = this.url.searchParams.get("page") || 0;
     console.log(urlPage);
-
+    console.log(this);
     if (!img.src) {
         console.log("no image, starting out, page", urlPage);
         this.currentPage = parseInt(urlPage, 10);
@@ -923,7 +1103,6 @@ Doc.prototype.getLines = function () {
         if (line.height > 8 && line.letters.length) {
             line.num = this.currentLine;
             this.lines.push(line);
-            this.currentLine++;
         }
     }
     return this;

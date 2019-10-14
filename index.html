@@ -2,15 +2,19 @@
 <html>
 
 <head>
-    <title>operational character rendition</title>
-    <script src="lib/levenshtein.js"></script>
-    <script src="ocrad.js"></script>
-    <script src="ocr.js">
 
 
-    </script>
-    <link rel="stylesheet" href="ocr.css">
+    <!-- need some logic here to pick between tesseract and OCRAD, tess/ocr-ad.js, css stays the same.-->
+    <script src="lib/fitty.min.js"></script>
+
+
+
+
+
+    <link rel="stylesheet" href="fonts.css">
+
 </head>
+
 
 <body>
     <div id="json"></div>
@@ -49,9 +53,46 @@
         <div id="pages"></div>
     </div>
 </body>
+<script>
 
-<script src="lib/fitty.minjs">
-    fitty("#read");
+    let tess = ["lib/tesseract/tesseract.min.js", "lib/levenshtein.js", "tess.js", "tess.css"];
+    let ocrad = ["ocrad.js", "lib/levenshtein.js", "ocr.js", "ocrad.css"];
+
+    let url = new URL(window.location.href);
+    let rando = (rand(0, 1))
+
+    let mode = url.searchParams.get('mode');
+    if (mode == "tesseract") {
+        rando = 0;
+    } else if (mode == "ocrad") {
+        rando = 1;
+    }
+
+    if (rando == 0) {
+        mode = tess;
+    } else {
+        mode = ocrad;
+    }
+
+    console.log(mode);
+    for (let m of mode) {
+        if (m.includes("css")) {
+            let lin = document.createElement("link");
+            lin.href = m;
+            lin.rel = "stylesheet";
+            document.head.appendChild(lin);
+        } else {
+            let scr = document.createElement("script");
+            scr.src = m;
+            scr.setAttribute("defer", true);
+            document.head.appendChild(scr);
+        }
+    }
+
+    function rand(min, max) {
+        return Math.floor(Math.random() * (max - min + 1)) + min
+    }
 </script>
+
 
 </html>

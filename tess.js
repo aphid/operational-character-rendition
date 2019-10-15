@@ -93,28 +93,31 @@ Word.prototype.draw = async function () {
 
 
     if (statement.lastWord && statement.lastWord.lineTop == this.lineTop) {
-        console.log("------------")
-        console.log(this.ppos);
-        console.log(statement.lastWord.ppos);
+        //console.log("------------")
+        //console.log(this.ppos);
+        //console.log(statement.lastWord.ppos);
 
-        let lastEdge = statement.lastWord.ppos.x + statement.lastWord.ppos.w;
+        let lastEdge = statement.lastWord.span.getBoundingClientRect().right;
         let widdiff = Math.abs(this.ppos.x - lastEdge);
+        //let lastEdge = statement.lastWord.ppos.x + statement.lastWord.ppos.w;
+        //let widdiff = Math.abs(this.ppos.x - lastEdge);
         console.log("(((((((((((((", widdiff)
-        let gap = parseInt(wd.font_size / 3);
-        let newVal = statement.lastWord.ppos.x + statement.lastWord.ppos.w + gap;
-        if (widdiff < 7 || lastEdge > this.ppos.x) {
-            console.log("heyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyy", widdiff, gap);
+        let gap = (wd.font_size / 4);
+        let newVal = statement.lastWord.span.getBoundingClientRect().right + gap;
+        if (widdiff < gap || lastEdge > this.span.getBoundingClientRect().x) {
+            console.log(lastEdge)
+            console.log("too close", widdiff, gap);
 
             console.log(newVal);
-            wd.ppos.x = newVal;
+            this.ppos.x = newVal;
         } else if
-            (widdiff > wd.fontSize * 2) {
-            console.log("heyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyy", widdiff, gap);
-            wd.ppos.x = newVal;
+            (widdiff > gap && widdiff < gap * 8) {
+            console.log("too far", widdiff, gap);
+            this.ppos.x = newVal;
 
 
         }
-        wd.parent.style.marginLeft = (wd.ppos.x - (statement.lastWord.ppos.x + statement.lastWord.ppos.w)) + "px";
+        wd.parent.style.marginLeft = (wd.ppos.x - (statement.lastWord.span.getBoundingClientRect().right)) + "px";
 
     } else {
         wd.parent.style.left = 0;

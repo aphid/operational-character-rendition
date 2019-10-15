@@ -17,7 +17,8 @@ body {
     position: relative;
     overflow: hidden;
     z-index: -1;
-    display: block;
+    clip-path: inset(0 0 100%);
+
 }
 
 #page {
@@ -64,6 +65,8 @@ body {
 #console div {
     display: inline-block;
 }
+
+
 
 #type {
     position: absolute;
@@ -117,7 +120,6 @@ body {
 }
 
 #readdata {
-    visibility: hidden;
     letter-spacing: normal;
     position: absolute;
     top: 2px;
@@ -135,9 +137,11 @@ body {
     background: rgba(0, 0, 0, 0.5);
 }
 
+/*
 .page {
-    border-bottom: 1px solid #333;
-}
+    border-bottom: 1px solid orange;
+}*/
+
 
 #text {
     text-shadow: 2 2 0 white;
@@ -161,6 +165,9 @@ body {
 
 .line {
     margin-bottom: 3px;
+    box-sizing: border-box;
+    height: auto;
+    width: auto;
 }
 
 #words {
@@ -176,8 +183,10 @@ body {
     height: 100vh;
     font-family: monospace;
     overflow: hidden;
+    letter-spacing: -0.05em;
 }
 
 #line {
     display: none;
 }
+span { transition: color 0.16s ease;}

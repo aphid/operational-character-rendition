@@ -467,6 +467,7 @@ var begin = async function () {
             console.log("document not found");
         }
     } else {
+        console.log(candidates);
         pick = candidates[Math.floor(Math.random() * candidates.length)];
     }
     console.log(typeof pick.meta);
@@ -682,7 +683,7 @@ Doc.prototype.init = function () {
     this.url = new URL(window.location.href);
 
     this.url.searchParams.set('document', this.title);
-    this.url.searchParams.set("mode", this.mode)
+    this.url.searchParams.set("mode", this.mode);
     var pageparam = parseInt(this.url.searchParams.get('page'), 10);
     console.log("comparing ", pageparam, " from url ", this.currentPage, " currentPage");
     if (typeof pageparam !== "undefined" && pageparam < this.pages.length) {

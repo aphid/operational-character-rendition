@@ -385,8 +385,8 @@ var begin = async function () {
             console.log("document not found");
         }
     } else {
-        //pick = candidates[Math.floor(Math.random() * candidates.length)];
-        pick = candidates[0];
+        pick = candidates[Math.floor(Math.random() * candidates.length)];
+        //pick = candidates[0];
     }
     var doc = {
         title: pick.title,
@@ -424,6 +424,7 @@ var begin = async function () {
 //doc constructinator
 var Doc = function (options) {
     var doc = this;
+    this.mode = "ocrad";
     this.pages = options.pages;
     this.hearingId = options.hearingId;
     this.root = options.root;
@@ -494,7 +495,8 @@ Doc.prototype.upWords = function () {
         "page": this.currentPage,
         "words": this.words,
         "root": this.root,
-        "title": this.title
+        "title": this.title,
+        "mode": this.mode
     };
 
     return new Promise(function (resolve) {
@@ -526,7 +528,8 @@ Doc.prototype.upImage = function () {
         "page": this.currentPage,
         "pageImg": full.toDataURL(),
         "root": this.root,
-        "title": this.title
+        "title": this.title,
+        "mode": this.mode
     };
 
     return new Promise(function (resolve) {
@@ -572,7 +575,7 @@ Doc.prototype.init = function () {
     this.currentLine = 0;
     this.currentChr = 0;
     this.url = new URL(window.location.href);
-
+    this.url.searchParams.set("mode", this.mode);
     this.url.searchParams.set('document', this.title);
     var pageparam = parseInt(this.url.searchParams.get('page'), 10);
     console.log("comparing ", pageparam, " from url ", this.currentPage, " currentPage");

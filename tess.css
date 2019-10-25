@@ -21,6 +21,14 @@ body {
 
 }
 
+.xline {
+    position: absolute;
+    color:orange;
+    width: 1px;
+    height: 1px;
+}
+
+
 #page {
     display: none;
     top: 0;
@@ -189,4 +197,4 @@ body {
 #line {
     display: none;
 }
-span { transition: color 0.16s ease;}
+span { transition: color 0.4s ease;}

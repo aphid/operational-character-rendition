@@ -42,6 +42,7 @@ util.wait = async function (ms) {
 
 var Word = function (options) {
     var wd = this;
+    this.widest = 0;
     if (!options.text || (block.indexOf(options.text.trim()) !== -1) || options.text.trim().length === 0) {
         options.text = "?";
         options.fail = true;
@@ -97,34 +98,47 @@ Word.prototype.draw = async function () {
         //console.log(this.ppos);
         //console.log(statement.lastWord.ppos);
 
-        let lastEdge = statement.lastWord.span.getBoundingClientRect().right;
+        let lastEdge = statement.lastWord.span.getBoundingClientRect().right - words.getBoundingClientRect().left;
+
         let widdiff = Math.abs(this.ppos.x - lastEdge);
         //let lastEdge = statement.lastWord.ppos.x + statement.lastWord.ppos.w;
         //let widdiff = Math.abs(this.ppos.x - lastEdge);
         console.log("(((((((((((((", widdiff)
-        let gap = (wd.font_size / 4);
-        let newVal = statement.lastWord.span.getBoundingClientRect().right + gap;
-        if (widdiff < gap || lastEdge > this.span.getBoundingClientRect().x) {
-            console.log(lastEdge)
+        let gap = (wd.font_size / 5);
+        let newVal = lastEdge + gap;
+        if (gap < 8) {
+            gap = 8;
+        }
+
+        //alert(widdiff + " " + gap)
+        if (widdiff < gap) {
+            //console.log(lastEdge)
             console.log("too close", widdiff, gap);
 
             console.log(newVal);
             this.ppos.x = newVal;
         } else if
-            (widdiff > gap && widdiff < gap * 8) {
+            (widdiff > gap && widdiff < gap * 10) {
+
             console.log("too far", widdiff, gap);
             this.ppos.x = newVal;
 
 
         }
-        wd.parent.style.marginLeft = (wd.ppos.x - (statement.lastWord.span.getBoundingClientRect().right)) + "px";
+        let newDiff = wd.ppos.x - lastEdge;
+        if (newDiff < gap) {
+            this.ppos.x = lastEdge + gap;
+        }
+        console.log(lastEdge, statement.lastWord.span.textContent, this.ppos.x, this.span.textContent, newDiff);
+
+        wd.parent.style.marginLeft = (wd.ppos.x - lastEdge) + "px";
 
     } else {
         wd.parent.style.left = 0;
     }
 
     //wd.parent.style.top = wd.ppos.y + "px";
-    wd.parent.style.width = wd.ppos.w + "px";
+    wd.parent.style.width = "auto";
     wd.parent.style.height = wd.ppos.h + "px";
     wd.parent.style.position = "relative";
     //fitty(wd.span, { multiLine: false, maxSize: 60 }).fit() ;
@@ -175,6 +189,13 @@ Word.prototype.draw = async function () {
     //console.log("ending cycle", wd.text);
     //await (util.wait(delay))
     wd.span.style.display = "inline-block";
+    let h = (wd.bbox.y1 - wd.bbox.y0) * pct;
+    let fs = parseInt(wd.lineDiv.style.fontSize.replace("px", "")) || 0;
+
+    if (h > fs) {
+        console.log("changing font size")
+        wd.lineDiv.style.fontSize = h + "px";
+    }
     //fitty(wd.span, { maxHeight: wd.ppos.h });
 
 
@@ -346,13 +367,18 @@ Word.prototype.flip = async function () {
     }
     if (this.lineDiv.offsetHeight > this.lineDiv.dataset.highest) {
         this.lineDiv.dataset.highest = this.lineDiv.offsetHeight;
-        this.lineDiv.style.minHeight = this.lineDiv.offsetHeight + "px";
+        //this.lineDiv.style.minHeight = this.lineDiv.offsetHeight + "px";
     }
     words.scrollTop = words.scrollHeight;
     this.potpos++;
     if (this.potpos >= this.potentials.length) {
         this.potpos = 0;
     }
+    if (wd.span.offsetWidth > wd.widest) {
+        wd.parent.style.width = wd.span.offsetWidth + "px";
+        wd.widest = wd.span.offsetWidth;
+    }
+
     var wTime = (300 / (thispot.distance || 1)) + 250 + (Math.random() * 100);
     await util.wait(wTime);
     /*if (thispot.type === "suspicious") {
@@ -435,7 +461,7 @@ var begin = async function () {
     docs = [];
     var targetDoc = url.searchParams.get("document") || false;
     var targetPage = url.searchParams.get("page") || 0;
-    var hearings = await get("hearings.json");
+    var hearings = await get("data.json");
     hearings = JSON.parse(hearings);
     var candidates = [];
     var pick;
@@ -468,6 +494,7 @@ var begin = async function () {
         console.log("**********************", pick);
         if (!pick) {
             console.log("document not found");
+            console.log(hearings)
         }
     } else {
         console.log(candidates);
@@ -791,6 +818,9 @@ Doc.prototype.process = async function () {
             await doc.upImage()
             await doc.upWords();
             await util.wait(timings.docFinished);
+            full.style.transition = "none";
+
+            full.style.clipPath = "inset(0 0 100 %)";
 
             document.querySelector("#page" + doc.currentPage).style.borderBottom = "1px solid #333";
             doc.currentPage++;
@@ -906,14 +936,19 @@ Doc.prototype.addWord = async function (word) {
         word.lineDiv = document.createElement("div");
         word.lineDiv.id = "line" + doc.currentPage + "_" + word.lineNum;
         word.lineDiv.classList.add("line");
-        let ml = ((word.leftpct * 100 - 5) || 1) + "%";
-        word.lineDiv.style.marginLeft = ml;
+        let ml = ((word.leftpct * 100 - 5) || 1);
+        if (ml < 5) {
+            ml = 5;
+        }
+        word.lineDiv.style.marginLeft = ml + "%";
         //word.lineDiv.style.marginTop = word.lineTop + "px";
         word.pageDiv.appendChild(word.lineDiv);
 
 
         // wd.calculatePcts();
         let pct = parseFloat(full.offsetHeight / img.height).toFixed(2);
+
+        //word.lineDiv.fontSize;
         let prevLT;
         if (word.prevLine) {
             console.log(word.prevLine);
@@ -953,7 +988,7 @@ Doc.prototype.addWord = async function (word) {
 
     scaleSize = scaleSize + "px";
     console.log(scaleSize);
-    parent.style.fontSize = scaleSize;
+    //parent.style.fontSize = scaleSize;
     //console.log(span.style.fontSize);
     //i forget this use case
     if (word.text !== "? ") {

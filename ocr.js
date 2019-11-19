@@ -352,7 +352,7 @@ var begin = async function () {
     docs = [];
     var targetDoc = url.searchParams.get("document") || false;
     var targetPage = url.searchParams.get("page") || 0;
-    var hearings = await get("hearings.json");
+    var hearings = await get("data.json");
     hearings = JSON.parse(hearings);
     var candidates = [];
     var pick;

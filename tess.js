@@ -623,8 +623,13 @@ const getCircularReplacer = () => {
 
 Doc.prototype.upWords = async function () {
     let url = this.url.searchParams.get("event");
+    let text = "";
+    for (let w of this.words) {
+        text = text + w.text + " ";
+    }
     form = {
         "page": this.currentPage,
+        "text": text,
         "words": this.words,
         "root": this.root,
         "title": this.title,
@@ -1009,8 +1014,8 @@ Doc.prototype.addWord = async function (word) {
     //scrolls into view
     words.scrollTop = words.scrollHeight;
     var comp;
-    word.clean = word.text.replace(/[^a-zA-Z0-9]+/g, "");
-    //word.clean = word.text;
+    //word.clean = word.text.replace(/[^a-zA-Z0-9]+/g, "");
+    word.clean = word.text;
     //console.time(word.clean);
     comp = await compare(word.clean, "raw");
     //console.timeEnd(word.clean);

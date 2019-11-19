@@ -104,7 +104,7 @@ Word.prototype.draw = async function () {
         //let lastEdge = statement.lastWord.ppos.x + statement.lastWord.ppos.w;
         //let widdiff = Math.abs(this.ppos.x - lastEdge);
         console.log("(((((((((((((", widdiff)
-        let gap = (wd.font_size / 5);
+        let gap = (wd.font_size / 6);
         let newVal = lastEdge + gap;
         if (gap < 8) {
             gap = 8;

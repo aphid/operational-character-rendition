@@ -877,8 +877,7 @@ Doc.prototype.drawLetters = async function () {
         if (!this.word.wordBot || this.word.wordBot < letter.y + letter.height) {
             this.word.wordBot = letter.y + letter.height;
         }
-        fullCtx.fillRect(letter.x, letter.y, letter.width, letter.height);
-        fullCtx.fillRect(letter.x, letter.y, letter.width, letter.height);
+        fullCtx.clearRect(letter.x, letter.y, letter.width, letter.height);
         pct = (letter.y / img.height) - 0.02;
         full.style.top = "-" + (full.offsetHeight * pct) + "px";
         //full.style.top = "-" + (letter.y - 430) + "px";

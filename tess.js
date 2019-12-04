@@ -892,7 +892,7 @@ Word.prototype.showLetters = async function (doc) {
     for (let chr of this.symbols) {
         chr.height = chr.bbox.y1 - chr.bbox.y0;
         chr.width = chr.bbox.x1 - chr.bbox.x0;
-        fullCtx.fillRect(chr.bbox.x0, chr.bbox.y0, chr.width, chr.height);
+        fullCtx.clearRect(chr.bbox.x0, chr.bbox.y0, chr.width, chr.height);
         pct = (chr.bbox.y0 / img.height) - 0.02;
         full.style.top = "-" + (full.offsetHeight * pct) + "px";
         //full.style.top = "-" + (letter.y - 430) + "px";

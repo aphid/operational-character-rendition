@@ -1,4 +1,3 @@
-
 var container, full, fullCtx, img, words, type, typeCtx, rawdict, suspectdict, otop, json, txt, read;
 
 var util = {};
@@ -19,7 +18,7 @@ var timings = {
 
 util.paused = false;
 
-util.pause = function () {
+util.pause = function() {
     util.pause = !util.pause;
 }
 
@@ -31,7 +30,7 @@ for (let t in timings) {
 var block = ["-", ".", "`", "--", "="];
 
 
-util.wait = async function (ms) {
+util.wait = async function(ms) {
     return new Promise(resolve => {
         setTimeout(() => {
             resolve();
@@ -40,7 +39,7 @@ util.wait = async function (ms) {
 };
 
 
-var Word = function (options) {
+var Word = function(options) {
     var wd = this;
     this.widest = 0;
     if (!options.text || (block.indexOf(options.text.trim()) !== -1) || options.text.trim().length === 0) {
@@ -56,7 +55,7 @@ var Word = function (options) {
     return wd;
 };
 
-Word.prototype.draw = async function () {
+Word.prototype.draw = async function() {
     //by this time linediv should be at the appropriate height and left indentation
 
     //console.log("DRAWING WORD", this.text)
@@ -117,8 +116,7 @@ Word.prototype.draw = async function () {
 
             console.log(newVal);
             this.ppos.x = newVal;
-        } else if
-            (widdiff > gap && widdiff < gap * 10) {
+        } else if (widdiff > gap && widdiff < gap * 10) {
 
             console.log("too far", widdiff, gap);
             this.ppos.x = newVal;
@@ -213,7 +211,7 @@ Word.prototype.draw = async function () {
 
 
 
-Word.prototype.setUpCycle = async function () {
+Word.prototype.setUpCycle = async function() {
     var wrd = this;
     var source = wrd.text.toLowerCase();
     //console.log(this.potentials.length, ":", this.potentials);
@@ -258,7 +256,7 @@ Word.prototype.setUpCycle = async function () {
     console.log("returning cycle");
     return Promise.resolve();
 };
-readQueue = async function (wd, ms) {
+readQueue = async function(wd, ms) {
     read.textContent = wd;
     if (!ms) {
         ms = timings.read;
@@ -267,7 +265,7 @@ readQueue = async function (wd, ms) {
     return Promise.resolve();
 };
 //return an array of all the steps between source and word
-Word.prototype.processLev = function (source, wd) {
+Word.prototype.processLev = function(source, wd) {
     var process = [source];
     var a = source;
     var b = wd.word;
@@ -310,7 +308,7 @@ Word.prototype.processLev = function (source, wd) {
     //console.log(process);
     return process;
 };
-Word.prototype.color = function (index = 0) {
+Word.prototype.color = function(index = 0) {
     //console.dir(this.potentials);
     var wd = this.potentials[index];
     if (!wd.type) {
@@ -324,7 +322,7 @@ Word.prototype.color = function (index = 0) {
         this.span.style.color = "white";
     }
 };
-Word.prototype.pots = async function () {
+Word.prototype.pots = async function() {
     if (this.rawResults) {
         for (var res of this.rawResults) {
             this.potentials.push({
@@ -353,7 +351,7 @@ Word.prototype.pots = async function () {
     return Promise.resolve();
 };
 
-Word.prototype.flip = async function () {
+Word.prototype.flip = async function() {
     var wd = this;
     var span = this.span;
     var thispot = this.potentials[this.potpos];
@@ -390,7 +388,7 @@ Word.prototype.flip = async function () {
 console.log(document.readyState);
 if (document.readyState == "complete" || document.readyState == "interactive") {
     wWorker = new Worker('dist.js');
-    wWorker.onmessage = function (result) {
+    wWorker.onmessage = function(result) {
         if (result.data === "ready") {
             begin();
         } else {
@@ -398,10 +396,10 @@ if (document.readyState == "complete" || document.readyState == "interactive") {
         }
     }
 } else {
-    document.addEventListener("DOMContentLoaded", async function () {
+    document.addEventListener("DOMContentLoaded", async function() {
         console.log("DOM loaded");
         wWorker = new Worker('dist.js');
-        wWorker.onmessage = function (result) {
+        wWorker.onmessage = function(result) {
             if (result.data === "ready") {
                 begin();
             } else {
@@ -411,7 +409,7 @@ if (document.readyState == "complete" || document.readyState == "interactive") {
     });
 
 }
-var getSource = function (type) {
+var getSource = function(type) {
     var src = {};
     if (type === "dict") {
         src.type = "aspell dictionary";
@@ -430,7 +428,7 @@ var getSource = function (type) {
 
 };
 
-var begin = async function () {
+var begin = async function() {
 
     console.log("setting up");
     //set up all the things.  fold thes into the object at some point
@@ -540,7 +538,7 @@ var begin = async function () {
 };
 
 //doc constructinator
-var Doc = function (options) {
+var Doc = function(options) {
     var doc = this;
     this.mode = "tess";
     this.pages = options.pages;
@@ -566,7 +564,7 @@ var Doc = function (options) {
 
 
 
-    window.setTimeout(function () {
+    window.setTimeout(function() {
         json.style.display = "none";
         otop.style.display = "block";
         container.style.display = "block";
@@ -576,7 +574,7 @@ var Doc = function (options) {
 };
 
 
-aFetch = async function (url) {
+aFetch = async function(url) {
     try {
         let result = await fetch(url);
         result = await result.json();
@@ -592,7 +590,7 @@ aFetch = async function (url) {
 }
 
 //wtf does this do
-Doc.prototype.cycleData = async function () {
+Doc.prototype.cycleData = async function() {
     /*
     if (this.dataIndex < (Object.keys(this.metadata).length - 1)) {
         this.dataIndex++;
@@ -621,7 +619,8 @@ const getCircularReplacer = () => {
 };
 
 
-Doc.prototype.upWords = async function () {
+Doc.prototype.upWords = async function() {
+    let doc = this;
     let url = this.url.searchParams.get("event");
     let text = "";
     for (let w of this.words) {
@@ -636,10 +635,11 @@ Doc.prototype.upWords = async function () {
         "mode": this.mode
     };
 
-    var sData = JSON.stringify(form, getCircularReplacer());
+    let sData = JSON.stringify(form, getCircularReplacer());
+    console.log(sData);
     console.log("sending json");
     try {
-        let resp = await fetch("https://illegible.us:3000", {
+        let resp = await fetch(doc.dataUrl, {
             method: "post",
             body: sData
         });
@@ -657,8 +657,8 @@ Doc.prototype.upWords = async function () {
 
 };
 
-Doc.prototype.upImage = async function () {
-
+Doc.prototype.upImage = async function() {
+    let doc = this;
     let url = this.url.searchParams.get("event");
     form = {
         "page": this.currentPage,
@@ -671,7 +671,7 @@ Doc.prototype.upImage = async function () {
     var sData = JSON.stringify(form, getCircularReplacer());
     console.log("sending image");
     try {
-        let resp = await fetch("https://illegible.us:3000", {
+        let resp = await fetch(doc.dataUrl, {
             method: "post",
             body: sData
         });
@@ -698,9 +698,13 @@ function buildPages(doc) {
     return doc;
 }
 
-Doc.prototype.init = function () {
+Doc.prototype.init = function() {
 
-
+    if (window.location.href.includes("localhost")) {
+        this.dataUrl = "http://localhost:3000";
+    } else {
+        this.dataUrl = "https://oversightmachin.es:3535/";
+    }
 
 
     console.log("does this run?");
@@ -740,7 +744,7 @@ Doc.prototype.init = function () {
     full.style.transition = "clip-path 1s";
     full.style.clipPath = "inset(0 0 100%)";
 
-    document.querySelector("img").addEventListener("load", async function () {
+    document.querySelector("img").addEventListener("load", async function() {
 
         //typeCtx.clearRect(0, 0, type.width, type.height);
         read.textContent = "";
@@ -760,7 +764,7 @@ Doc.prototype.init = function () {
 };
 
 
-util.copyImage = async function (img) {
+util.copyImage = async function(img) {
     full.width = img.width;
     full.height = img.height;
     //fullCtx.clearRect(0, 0, full.width, full.height);
@@ -778,9 +782,11 @@ util.copyImage = async function (img) {
     return Promise.resolve();
 };
 
-Doc.prototype.process = async function () {
+Doc.prototype.process = async function() {
     var doc = this;
-    const { TesseractWorker } = Tesseract;
+    const {
+        TesseractWorker
+    } = Tesseract;
     var OEM = Tesseract.OEM;
     console.log("reading page");
     const worker = new TesseractWorker({
@@ -817,7 +823,7 @@ Doc.prototype.process = async function () {
             console.log(result.words.length);
             doc.rawLines = result.lines;
             await doc.processWords();
-        }).finally(async function () {
+        }).finally(async function() {
             console.log("oof");
 
             await doc.upImage()
@@ -837,7 +843,7 @@ Doc.prototype.process = async function () {
 
 
 };
-Doc.prototype.processWords = async function () {
+Doc.prototype.processWords = async function() {
     console.log("got " + this.rawLines.length + " lines, processing");
     let pct = parseFloat(full.offsetWidth / img.width).toFixed(2);
 
@@ -888,7 +894,7 @@ Doc.prototype.processWords = async function () {
 
 
 
-Word.prototype.showLetters = async function (doc) {
+Word.prototype.showLetters = async function(doc) {
     for (let chr of this.symbols) {
         chr.height = chr.bbox.y1 - chr.bbox.y0;
         chr.width = chr.bbox.x1 - chr.bbox.x0;
@@ -924,7 +930,7 @@ Word.prototype.showLetters = async function (doc) {
 }
 
 //takes cluster of letters, "reads" and processes
-Doc.prototype.addWord = async function (word) {
+Doc.prototype.addWord = async function(word) {
 
     console.log("&&&&&&&&&&&&&&&& adding word " + word.text);
     var doc = this;
@@ -1065,7 +1071,7 @@ Doc.prototype.addWord = async function (word) {
 };
 
 
-Doc.prototype.loadPage = async function () {
+Doc.prototype.loadPage = async function() {
     //ugh this is a mess, need to separate out:
     //if first load update url with paramters
 
@@ -1134,7 +1140,7 @@ Doc.prototype.loadPage = async function () {
 
 
 };
-Doc.prototype.getLines = function () {
+Doc.prototype.getLines = function() {
 
     //get line data from OCRAD
     console.log("running ocr");
@@ -1154,11 +1160,11 @@ Doc.prototype.getLines = function () {
 
 function get(url) {
     // Return a new promise.
-    return new Promise(function (resolve, reject) {
+    return new Promise(function(resolve, reject) {
         // Do the usual XHR stuff
         var req = new XMLHttpRequest();
         req.open("GET", url);
-        req.onload = function () {
+        req.onload = function() {
             // This is called even on 404 etc
             // so check the status
             if (req.status === 200) {
@@ -1171,7 +1177,7 @@ function get(url) {
             }
         };
         // Handle network errors
-        req.onerror = function () {
+        req.onerror = function() {
             reject(Error("Network Error"));
         };
         // Make the request
@@ -1179,14 +1185,14 @@ function get(url) {
     });
 }
 
-var compare = async function (word, dict) {
-    return new Promise(function (resolve) {
+var compare = async function(word, dict) {
+    return new Promise(function(resolve) {
 
         wWorker.postMessage({
             word: word,
             dict: dict
         });
-        wWorker.onmessage = function (result) {
+        wWorker.onmessage = function(result) {
             resolve(result.data);
         }
     });

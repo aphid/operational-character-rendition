@@ -576,7 +576,7 @@ Doc.prototype.init = function() {
     if (window.location.href.includes("localhost")) {
         this.dataUrl = "http://localhost:3000";
     } else {
-        this.dataUrl = "https://oversightmachin.es:3535/";
+        this.dataUrl = "https://oversightmachin.es:3000/";
     }
     console.log("does this run?");
     this.lines = [];

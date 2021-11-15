@@ -30,7 +30,7 @@ util.pause = function() {
 }
 
 for (let t in timings) {
-    timings[t] = timings[t] * 0.6;
+    //timings[t] = timings[t] * 0.6;
 }
 
 //characters to block

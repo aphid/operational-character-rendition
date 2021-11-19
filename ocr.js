@@ -430,7 +430,7 @@ var begin = async function() {
 //doc constructinator
 var Doc = function(options) {
     var doc = this;
-    this.mode = "ocrad";
+    this.mode = "ocrad_0.25";
     this.pages = options.pages;
     this.hearingId = options.hearingId;
     this.root = options.root;

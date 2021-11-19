@@ -709,7 +709,7 @@ Doc.prototype.init = function() {
 
     console.log("does this run?");
     this.lines = [];
-    this.mode = "tesseract";
+    this.mode = "tesseract_2.1.1";
     this.text = "";
     this.letters = [];
     this.words = [];
@@ -765,6 +765,7 @@ Doc.prototype.init = function() {
 
 
 util.copyImage = async function(img) {
+    console.log("loading image");
     full.width = img.width;
     full.height = img.height;
     //fullCtx.clearRect(0, 0, full.width, full.height);
@@ -774,6 +775,7 @@ util.copyImage = async function(img) {
         fullCtx.drawImage(img, 0, line, img.width, 1, 0, line, full.width, 1);
         line++;
         if (line % 3 === 0) {
+            console.log("waitin");
             await util.wait(timings.imgDelay);
         }
     }
@@ -806,7 +808,7 @@ Doc.prototype.process = async function() {
             */
         })
 
-        .progress((progress) => {
+        .progress(async (progress) => {
 
             const p = (progress.progress * 100).toFixed(2);
             //reveal based on %?

@@ -540,7 +540,8 @@ var begin = async function() {
 //doc constructinator
 var Doc = function(options) {
     var doc = this;
-    this.mode = "tess";
+    this.mode = "tesseract";
+    this.version = "2.1.1";
     this.pages = options.pages;
     this.hearingId = options.hearingId;
     this.root = options.root;
@@ -632,7 +633,7 @@ Doc.prototype.upWords = async function() {
         "words": this.words,
         "root": this.root,
         "title": this.title,
-        "mode": this.mode
+        "mode": this.mode + "_" + this.version
     };
 
     let sData = JSON.stringify(form, getCircularReplacer());
@@ -665,7 +666,7 @@ Doc.prototype.upImage = async function() {
         "pageImg": full.toDataURL(),
         "root": this.root,
         "title": this.title,
-        "mode": this.mode
+        "mode": this.mode + "_" + this.version
     };
 
     var sData = JSON.stringify(form, getCircularReplacer());
@@ -709,7 +710,8 @@ Doc.prototype.init = function() {
 
     console.log("does this run?");
     this.lines = [];
-    this.mode = "tesseract_2.1.1";
+    this.mode = "tesseract";
+    this.version = "2.1.1";
     this.text = "";
     this.letters = [];
     this.words = [];

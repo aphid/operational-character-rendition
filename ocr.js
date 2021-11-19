@@ -430,7 +430,8 @@ var begin = async function() {
 //doc constructinator
 var Doc = function(options) {
     var doc = this;
-    this.mode = "ocrad_0.25";
+    this.mode = "ocrad";
+    this.version = "0.25";
     this.pages = options.pages;
     this.hearingId = options.hearingId;
     this.root = options.root;
@@ -506,7 +507,7 @@ Doc.prototype.upWords = function() {
         "words": this.words,
         "root": this.root,
         "title": this.title,
-        "mode": this.mode
+        "mode": this.mode + "_" + this.version
     };
 
     return new Promise(function(resolve) {
@@ -539,7 +540,7 @@ Doc.prototype.upImage = function() {
         "pageImg": full.toDataURL(),
         "root": this.root,
         "title": this.title,
-        "mode": this.mode
+        "mode": this.mode + "_" + this.version
     };
 
     return new Promise(function(resolve) {

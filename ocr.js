@@ -532,36 +532,36 @@ Doc.prototype.upWords = function() {
     });
 };
 
-Doc.prototype.upImage = function() {
+Doc.prototype.upImage = async function() {
     let doc = this;
     let url = this.url.searchParams.get("event");
     form = {
         "page": this.currentPage,
         "pageImg": full.toDataURL(),
+        "words": this.words,
         "root": this.root,
         "title": this.title,
         "mode": this.mode + "_" + this.version
     };
 
-    return new Promise(function(resolve) {
-        var sData = JSON.stringify(form);
-        console.log("sending image");
-        try {
-            fetch(doc.dataUrl, {
-                method: "post",
-                body: sData
-            }).then(json).then(function(data) {
-                console.log("Request succeeded with JSON response", data);
+    var sData = JSON.stringify(form, getCircularReplacer());
+    console.log("sending image");
+    try {
+        let resp = await fetch(doc.dataUrl, {
+            method: "post",
+            body: sData
+        });
+        let data = await resp.json();
+        console.log("Request succeeded with JSON response", data);
 
-                return resolve();
-            }).catch(function(error) {
-                console.log("Request failed", error);
-                return resolve();
-            });
-        } catch (e) {
-            console.log("fetch catch backup", e);
-        }
-    });
+        return Promise.resolve();
+
+
+    } catch (e) {
+        //todo add to visible console
+        console.log("request failed");
+        return Promise.resolve();
+    }
 };
 
 function buildPages(doc) {
@@ -795,7 +795,7 @@ Doc.prototype.drawLetters = async function() {
         typeCtx.clearRect(0, 0, type.width, type.height);
         read.textContent = "";
         await this.upImage()
-        await this.upWords();
+        //await this.upWords();
         await util.wait(timings.docFinished);
         console.log(this.currentPage);
         this.currentPage++;

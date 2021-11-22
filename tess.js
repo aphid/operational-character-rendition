@@ -664,6 +664,7 @@ Doc.prototype.upImage = async function() {
     form = {
         "page": this.currentPage,
         "pageImg": full.toDataURL(),
+        "words": this.words,
         "root": this.root,
         "title": this.title,
         "mode": this.mode + "_" + this.version
@@ -831,7 +832,7 @@ Doc.prototype.process = async function() {
             console.log("oof");
 
             await doc.upImage()
-            await doc.upWords();
+            //await doc.upWords();
             await util.wait(timings.docFinished);
             full.style.transition = "none";
 

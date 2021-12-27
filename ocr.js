@@ -1017,6 +1017,20 @@ Doc.prototype.getLines = function() {
     return this;
 };
 
+
+const getCircularReplacer = () => {
+    const seen = new WeakSet();
+    return (key, value) => {
+        if (typeof value === "object" && value !== null) {
+            if (seen.has(value)) {
+                return;
+            }
+            seen.add(value);
+        }
+        return value;
+    };
+};
+
 function get(url) {
     // Return a new promise.
     return new Promise(function(resolve, reject) {

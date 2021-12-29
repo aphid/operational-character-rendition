@@ -190,7 +190,7 @@ Word.prototype.draw = async function() {
     let h = (wd.bbox.y1 - wd.bbox.y0) * pct;
     let fs = parseInt(wd.lineDiv.style.fontSize.replace("px", "")) || 0;
 
-    if (h > fs) {
+    if (h > fs && h < 120) {
         console.log("changing font size")
         wd.lineDiv.style.fontSize = h + "px";
     }

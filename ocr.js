@@ -507,7 +507,9 @@ Doc.prototype.upWords = function() {
         "words": this.words,
         "root": this.root,
         "title": this.title,
-        "mode": this.mode + "_" + this.version
+        "mode": this.mode + "_" + this.version,
+	"exh": this.url.searchParams.get("exhibition"),
+
     };
 
     return new Promise(function(resolve) {
@@ -541,7 +543,9 @@ Doc.prototype.upImage = async function() {
         "words": this.words,
         "root": this.root,
         "title": this.title,
-        "mode": this.mode + "_" + this.version
+        "mode": this.mode + "_" + this.version,
+	"exh": this.url.searchParams.get("exhibition")
+
     };
 
     var sData = JSON.stringify(form, getCircularReplacer());

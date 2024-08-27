@@ -633,7 +633,8 @@ Doc.prototype.upWords = async function() {
         "words": this.words,
         "root": this.root,
         "title": this.title,
-        "mode": this.mode + "_" + this.version
+        "mode": this.mode + "_" + this.version,
+        "exh": this.url.searchParams.get("exhibition")
     };
 
     let sData = JSON.stringify(form, getCircularReplacer());
@@ -667,8 +668,10 @@ Doc.prototype.upImage = async function() {
         "words": this.words,
         "root": this.root,
         "title": this.title,
-        "mode": this.mode + "_" + this.version
+        "mode": this.mode + "_" + this.version,
+	"exh": this.url.searchParams.get("exhibition")
     };
+
 
     var sData = JSON.stringify(form, getCircularReplacer());
     console.log("sending image");

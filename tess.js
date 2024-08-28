@@ -546,6 +546,8 @@ var Doc = function(options) {
     this.hearingId = options.hearingId;
     this.root = options.root;
     this.title = options.title;
+    this.exhibition = url.searchParams.get("exhibition")
+
     document.title = "operational character rendition: " + this.title;
     this.currentPage = 0;
     console.log("hello");
@@ -634,7 +636,7 @@ Doc.prototype.upWords = async function() {
         "root": this.root,
         "title": this.title,
         "mode": this.mode + "_" + this.version,
-        "exh": this.url.searchParams.get("exhibition")
+        "exh": this.exhibition
     };
 
     let sData = JSON.stringify(form, getCircularReplacer());
@@ -1105,7 +1107,11 @@ Doc.prototype.loadPage = async function() {
         console.log(page);
     } else if (this.currentPage >= this.pages.length - 1) {
         console.log("starting over, end of document reached");
-        window.location.href = this.url.origin + this.url.pathname + "?document=new";
+	let targurl = `${this.url.origin}${this.url.pathname}?document=new`;
+	if (this.exhibition) {
+            targurl = targurl + "&exhibition=" + this.exhibition;
+	}
+        window.location.href = targurl;
 
     } else if (this.url.searchParams.get("page") < this.pages.length) {
         console.log("page exists within range, url already set");

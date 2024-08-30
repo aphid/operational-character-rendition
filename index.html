@@ -3,15 +3,8 @@
 
 <head>
 
-
     <!-- need some logic here to pick between tesseract and OCRAD, tess/ocr-ad.js, css stays the same.-->
-    <script src="lib/fitty.min.js"></script>
-
-
-
-
-
-    <link rel="stylesheet" href="fonts.css">
+    <script type="module" src="./lib/textfit-web-component/textfit.js"></script>
 
 </head>
 
@@ -22,7 +15,7 @@
     <div id="container">
         <div id="top">
             <div id="read">
-                <div id="readword"></div>
+                <text-fit max-lines="1" min-font-size="8" max-font-size="25" font-unit="vh" id="readword"></text-fit>
                 <div id="readdata">
                     <div id="source"></div>
                     <div id="distance"></div>
@@ -55,42 +48,65 @@
 </body>
 <script>
 
-    let tess = ["lib/tesseract/tesseract.min.js", "lib/levenshtein.js", "tess.js", "tess.css"];
-    let ocrad = ["ocrad.js", "lib/levenshtein.js", "ocr.js", "ocrad.css"];
-
+    let tess = ["lib/tesseract/tesseract.min.js", "lib/levenshtein.js", "joined.js", "justtess.js", "tess.css"];
+    let ocrad = ["ocrad.js", "lib/levenshtein.js", "joined.js", "justocrad.js", "ocrad.css", "tess.css"];
+    var themode, theversion;
     let url = new URL(window.location.href);
     let rando = rand(0, 1);
 
     let mode = url.searchParams.get('mode');
     if (mode == "tesseract") {
         rando = 0;
+
     } else if (mode == "ocrad") {
         rando = 1;
     }
 
     if (rando == 0) {
         mode = tess;
+        themode = "tesseract";
+        theversion = "2.2.1";
     } else {
         mode = ocrad;
+        themode = "ocrad";
+        theversion = "0.25";
+
     }
 
     console.log(mode);
-    for (let m of mode) {
-        if (m.includes("css")) {
-            let lin = document.createElement("link");
-            lin.href = m;
-            lin.rel = "stylesheet";
-            document.head.appendChild(lin);
-        } else {
-            let scr = document.createElement("script");
-            scr.src = m;
-            scr.setAttribute("defer", true);
-            document.head.appendChild(scr);
-        }
-    }
+    loadScripts(mode);
+
 
     function rand(min, max) {
         return Math.floor(Math.random() * (max - min + 1)) + min
+    }
+
+    async function syncAdd(ele) {
+        return new Promise((resolve, reject) => {
+            console.log("waiting...");
+            document.head.appendChild(ele);
+            ele.addEventListener("load", function () {
+                console.log("...done");
+                resolve();
+            }, true);
+
+        });
+    }
+
+    async function loadScripts(mode) {
+        for (let m of mode) {
+            if (m.includes("css")) {
+                let lin = document.createElement("link");
+                lin.href = m;
+                lin.rel = "stylesheet";
+                await syncAdd(lin);
+            } else {
+                let scr = document.createElement("script");
+                scr.src = m;
+                scr.setAttribute("defer", false);
+                await syncAdd(scr);
+            }
+        }
     }
 </script>
 

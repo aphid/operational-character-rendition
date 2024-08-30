@@ -1,0 +1,98 @@
+<!doctype html>
+<html>
+
+<head>
+
+
+    <!-- need some logic here to pick between tesseract and OCRAD, tess/ocr-ad.js, css stays the same.-->
+    <script src="lib/fitty.min.js"></script>
+
+
+
+
+
+    <link rel="stylesheet" href="fonts.css">
+
+</head>
+
+
+<body>
+    <div id="json"></div>
+
+    <div id="container">
+        <div id="top">
+            <div id="read">
+                <div id="readword"></div>
+                <div id="readdata">
+                    <div id="source"></div>
+                    <div id="distance"></div>
+                </div>
+
+            </div>
+
+
+            <div id="chrs">
+
+                <canvas id="type" width="100" height="100"></canvas>
+                <div id="text">
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <canvas id="full"></canvas>
+        <div id="words">
+        </div>
+    </div>
+    <img id="page" crossorigin="anonymous">
+
+    <div id="console">
+        <div id="data"></div>
+        <div id="pages"></div>
+    </div>
+</body>
+<script>
+
+    let tess = ["lib/tesseract/tesseract.min.js", "lib/levenshtein.js", "tess.js", "tess.css"];
+    let ocrad = ["ocrad.js", "lib/levenshtein.js", "ocr.js", "ocrad.css"];
+
+    let url = new URL(window.location.href);
+    let rando = rand(0, 1);
+
+    let mode = url.searchParams.get('mode');
+    if (mode == "tesseract") {
+        rando = 0;
+    } else if (mode == "ocrad") {
+        rando = 1;
+    }
+
+    if (rando == 0) {
+        mode = tess;
+    } else {
+        mode = ocrad;
+    }
+
+    console.log(mode);
+    for (let m of mode) {
+        if (m.includes("css")) {
+            let lin = document.createElement("link");
+            lin.href = m;
+            lin.rel = "stylesheet";
+            document.head.appendChild(lin);
+        } else {
+            let scr = document.createElement("script");
+            scr.src = m;
+            scr.setAttribute("defer", true);
+            document.head.appendChild(scr);
+        }
+    }
+
+    function rand(min, max) {
+        return Math.floor(Math.random() * (max - min + 1)) + min
+    }
+</script>
+
+
+</html>

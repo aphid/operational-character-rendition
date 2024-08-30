@@ -15,7 +15,7 @@ body {
 
 #full {
     width: 50vw;
-    background:black;
+    background: black;
     position: relative;
     overflow: hidden;
     z-index: -1;
@@ -25,7 +25,7 @@ body {
 
 .xline {
     position: absolute;
-    color:orange;
+    color: orange;
     width: 1px;
     height: 1px;
 }
@@ -47,17 +47,25 @@ body {
 }
 
 #console {
-    display: none;
+    display: block;
     position: fixed;
     bottom: 0;
-    left: 0;
-    width: 100vw;
-    height: 6vh;
-    font-size: 4vh;
+    left: 50vw;
+    width: 50vw;
+    height: 100vh;
+    font-size: 1.2rem;
     color: rgba(248, 248, 255, 0.63);
     font-family: monospace;
-    background-color: rgb(0, 0, 0);
-    border-top: 1px solid #666
+    border-top: 1px solid #666;
+
+    white-space: normal;
+    hyphens: none;
+    overflow-wrap: anywhere;
+    line-break: anywhere;
+    word-break: unset;
+    word-break: break-all;
+    font-family: 'Courier New', Courier, monospace;
+    transition: 4s linear opacity;
 }
 
 #data {
@@ -99,6 +107,7 @@ body {
     padding: 0 3px;
     left: 50vw;
     height: auto;
+    max-height: 25vh;
     max-height: 100vh;
     width: 50vw;
     word-break: break-all;
@@ -187,7 +196,7 @@ body {
     background-color: black;
     color: white;
     top: 0;
-    padding-top: 15vh;
+    padding-top: 25vh;
     left: 50vw;
     width: 50vw;
     height: 100vh;
@@ -199,4 +208,7 @@ body {
 #line {
     display: none;
 }
-span { transition: color 0.4s ease;}
+
+span {
+    transition: color 0.4s ease;
+}

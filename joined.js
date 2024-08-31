@@ -327,7 +327,8 @@ var begin = async function () {
                     let pc = p.metadata.pageCount || p.metadata.PageCount;
                     cand.last = pc - 1;
                     //FIX THIS IN SCRAPER JEEZ
-                    cand.root = p.localPath.replace("/var/www", "https://").replace(".pdf", "").replace(".PDF", "").replace(".txt", "/").replace("html", "").replace("illegible.us", "oversightmachin.es") + "/";
+                    console.log(p.localPath);
+                    cand.root = p.localPath.replace("/mnt/oversee/", "https://oversightmachin.es/").replace(".pdf", "").replace(".PDF", "").replace(".txt", "/").replace("html", "").replace("illegible.us", "oversightmachin.es") + "/";
                     cand.title = p.localName.replace(".pdf", "").replace(".PDF", "");
                     candidates.push(cand);
                 }

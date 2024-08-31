@@ -889,8 +889,8 @@ Doc.prototype.loadPage = async function () {
         }
         words.scrollTop = words.scrollHeight;
     }
-    if (this.metadata) {
-        document.querySelector("#pages").textContent = "Page: " + (this.currentPage) + " / " + (parseInt(this.metadata.PageCount, 10) - 1);
+    if (this.metadata && document.querySelector("#pages")) {
+        //document.querySelector("#pages").textContent = "Page: " + (this.currentPage) + " / " + (parseInt(this.metadata.PageCount, 10) - 1);
     }
     console.log(this.currentPage);
     pageDiv.classList.add("page");

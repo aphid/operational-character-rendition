@@ -118,9 +118,19 @@ Doc.prototype.drawLetters = async function() {
 
 
         typeCtx.clearRect(0, 0, type.width, type.height);
+        await util.wait(timings.docFinished);
+        full.style.transition = "none";
+
+        full.style.clipPath = "inset(0 0 100 %)";
+
+        document.querySelector("#page" + doc.currentPage).style.borderBottom = "1px solid #333";
+        doc.currentPage++;
+
+        typeCtx.clearRect(0, 0, type.width, type.height);
+          
         read.textContent = "";
         await this.upImage()
-        //await this.upWords();
+        await this.upWords();
         await util.wait(timings.docFinished);
         console.log(this.currentPage);
         this.currentPage++;
@@ -247,7 +257,7 @@ Doc.prototype.drawLetters = async function() {
         console.log("length reached");
         console.log("done");
         this.dLetters = [];
-        await doc.upImage();
+        //await doc.upImage();
         this.word.wordTop = 0;
         this.word.wordBot = 0;
         return true;

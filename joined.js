@@ -348,11 +348,14 @@ var begin = async function () {
         if (!pick) {
             console.log("document not found");
             console.log(hearings)
+            await util.wait(5000);
+            pick = candidates[Math.floor(Math.random() * candidates.length)];
         }
     } else {
         console.log(candidates);
         pick = candidates[Math.floor(Math.random() * candidates.length)];
     }
+
     console.log(typeof pick.meta);
     if (typeof pick.meta == "string") {
         pick.meta = JSON.parse(pick.meta);
@@ -405,15 +408,15 @@ var Doc = function (options) {
     this.currentPage = 0;
     console.log("hello");
     console.log(options.root);
-    let troot = options.root.substring(0,options.root.length - 1)
+    let troot = options.root.substring(0, options.root.length - 1)
     let jsonURL = `${troot}.pdf.json`;
-    
+
     aFetch(jsonURL).then((result) => {
         if (!result) {
             document.querySelector('#console').style.display = "none";
             return false;
         }
-        console.log("OOOO",jsonURL)
+        console.log("OOOO", jsonURL)
         this.metadata = result;
         this.dataIndex = 0;
         this.txmetadata = JSON.stringify(result);
@@ -454,18 +457,18 @@ aFetch = async function (url) {
 
 //wtf does this do
 Doc.prototype.cycleData = async function () {
-    
+
     if (this.dataIndex < (Object.keys(this.metadata).length - 1)) {
         this.dataIndex++;
     } else {
         this.dataIndex = 0;
     }
- 
+
     document.querySelector("#data").textContent = Object.keys(this.metadata)[this.dataIndex] + ": " + Object.values(this.metadata)[this.dataIndex];
     //await util.wait(8000);
- 
+
     this.cycleData();
-    
+
 }
 
 const getCircularReplacer = () => {
@@ -520,6 +523,38 @@ Doc.prototype.upWords = async function () {
     }
 
 };
+
+Doc.prototype.upError = async function (page) {
+    let doc = this;
+    let url = this.url.searchParams.get("event");
+    form = {
+        "error": "bad image: " + page,
+        "page": this.currentPage,
+        "root": this.root,
+        "title": this.title,
+        "mode": this.mode + "_" + this.version,
+    };
+
+    var sData = JSON.stringify(form, getCircularReplacer());
+    console.log("sending image");
+    try {
+        let resp = await fetch(doc.dataUrl, {
+            method: "post",
+            body: sData
+        });
+        let data = await resp.json();
+        console.log("Request succeeded with JSON response", data);
+
+        return Promise.resolve();
+
+
+    } catch (e) {
+        //todo add to visible console
+        console.log("request failed");
+        return Promise.resolve();
+    }
+}
+
 
 Doc.prototype.upImage = async function () {
     let doc = this;
@@ -611,14 +646,14 @@ Doc.prototype.init = function () {
     console.log("init");
     full.style.transition = "clip-path 1s";
     full.style.clipPath = "inset(0 0 100%)";
+    let img = document.querySelector("img");
+    img.addEventListener("load", async function () {
 
-    document.querySelector("img").addEventListener("load", async function () {
-
-        //typeCtx.clearRect(0, 0, type.width, type.height);
+        typeCtx.clearRect(0, 0, type.width, type.height);
         read.textContent = "";
         console.log("copying img");
         full.style.top = "0";
-        //await util.copyImage(this);
+        await util.copyImage(this);
         console.log("image loaded");
         full.width = img.width;
         full.height = img.height;
@@ -840,7 +875,7 @@ Doc.prototype.loadPage = async function () {
     if (!this.url.searchParams.get("page")) {
         this.url.searchParams.set('page', this.currentPage);
     }
-
+    let doc = this;
     console.log(this.url);
     history.pushState({}, this.title, this.url.search);
     var page;
@@ -897,12 +932,33 @@ Doc.prototype.loadPage = async function () {
     pageDiv.id = "page" + this.currentPage;
     words.appendChild(pageDiv);
     img.src = '';
+    await util.wait(3000);
+    try {
+        util.testImage(page);       
+    } catch(e) {
+        doc.upError(page);
+        return doc.init();
+    }
     img.src = page;
     console.log("loaded " + this.pages[this.currentPage]);
 
 
 
 };
+
+
+util.testImage = async function (url) {
+
+    const myRequest = new Request("url");
+    let resp = await fetch(url);
+    console.log(resp.status);
+    if (resp.status === 200){
+        return Promise.resolve();
+    } else {
+        return Promise.reject(resp.status);
+    }
+
+}
 Doc.prototype.getLines = function () {
 
     //get line data from OCRAD

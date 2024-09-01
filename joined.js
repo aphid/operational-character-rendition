@@ -653,7 +653,7 @@ Doc.prototype.init = function () {
         read.textContent = "";
         console.log("copying img");
         full.style.top = "0";
-        await util.copyImage(this);
+        //await util.copyImage(this);
         console.log("image loaded");
         full.width = img.width;
         full.height = img.height;

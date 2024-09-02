@@ -189,8 +189,8 @@ Doc.prototype.process = async function () {
             }
         })
         .then(async (result) => {
-
-            document.querySelector("#console").style.opacity = 0.2;
+            document.querySelector("#meta").style.transition = "4s linear opacity";
+            document.querySelector("#meta").style.opacity = 0.2;
             await util.wait(7000);
             full.style.transition = "clip-path 0s";
 
@@ -201,7 +201,7 @@ Doc.prototype.process = async function () {
             console.log("oof");
 
             await doc.upImage()
-            //await doc.upWords();
+            await doc.upWords();
             await util.wait(timings.docFinished);
             full.style.transition = "none";
 

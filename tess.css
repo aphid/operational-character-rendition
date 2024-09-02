@@ -57,7 +57,7 @@ body {
     color: rgba(248, 248, 255, 0.63);
     font-family: monospace;
     border-top: 1px solid #666;
-
+    background-color: transparent;
     white-space: normal;
     hyphens: none;
     overflow-wrap: anywhere;

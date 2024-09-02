@@ -67,7 +67,7 @@ Doc.prototype.process = async function() {
         full.style.clipPath = "inset(0 0 " + (100 - prog) + "%)";
         await util.wait(500);
     }
-    document.querySelector("#console").style.opacity = 0.2;
+    document.querySelector("#meta").style.opacity = 0.2;
     await util.wait(7000);
 
     this.getLines().processLines();

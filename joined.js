@@ -411,21 +411,35 @@ var Doc = function (options) {
     let troot = options.root.substring(0, options.root.length - 1)
     let jsonURL = `${troot}.pdf.json`;
 
-    aFetch(jsonURL).then((result) => {
+    aFetch(jsonURL).then(async (result) => {
+        let cons = document.querySelector("#console");
+        let meta = document.querySelector("#meta");
+        
         if (!result) {
-            document.querySelector('#console').style.display = "none";
+            meta.style.display = "none";
             return false;
         }
-        console.log("OOOO", jsonURL)
+        console.log("OOOO", jsonURL);
+        meta.textContent = "";
+        meta.style.display = "block";
+
         this.metadata = result;
         this.dataIndex = 0;
         this.txmetadata = JSON.stringify(result);
-        document.querySelector("#console").style.display = block;
-        document.querySelector("#console").textContent = this.txmetadata;
+        meta.style.opacity = 0;
+        meta.style.display = block;
+
+        meta.style.transition = "0.25s linear opacity";
+        document.querySelector("#meta").textContent = this.txmetadata;
+        meta.style.fontSize = (parseFloat(window.getComputedStyle(cons).fontSize) * (cons.offsetHeight / meta.offsetHeight)) + .1 + "px" 
+        console.log("size", meta.style.fontSize);
+        meta.style.opacity = 100;
+
+        await util.wait(5000);
         //doc.cycleData();
     }).catch((e) => {
         console.log(e);
-        document.querySelector('#console').style.display = "none";
+        document.querySelector('#meta').style.display = "none";
     });
 
 

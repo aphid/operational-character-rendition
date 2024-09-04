@@ -67,6 +67,8 @@ Doc.prototype.process = async function() {
         full.style.clipPath = "inset(0 0 " + (100 - prog) + "%)";
         await util.wait(500);
     }
+    document.querySelector("#meta").style.transition = "4s linear opacity";
+
     document.querySelector("#meta").style.opacity = 0.2;
     await util.wait(7000);
 
@@ -124,7 +126,6 @@ Doc.prototype.drawLetters = async function() {
         full.style.clipPath = "inset(0 0 100 %)";
 
         document.querySelector("#page" + doc.currentPage).style.borderBottom = "1px solid #333";
-        doc.currentPage++;
 
         typeCtx.clearRect(0, 0, type.width, type.height);
           

@@ -985,14 +985,30 @@ let getDoc = async function(){
 
     var targetDoc = url.searchParams.get("document") || false;
     var targetPage = url.searchParams.get("page") || 0;
-    if (targetDoc){
-        return pickDoc();
-    }
+    console.log(targetDoc);
 
 
     
     let docs = await get("https://oversightmachin.es/ocr/hdocs.json");
     docs = JSON.parse(docs).reverse();
+
+    if (targetDoc){
+        for (let d of docs){
+            d.root = d.localPath.replace("/mnt/oversee/", "https://oversightmachin.es/").replace(".pdf", "").replace(".PDF", "").replace(".txt", "/").replace("html", "").replace("illegible.us", "oversightmachin.es") + "/";
+            d.title = d.localName.replace(".pdf", "").replace(".PDF", "");
+            let pc = d.metadata.pageCount || d.metadata.PageCount;
+            d.last = pc - 1;
+            console.log(d.title);
+            console.log(targetDoc);
+            if (d.title === targetDoc){
+                console.log("FOUND IT");
+              
+                console.log(d);
+                return d;
+            }
+        }
+    }
+  
     for (let d of docs){
         console.log(d);
 

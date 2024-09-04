@@ -306,62 +306,12 @@ var begin = async function () {
     }
     url = new URL(window.location.href);
 
+
     //console.dir(dicts);
     rawdict = JSON.parse(dicts[0]);
     suspectdict = JSON.parse(dicts[1]);
+    let pick = await getDoc();
 
-    docs = [];
-    var targetDoc = url.searchParams.get("document") || false;
-    var targetPage = url.searchParams.get("page") || 0;
-    var hearings = await get("data.json");
-    hearings = JSON.parse(hearings);
-    var candidates = [];
-    var pick;
-    for (var h of hearings.hearings) {
-        for (var w of h.witnesses) {
-            for (var p of w.pdfs) {
-                if (!p.hasText || p.needsScan) {
-                    let cand = {};
-                    //console.log(p);
-                    cand.meta = JSON.stringify(h);
-                    let pc = p.metadata.pageCount || p.metadata.PageCount;
-                    cand.last = pc - 1;
-                    //FIX THIS IN SCRAPER JEEZ
-                    console.log(p.localPath);
-                    cand.root = p.localPath.replace("/mnt/oversee/", "https://oversightmachin.es/").replace(".pdf", "").replace(".PDF", "").replace(".txt", "/").replace("html", "").replace("illegible.us", "oversightmachin.es") + "/";
-                    cand.title = p.localName.replace(".pdf", "").replace(".PDF", "");
-                    candidates.push(cand);
-                }
-            }
-        }
-    }
-    if (targetDoc && targetDoc !== "new") {
-        console.log("searching for", targetDoc);
-        for (var c of candidates) {
-            //console.log(c.title);
-            if (targetDoc === c.title) {
-                console.log("MATCHED PICK");
-                pick = c;
-            }
-        }
-        console.log("**********************", pick);
-        if (!pick) {
-            console.log("document not found");
-            console.log(hearings)
-            await util.wait(5000);
-            pick = candidates[Math.floor(Math.random() * candidates.length)];
-        }
-    } else {
-        console.log(candidates);
-        pick = candidates[Math.floor(Math.random() * candidates.length)];
-    }
-
-    console.log(typeof pick.meta);
-    if (typeof pick.meta == "string") {
-        pick.meta = JSON.parse(pick.meta);
-        console.log(pick.meta);
-
-    }
     var doc = {
         title: pick.title,
         root: pick.root,
@@ -369,7 +319,7 @@ var begin = async function () {
         hTitle: pick.hTitle,
         meta: pick.meta
     }
-
+    let docs = []
     docs.push(buildPages(doc));
 
     var url = new URL(window.location.href);
@@ -1030,3 +980,89 @@ var compare = async function (word, dict) {
         }
     });
 };
+
+let getDoc = async function(){
+
+    var targetDoc = url.searchParams.get("document") || false;
+    var targetPage = url.searchParams.get("page") || 0;
+    if (targetDoc){
+        return pickDoc();
+    }
+
+
+    
+    let docs = await get("https://oversightmachin.es/ocr/hdocs.json");
+    docs = JSON.parse(docs).reverse();
+    for (let d of docs){
+        console.log(d);
+
+        for (let m of d.modes){
+            if (!d.completedModes.includes(m)){
+                console.log(d);
+                d.root = d.localPath.replace("/mnt/oversee/", "https://oversightmachin.es/").replace(".pdf", "").replace(".PDF", "").replace(".txt", "/").replace("html", "").replace("illegible.us", "oversightmachin.es") + "/";
+                d.title = d.localName.replace(".pdf", "").replace(".PDF", "");
+                let pc = d.metadata.pageCount || d.metadata.PageCount;
+                d.last = pc - 1;
+                return d;
+            }
+        }
+    }
+};
+
+
+let pickDoc = async function(){
+
+    docs = [];
+    var targetDoc = url.searchParams.get("document") || false;
+    var targetPage = url.searchParams.get("page") || 0;
+    var hearings = await get("data.json");
+    hearings = JSON.parse(hearings);
+    var candidates = [];
+    var pick;
+    for (var h of hearings.hearings) {
+        for (var w of h.witnesses) {
+            for (var p of w.pdfs) {
+                if (!p.hasText || p.needsScan) {
+                    let cand = {};
+                    //console.log(p);
+                    cand.meta = JSON.stringify(h);
+                    let pc = p.metadata.pageCount || p.metadata.PageCount;
+                    cand.last = pc - 1;
+                    //FIX THIS IN SCRAPER JEEZ
+                    console.log(p.localPath);
+                    cand.root = p.localPath.replace("/mnt/oversee/", "https://oversightmachin.es/").replace(".pdf", "").replace(".PDF", "").replace(".txt", "/").replace("html", "").replace("illegible.us", "oversightmachin.es") + "/";
+                    cand.title = p.localName.replace(".pdf", "").replace(".PDF", "");
+                    candidates.push(cand);
+                }
+            }
+        }
+    }
+    if (targetDoc && targetDoc !== "new") {
+        console.log("searching for", targetDoc);
+        for (var c of candidates) {
+            //console.log(c.title);
+            if (targetDoc === c.title) {
+                console.log("MATCHED PICK");
+                pick = c;
+            }
+        }
+        console.log("**********************", pick);
+        if (!pick) {
+            console.log("document not found");
+            console.log(hearings)
+            await util.wait(5000);
+            pick = candidates[Math.floor(Math.random() * candidates.length)];
+        }
+    } else {
+        console.log(candidates);
+        pick = candidates[Math.floor(Math.random() * candidates.length)];
+    }
+
+    console.log(typeof pick.meta);
+    if (typeof pick.meta == "string") {
+        pick.meta = JSON.parse(pick.meta);
+        console.log(pick.meta);
+
+    }
+    return pick;
+}

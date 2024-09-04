@@ -319,21 +319,8 @@ var begin = async function () {
         hTitle: pick.hTitle,
         meta: pick.meta
     }
-    let docs = []
-    docs.push(buildPages(doc));
-
-    var url = new URL(window.location.href);
-    var thedoc = docs[Math.floor(Math.random() * docs.length)];
-    if (url.searchParams.get("title")) {
-        var tDoc = url.searchParams.get("title");
-        for (let doc of docs) {
-            if (doc.title === tDoc) {
-                thedoc = doc;
-            }
-        }
-    }
-    console.log(thedoc.title);
-
+   
+    thedoc = buildPages(doc);
 
 
     statement = new Doc({
@@ -1008,11 +995,11 @@ let getDoc = async function(){
             }
         }
     }
-  
-    for (let d of docs){
+    let modes = docs[0].modes;
+    for (let m of modes){
+        for (let d of docs){
         console.log(d);
 
-        for (let m of d.modes){
             if (!d.completedModes.includes(m)){
                 console.log(d);
                 d.root = d.localPath.replace("/mnt/oversee/", "https://oversightmachin.es/").replace(".pdf", "").replace(".PDF", "").replace(".txt", "/").replace("html", "").replace("illegible.us", "oversightmachin.es") + "/";

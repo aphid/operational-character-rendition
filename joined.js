@@ -339,7 +339,10 @@ var Doc = function (options) {
     this.hearingId = options.hearingId;
     this.root = options.root;
     this.title = options.title;
-    this.exhibition = url.searchParams.get("exhibition")
+    this.exhibition = url.searchParams.get("exhibition");
+    if (!this.exhibition){
+       this.exhibition = url.searchParams.get("exh");
+    }
     this.meta = options.meta;
     document.title = "operational character rendition: " + this.title;
     this.currentPage = 0;
@@ -368,7 +371,16 @@ var Doc = function (options) {
 
         meta.style.transition = "0.25s linear opacity";
         document.querySelector("#meta").textContent = this.txmetadata;
+<<<<<<< HEAD
         meta.style.fontSize = (parseFloat(window.getComputedStyle(cons).fontSize) * (cons.offsetHeight / meta.offsetHeight)) - 1 + "px" 
+=======
+        meta.style.fontSize = (parseFloat(window.getComputedStyle(cons).fontSize) * (cons.offsetHeight / meta.offsetHeight)) + .1 + "pt";
+	console.log(meta.style.fontSize);
+	if (this.exhibition === "slash"){
+	   console.log("SMALLER");
+	   meta.style.fontSize = parseFloat(meta.style.fontSize) * .4 + "pt";
+	}
+>>>>>>> da2d666f573319656428cbebf5e4a799a0d50951
         console.log("size", meta.style.fontSize);
         meta.style.opacity = 100;
 

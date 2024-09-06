@@ -368,7 +368,7 @@ var Doc = function (options) {
 
         meta.style.transition = "0.25s linear opacity";
         document.querySelector("#meta").textContent = this.txmetadata;
-        meta.style.fontSize = (parseFloat(window.getComputedStyle(cons).fontSize) * (cons.offsetHeight / meta.offsetHeight)) + .1 + "px" 
+        meta.style.fontSize = (parseFloat(window.getComputedStyle(cons).fontSize) * (cons.offsetHeight / meta.offsetHeight)) - 1 + "px" 
         console.log("size", meta.style.fontSize);
         meta.style.opacity = 100;
 
@@ -484,6 +484,8 @@ Doc.prototype.upError = async function (page) {
         "root": this.root,
         "title": this.title,
         "mode": this.mode + "_" + this.version,
+        "exh": this.url.searchParams.get("exhibition")
+
     };
 
     var sData = JSON.stringify(form, getCircularReplacer());

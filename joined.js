@@ -371,16 +371,12 @@ var Doc = function (options) {
 
         meta.style.transition = "0.25s linear opacity";
         document.querySelector("#meta").textContent = this.txmetadata;
-<<<<<<< HEAD
-        meta.style.fontSize = (parseFloat(window.getComputedStyle(cons).fontSize) * (cons.offsetHeight / meta.offsetHeight)) - 1 + "px" 
-=======
         meta.style.fontSize = (parseFloat(window.getComputedStyle(cons).fontSize) * (cons.offsetHeight / meta.offsetHeight)) + .1 + "pt";
 	console.log(meta.style.fontSize);
 	if (this.exhibition === "slash"){
 	   console.log("SMALLER");
 	   meta.style.fontSize = parseFloat(meta.style.fontSize) * .4 + "pt";
 	}
->>>>>>> da2d666f573319656428cbebf5e4a799a0d50951
         console.log("size", meta.style.fontSize);
         meta.style.opacity = 100;
 

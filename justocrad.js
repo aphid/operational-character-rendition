@@ -53,6 +53,7 @@ Word.prototype.draw = async function() {
             wd.lineDiv.dataset.highest = wd.lineDiv.offsetHeight;
             wd.lineDiv.style.minHeight = wd.lineDiv.offsetHeight + "px";
         }
+        wd.parent.style.width = wd.span.offsetWidth + 10 + "px";
         await util.wait(delay);
         console.log("returning draw");
         return resolve("finished");
@@ -74,15 +75,18 @@ Doc.prototype.process = async function() {
 
     this.getLines().processLines();
 };
+
 Doc.prototype.processLines = async function() {
     console.log("got " + this.lines.length + " lines, processing");
     for (var i = 0; i < this.lines.length; i++) {
+        console.log("new line");
+        this.currentLine = [i];
         var line = this.lines[i];
         fullCtx.fillStyle = "rgb(0,0,0)";
         //console.dir(line);
         for (var j = 0; j < line.letters.length; j++) {
             var letter = line.letters[j];
-            letter.lineNum = line.num;
+            letter.lineNum = [i];
             if (j === line.letters.length - 1) {
                 letter.wordEnd = true;
                 letter.lineEnd = true;
@@ -97,6 +101,26 @@ Doc.prototype.processLines = async function() {
         }
     }
     await this.drawLetters();
+};
+
+
+Doc.prototype.getLines = function () {
+
+    //get line data from OCRAD
+    console.log("running ocr");
+    var lines = OCRAD(img, {
+        verbose: true
+    }).lines;
+    //filter out small lines and lines with no characters
+    this.currentLine = 0;
+    for (var line of lines) {
+        if (line.height > 8 && line.letters.length) {
+            line.num = this.currentLine;
+            this.lines.push(line);
+        }
+
+    }
+    return this;
 };
 
 Doc.prototype.drawLetters = async function() {
@@ -309,9 +333,16 @@ Doc.prototype.addWord = async function(word) {
             }
             //adds space
             span.textContent = word.text + " ";
-            word.span = span;
-            word.lineDiv.appendChild(span);
             word.lineDiv.dataset.highest = word.lineDiv.offsetHeight;
+
+            var parent = document.createElement("div");
+            word.parent = parent;
+            word.span = word.parent.appendChild(span);
+            word.lineDiv.appendChild(word.parent);
+            parent.style.display = "inline-block";
+
+
+
             //scrolls into view
             words.scrollTop = words.scrollHeight;
             var comp;
@@ -358,6 +389,14 @@ Doc.prototype.addWord = async function(word) {
                     //word.compFailed = true;
                     //span.classList.add("iffy");
                 }
+                if (word.lineEnd){
+                    this.currentLine++;
+                    let lineDiv = document.createElement("div");
+                    lineDiv.id = "line" + doc.currentPage + "_" + word.lineNum;
+                    lineDiv.classList.add("line");
+                    word.pageDiv.appendChild(word.lineDiv);
+                }
+
                 await word.pots();
                 console.log("&&&&&& ending word", word.text);
                 return resolve();

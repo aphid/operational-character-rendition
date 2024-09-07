@@ -224,12 +224,17 @@ Word.prototype.flip = async function () {
         this.potpos = 0;
     }
 
-    if (themode === "tesseract") {
+    //if (themode === "tesseract") {
         if (wd.span.offsetWidth > wd.widest) {
-            wd.parent.style.width = wd.span.offsetWidth + "px";
             wd.widest = wd.span.offsetWidth;
+
+            wd.parent.style.width = wd.widest + "px";
+            if (themode === "ocrad"){
+                wd.parent.style.width = wd.widest + 10 + "px";
+
+            }
         }
-    }
+    //}
 
     var wTime = (300 / (thispot.distance || 1)) + 250 + (Math.random() * 100);
     await util.wait(wTime);
@@ -684,146 +689,6 @@ Word.prototype.showLetters = async function (doc) {
 
 }
 
-//takes cluster of letters, "reads" and processes
-Doc.prototype.addWord = async function (word) {
-
-    console.log("&&&&&&&&&&&&&&&& adding word " + word.text);
-    var doc = this;
-    if (!word || word.fail) {
-        //console.log("%%%%%%%%%%%% no word");
-        console.log(word);
-        return false;
-    }
-
-    // console.log(word.lineNum);
-    word.pageDiv = document.querySelector("#page" + doc.currentPage);
-    //sees if we need a newline
-    if (!document.querySelector("#line" + doc.currentPage + "_" + word.lineNum)) {
-        word.lineDiv = document.createElement("div");
-        word.lineDiv.id = "line" + doc.currentPage + "_" + word.lineNum;
-        word.lineDiv.classList.add("line");
-        let ml = ((word.leftpct * 100 - 5) || 1);
-        if (ml < 5) {
-            ml = 5;
-        }
-        word.lineDiv.style.marginLeft = ml + "%";
-        //word.lineDiv.style.marginTop = word.lineTop + "px";
-        word.pageDiv.appendChild(word.lineDiv);
-
-
-        // wd.calculatePcts();
-        let pct = parseFloat(full.offsetHeight / img.height).toFixed(2);
-
-        //word.lineDiv.fontSize;
-        let prevLT;
-        if (word.prevLine) {
-            console.log(word.prevLine);
-            prevLT = word.prevLine.bbox.y1 * pct;
-            //+ prevLT.clientHeight;
-        } else {
-            prevLT = 0;
-        }
-        //console.log(word.bbox.y0 * pct, word.lineTop, prevLT)
-        let lineDif = parseInt((word.bbox.y0 * pct) - prevLT);
-
-        //alert(lineDif);
-        console.log("moving 907");
-        /* FIX THIS */
-        word.lineDiv.style.marginTop = lineDif + "px";
-
-    } else {
-        word.lineDiv = document.querySelector("#line" + doc.currentPage + "_" + word.lineNum);
-    }
-    word.rawResults = [];
-
-    var parent = document.createElement("div");
-
-    parent.style.display = "inline-block";
-    var ssize;
-    ssize = word.lineHeight * .7;
-    if (ssize > 50) {
-        ssize = 50;
-    }
-    if (ssize < 25) {
-        ssize = 25;
-    }
-
-    //span.style.fontSize = ssize + "px";
-    let scaleSize = word.font_size * (full.offsetWidth / img.width);
-    scaleSize = parseFloat(Math.floor(scaleSize));
-
-    scaleSize = scaleSize + "px";
-    console.log(scaleSize);
-    //parent.style.fontSize = scaleSize;
-    //console.log(span.style.fontSize);
-    //i forget this use case
-    if (word.text !== "? ") {
-        //doc.words.push(word);
-    }
-    //parent.style.border = "1px solid orange";
-    word.parent = parent;
-    let span = document.createElement("span");
-    word.span = word.parent.appendChild(span);
-    word.span.display = "none";
-    word.span.textContent = word.text + " ";
-    //adds space
-
-
-
-    word.lineDiv.appendChild(word.parent);
-    word.lineDiv.dataset.highest = word.lineDiv.offsetHeight;
-    //scrolls into view
-    words.scrollTop = words.scrollHeight;
-    var comp;
-    //word.clean = word.text.replace(/[^a-zA-Z0-9]+/g, "");
-    word.clean = word.text;
-    //console.time(word.clean);
-    comp = await compare(word.clean, "raw");
-    //console.timeEnd(word.clean);
-    if (comp) {
-        //one result
-        if (comp.low === 0 || comp.words.length === 1) {
-            word.span.textContent = comp.words[0].word + " ";
-        } else {
-            word.span.textContent = comp.words[0].word + " ";
-            //lolidk
-            if (word.lineDiv.offsetHeight > word.lineDiv.dataset.highest) {
-                word.lineDiv.dataset.highest = word.lineDiv.offsetHeight;
-                word.lineDiv.style.minHeight = word.lineDiv.offsetHeight + "px";
-            }
-        }
-        word.rawResults = comp.words;
-    } else {
-        console.log("no results for ", word.text, " in dict");
-        word.compFailed = true;
-        word.span.classList.add("iffy");
-    }
-    comp = await compare(word.clean, "susp");
-    if (comp) {
-        word.span.classList.add("suspect");
-        if (comp.low === 0) {
-            word.span.textContent = comp.words[0].word + " ";
-        } else {
-            word.span.textContent = comp.words[0].word + " ";
-            if (word.lineDiv.offsetHeight > word.lineDiv.dataset.highest) {
-                word.lineDiv.dataset.highest = word.lineDiv.offsetHeight;
-                word.lineDiv.style.minHeight = word.lineDiv.offsetHeight + "px";
-            }
-            //span.textContent = span.textContent + JSON.stringify(comp);
-        }
-        word.suspResults = comp.words;
-    } else {
-        //console.log("no results in susp for ", word.text);
-        //word.compFailed = true;
-        //span.classList.add("iffy");
-    }
-
-    await word.pots();
-    //console.log("&&&&&& ending word", word.text);
-
-    doc.lastWord = word;
-
-};
 
 
 Doc.prototype.loadPage = async function () {

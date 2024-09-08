@@ -327,11 +327,12 @@ var begin = async function () {
             }
         }
     }
-    console.log(mode);
     thedoc = buildPages(pick);
+    console.log(mode, thedoc.lastPage)
 
     console.log(thedoc);
     let mod = await pickMode(mode);
+    console.log(mod);
     statement = new Doc({
         pages: thedoc.pages,
         title: thedoc.title,

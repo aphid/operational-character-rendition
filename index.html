@@ -61,10 +61,10 @@
             mode = url.searchParams.get('mode');
         }
         console.log(mode);
-        if (mode == "tesseract_2.2.1" || mode == "tesseract") {
+        if (mode == "tesseract_2.2.1" || mode.includes("tesseract")) {
             rando = 0;
 
-        } else if (mode == "ocrad_0.25" || mode == "ocrad") {
+        } else if (mode == "ocrad_0.25" || mode.includes("ocrad")) {
             rando = 1;
         }
 

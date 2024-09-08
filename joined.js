@@ -511,12 +511,15 @@ Doc.prototype.upWords = async function () {
 Doc.prototype.upError = async function (page) {
     let doc = this;
     let url = this.url.searchParams.get("event");
+    if (!this.mode.includes("_"){
+        this.mode = this.mode + "_" this.version;
+    });
     form = {
         "error": "bad image: " + page,
         "page": this.currentPage,
         "root": this.root,
         "title": this.title,
-        "mode": this.mode + "_" + this.version,
+        "mode": this.mode,
         "exh": this.url.searchParams.get("exhibition")
 
     };
@@ -545,13 +548,16 @@ Doc.prototype.upError = async function (page) {
 Doc.prototype.upImage = async function () {
     let doc = this;
     let url = this.url.searchParams.get("event");
+    if (!this.mode.includes("_"){
+        this.mode = this.mode + "_" this.version;
+    });
     form = {
         "page": this.currentPage,
         "pageImg": full.toDataURL(),
         "words": this.words,
         "root": this.root,
         "title": this.title,
-        "mode": this.mode + "_" + this.version,
+        "mode": this.mode,
         "exh": this.url.searchParams.get("exhibition")
     };
 

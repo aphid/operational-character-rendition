@@ -316,42 +316,58 @@ var begin = async function () {
     rawdict = JSON.parse(dicts[0]);
     suspectdict = JSON.parse(dicts[1]);
     let pick = await getDoc();
-
-    var doc = {
-        title: pick.title,
-        root: pick.root,
-        last: pick.last,
-        hTitle: pick.hTitle,
-        meta: pick.meta
+    let mode;
+    if (!pick.completedModes.includes("tesseract_2.1.1")){
+        mode = "tesseract_2.1.1";
     }
-   
-    thedoc = buildPages(doc);
+    else {
+        for (let m of pick.modes){  
+            if (!pick.completedModes.includes(m)){
+                mode = m;
+            }
+        }
+    }
+    console.log(mode);
+    thedoc = buildPages(pick);
 
-
+    console.log(thedoc);
+    let mod = await pickMode(mode);
     statement = new Doc({
         pages: thedoc.pages,
         title: thedoc.title,
         root: thedoc.root,
-        meta: thedoc.meta
+        meta: thedoc.meta,
+        mode: mode,
+        lastPage: thedoc.lastPage[mode],
     });
+
 
 };
 
 //doc constructinator
 var Doc = function (options) {
+    console.log(options);
     var doc = this;
+    this.mode = options.mode;
     this.pages = options.pages;
     this.hearingId = options.hearingId;
     this.root = options.root;
     this.title = options.title;
+
+
+    if (options.lastPage){
+        
+    }
+    this.currentPage = options.lastPage;
+
+    console.log(this);
     this.exhibition = url.searchParams.get("exhibition");
     if (!this.exhibition){
        this.exhibition = url.searchParams.get("exh");
     }
     this.meta = options.meta;
     document.title = "operational character rendition: " + this.title;
-    this.currentPage = 0;
-    console.log("hello");
+   console.log("hello");
     console.log(options.root);
     let troot = options.root.substring(0, options.root.length - 1)
     let jsonURL = `${troot}.pdf.json`;
@@ -378,6 +394,9 @@ var Doc = function (options) {
         document.querySelector("#meta").textContent = this.txmetadata;
         meta.style.fontSize = (parseFloat(window.getComputedStyle(cons).fontSize) * (cons.offsetHeight / meta.offsetHeight)) + .1 + "pt";
 	console.log(meta.style.fontSize);
+
+
+
 	if (this.exhibition === "slash"){
 	   console.log("SMALLER");
 	   meta.style.fontSize = parseFloat(meta.style.fontSize) * .4 + "pt";
@@ -574,7 +593,6 @@ Doc.prototype.init = function () {
     } else {
         this.dataUrl = "https://oversightmachin.es:3000/";
     }
-    this.mode = themode;
     this.version = theversion;
 
     console.log("does this run?");
@@ -785,23 +803,6 @@ util.testImage = async function (url) {
     }
 
 }
-Doc.prototype.getLines = function () {
-
-    //get line data from OCRAD
-    console.log("running ocr");
-    var lines = OCRAD(img, {
-        verbose: true
-    }).lines;
-    //filter out small lines and lines with no characters
-    this.currentLine = 0;
-    for (var line of lines) {
-        if (line.height > 8 && line.letters.length) {
-            line.num = this.currentLine;
-            this.lines.push(line);
-        }
-    }
-    return this;
-};
 
 function get(url) {
     // Return a new promise.

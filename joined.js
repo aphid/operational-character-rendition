@@ -395,10 +395,10 @@ var Doc = function (options) {
 	console.log(meta.style.fontSize);
 
 
-	if (this.exhibition === "slash"){
+	//if (this.exhibition === "slash"){
 	   console.log("SMALLER");
 	   meta.style.fontSize = parseFloat(meta.style.fontSize) * .4 + "pt";
-	}
+	//}
         console.log("size", meta.style.fontSize);
         meta.style.opacity = 100;
 	util.resize();
@@ -635,7 +635,6 @@ Doc.prototype.init = function () {
     }
 
     history.pushState({}, (this.title + "_" + this.currentPage), this.url.search);
-
     var doc = this;
     console.log("init");
     full.style.transition = "clip-path 1s";

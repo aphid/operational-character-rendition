@@ -473,6 +473,9 @@ Doc.prototype.upWords = async function () {
     let doc = this;
     let url = this.url.searchParams.get("event");
     let text = "";
+    if (!this.mode.includes("_")){
+        this.mode = this.mode + "_" + this.version;
+    }
     for (let w of this.words) {
         text = text + w.text + " ";
     }
@@ -482,7 +485,7 @@ Doc.prototype.upWords = async function () {
         "words": this.words,
         "root": this.root,
         "title": this.title,
-        "mode": this.mode + "_" + this.version,
+        "mode": this.mode,
         "exh": this.exhibition
     };
 

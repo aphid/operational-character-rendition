@@ -81,7 +81,10 @@
     },
     "pdfChecked": true,
     "imagesChecked": true,
-    "lastPage": 0
+    "lastPage": {
+      "tesseract_2.1.1": 0,
+      "ocrad_0.25": 0
+    }
   },
   {
     "localName": "180905_0930_bio-ssandberg-090518.pdf",
@@ -163,7 +166,10 @@
     },
     "pdfChecked": true,
     "imagesChecked": true,
-    "lastPage": 0
+    "lastPage": {
+      "tesseract_2.1.1": 0,
+      "ocrad_0.25": 0
+    }
   },
   {
     "localName": "180905_0930_bio-jdorsey-090518.pdf",
@@ -261,7 +267,10 @@
     },
     "pdfChecked": true,
     "imagesChecked": true,
-    "lastPage": 0
+    "lastPage": {
+      "tesseract_2.1.1": 0,
+      "ocrad_0.25": 0
+    }
   },
   {
     "localName": "180515_0930_q-revanina-051518.pdf",
@@ -397,7 +406,10 @@
     },
     "pdfChecked": true,
     "imagesChecked": true,
-    "lastPage": 0
+    "lastPage": {
+      "tesseract_2.1.1": 0,
+      "ocrad_0.25": 0
+    }
   },
   {
     "localName": "180509_0930_q-ghaspel-050918.pdf",
@@ -524,7 +536,10 @@
     },
     "pdfChecked": true,
     "imagesChecked": true,
-    "lastPage": 0
+    "lastPage": {
+      "tesseract_2.1.1": 0,
+      "ocrad_0.25": 0
+    }
   },
   {
     "localName": "180509_0930_HASPEL_UNCLASS-QFR_RESPONSE_15MAY18_UPDATED.pdf",
@@ -717,7 +732,10 @@
     },
     "pdfChecked": true,
     "imagesChecked": true,
-    "lastPage": 0
+    "lastPage": {
+      "tesseract_2.1.1": 0,
+      "ocrad_0.25": 0
+    }
   },
   {
     "localName": "180315_1000_q-pnakasone-031518.pdf",
@@ -846,7 +864,10 @@
     },
     "pdfChecked": true,
     "imagesChecked": true,
-    "lastPage": 0
+    "lastPage": {
+      "tesseract_2.1.1": 0,
+      "ocrad_0.25": 0
+    }
   },
   {
     "localName": "180307_0930_QFR_responses_from_Farrell_GAO.pdf",
@@ -963,7 +984,10 @@
     },
     "pdfChecked": true,
     "imagesChecked": true,
-    "lastPage": 0
+    "lastPage": {
+      "tesseract_2.1.1": 0,
+      "ocrad_0.25": 0
+    }
   },
   {
     "localName": "180307_0930_bio-bdunbar-030718.pdf",
@@ -1078,7 +1102,10 @@
     },
     "pdfChecked": true,
     "imagesChecked": true,
-    "lastPage": 0
+    "lastPage": {
+      "tesseract_2.1.1": 0,
+      "ocrad_0.25": 0
+    }
   },
   {
     "localName": "180307_0930_QFR_Responses_from_Dunbar_ODNI.pdf",
@@ -1203,7 +1230,10 @@
     },
     "pdfChecked": true,
     "imagesChecked": true,
-    "lastPage": 0
+    "lastPage": {
+      "tesseract_2.1.1": 0,
+      "ocrad_0.25": 0
+    }
   },
   {
     "localName": "171101_0930_Exhibits_used_by_Chairman_Burr_during_the_2017-11-01_hearing.pdf",
@@ -1306,7 +1336,10 @@
     },
     "pdfChecked": true,
     "imagesChecked": true,
-    "lastPage": 0
+    "lastPage": {
+      "tesseract_2.1.1": 0,
+      "ocrad_0.25": 0
+    }
   },
   {
     "localName": "171101_0930_Exhibits_used_by_Vice_Chairman_Warner_during_the_2017-11-01_hearing.pdf",
@@ -1469,7 +1502,10 @@
     },
     "pdfChecked": true,
     "imagesChecked": true,
-    "lastPage": 0
+    "lastPage": {
+      "tesseract_2.1.1": 0,
+      "ocrad_0.25": 0
+    }
   },
   {
     "localName": "171031_0930_os-jdemers-103117.pdf",
@@ -1551,7 +1587,10 @@
     },
     "pdfChecked": true,
     "imagesChecked": true,
-    "lastPage": 0
+    "lastPage": {
+      "tesseract_2.1.1": 0,
+      "ocrad_0.25": 0
+    }
   },
   {
     "localName": "171031_0930_q-jdemers-103117.pdf",
@@ -1646,7 +1685,10 @@
     },
     "pdfChecked": true,
     "imagesChecked": true,
-    "lastPage": 0
+    "lastPage": {
+      "tesseract_2.1.1": 0,
+      "ocrad_0.25": 0
+    }
   },
   {
     "localName": "171031_0930_aphq-jdemers-103117.pdf",
@@ -1737,7 +1779,10 @@
     },
     "pdfChecked": true,
     "imagesChecked": true,
-    "lastPage": 0
+    "lastPage": {
+      "tesseract_2.1.1": 0,
+      "ocrad_0.25": 0
+    }
   },
   {
     "localName": "171031_0930_Demers_QFR_responses.pdf",
@@ -1825,7 +1870,10 @@
     },
     "pdfChecked": true,
     "imagesChecked": true,
-    "lastPage": 0
+    "lastPage": {
+      "tesseract_2.1.1": 0,
+      "ocrad_0.25": 0
+    }
   },
   {
     "localName": "171017_0230_Christopher_Sharpley_Post-Hearing_Responses_to_Questions,_October_24,_2017.pdf",
@@ -1909,7 +1957,10 @@
     },
     "pdfChecked": true,
     "imagesChecked": true,
-    "lastPage": 0
+    "lastPage": {
+      "tesseract_2.1.1": 0,
+      "ocrad_0.25": 0
+    }
   },
   {
     "localName": "170621_0930_os-mhaas-062117.pdf",
@@ -2026,7 +2077,10 @@
     },
     "pdfChecked": true,
     "imagesChecked": true,
-    "lastPage": 0
+    "lastPage": {
+      "tesseract_2.1.1": 0,
+      "ocrad_0.25": 0
+    }
   },
   {
     "localName": "170607_1000_bio-dcoats-060717.pdf",
@@ -2142,7 +2196,10 @@
     },
     "pdfChecked": true,
     "imagesChecked": true,
-    "lastPage": 0
+    "lastPage": {
+      "tesseract_2.1.1": 0,
+      "ocrad_0.25": 0
+    }
   },
   {
     "localName": "170607_1000_FISA_QFRs_2017-06-07.pdf",
@@ -2285,7 +2342,10 @@
     },
     "pdfChecked": true,
     "imagesChecked": true,
-    "lastPage": 0
+    "lastPage": {
+      "tesseract_2.1.1": 0,
+      "ocrad_0.25": 0
+    }
   },
   {
     "localName": "170607_1000_bio-mrogers-060717.pdf",
@@ -2400,7 +2460,10 @@
     },
     "pdfChecked": true,
     "imagesChecked": true,
-    "lastPage": 0
+    "lastPage": {
+      "tesseract_2.1.1": 0,
+      "ocrad_0.25": 0
+    }
   },
   {
     "localName": "170511_1000_FBI_Response_to_Committee_Questions_for_the_Record.pdf",
@@ -2522,7 +2585,10 @@
     },
     "pdfChecked": true,
     "imagesChecked": true,
-    "lastPage": 0
+    "lastPage": {
+      "tesseract_2.1.1": 0,
+      "ocrad_0.25": 0
+    }
   },
   {
     "localName": "170330_0200_bio-kalexander-033017.pdf",
@@ -2591,7 +2657,10 @@
     },
     "pdfChecked": true,
     "imagesChecked": true,
-    "lastPage": 0
+    "lastPage": {
+      "tesseract_2.1.1": 0,
+      "ocrad_0.25": 0
+    }
   },
   {
     "localName": "170112_1000_questionnaire-011217.pdf",
@@ -2720,7 +2789,10 @@
     },
     "pdfChecked": true,
     "imagesChecked": true,
-    "lastPage": 0
+    "lastPage": {
+      "tesseract_2.1.1": 0,
+      "ocrad_0.25": 0
+    }
   },
   {
     "localName": "170112_1000_pre-hearing-011217.pdf",
@@ -2827,7 +2899,10 @@
     },
     "pdfChecked": true,
     "imagesChecked": true,
-    "lastPage": 0
+    "lastPage": {
+      "tesseract_2.1.1": 0,
+      "ocrad_0.25": 0
+    }
   },
   {
     "localName": "170112_1000_pre-hearing-b-011217.pdf",
@@ -2915,7 +2990,10 @@
     },
     "pdfChecked": true,
     "imagesChecked": true,
-    "lastPage": 0
+    "lastPage": {
+      "tesseract_2.1.1": 0,
+      "ocrad_0.25": 0
+    }
   },
   {
     "localName": "141120_0230_questionnaire_(6).pdf",
@@ -3018,7 +3096,10 @@
     },
     "pdfChecked": true,
     "imagesChecked": true,
-    "lastPage": 0
+    "lastPage": {
+      "tesseract_2.1.1": 0,
+      "ocrad_0.25": 0
+    }
   },
   {
     "localName": "141120_0230_prehearing_(6).pdf",
@@ -3121,7 +3202,10 @@
     },
     "pdfChecked": true,
     "imagesChecked": true,
-    "lastPage": 0
+    "lastPage": {
+      "tesseract_2.1.1": 0,
+      "ocrad_0.25": 0
+    }
   },
   {
     "localName": "140605_0230_woods.pdf",
@@ -3258,7 +3342,10 @@
     },
     "pdfChecked": true,
     "imagesChecked": true,
-    "lastPage": 0
+    "lastPage": {
+      "tesseract_2.1.1": 0,
+      "ocrad_0.25": 0
+    }
   },
   {
     "localName": "140225_0230_carlinquestionnaire.pdf",
@@ -3385,7 +3472,10 @@
     },
     "pdfChecked": true,
     "imagesChecked": true,
-    "lastPage": 0
+    "lastPage": {
+      "tesseract_2.1.1": 0,
+      "ocrad_0.25": 0
+    }
   },
   {
     "localName": "140225_0230_carlinprehearing.pdf",
@@ -3515,7 +3605,10 @@
     },
     "pdfChecked": true,
     "imagesChecked": true,
-    "lastPage": 0
+    "lastPage": {
+      "tesseract_2.1.1": 0,
+      "ocrad_0.25": 0
+    }
   },
   {
     "localName": "140225_0230_taylorquestionnaire.pdf",
@@ -3654,7 +3747,10 @@
     },
     "pdfChecked": true,
     "imagesChecked": true,
-    "lastPage": 0
+    "lastPage": {
+      "tesseract_2.1.1": 0,
+      "ocrad_0.25": 0
+    }
   },
   {
     "localName": "140129_1000_clapper_0.pdf",
@@ -3793,7 +3889,10 @@
     },
     "pdfChecked": true,
     "imagesChecked": true,
-    "lastPage": 0
+    "lastPage": {
+      "tesseract_2.1.1": 0,
+      "ocrad_0.25": 0
+    }
   },
   {
     "localName": "131217_0230_smithquestionnaire.pdf",
@@ -3926,7 +4025,10 @@
     },
     "pdfChecked": true,
     "imagesChecked": true,
-    "lastPage": 0
+    "lastPage": {
+      "tesseract_2.1.1": 0,
+      "ocrad_0.25": 0
+    }
   },
   {
     "localName": "131217_0230_smithprehearing.pdf",
@@ -4048,7 +4150,10 @@
     },
     "pdfChecked": true,
     "imagesChecked": true,
-    "lastPage": 0
+    "lastPage": {
+      "tesseract_2.1.1": 0,
+      "ocrad_0.25": 0
+    }
   },
   {
     "localName": "131217_0230_krassquestionnaire.pdf",
@@ -4182,7 +4287,10 @@
     },
     "pdfChecked": true,
     "imagesChecked": true,
-    "lastPage": 0
+    "lastPage": {
+      "tesseract_2.1.1": 0,
+      "ocrad_0.25": 0
+    }
   },
   {
     "localName": "131217_0230_krassprehearing.pdf",
@@ -4304,7 +4412,10 @@
     },
     "pdfChecked": true,
     "imagesChecked": true,
-    "lastPage": 0
+    "lastPage": {
+      "tesseract_2.1.1": 0,
+      "ocrad_0.25": 0
+    }
   },
   {
     "localName": "130207_0230_brennan.pdf",
@@ -4419,7 +4530,10 @@
     },
     "pdfChecked": true,
     "imagesChecked": true,
-    "lastPage": 0
+    "lastPage": {
+      "tesseract_2.1.1": 0,
+      "ocrad_0.25": 0
+    }
   },
   {
     "localName": "130207_0230_questionnaire_(5).pdf",
@@ -4542,7 +4656,10 @@
     },
     "pdfChecked": true,
     "imagesChecked": true,
-    "lastPage": 0
+    "lastPage": {
+      "tesseract_2.1.1": 0,
+      "ocrad_0.25": 0
+    }
   },
   {
     "localName": "130207_0230_prehearing_(5).pdf",
@@ -4677,7 +4794,10 @@
     },
     "pdfChecked": true,
     "imagesChecked": true,
-    "lastPage": 0
+    "lastPage": {
+      "tesseract_2.1.1": 0,
+      "ocrad_0.25": 0
+    }
   },
   {
     "localName": "120131_1000_clapper_(2).pdf",
@@ -4816,7 +4936,10 @@
     },
     "pdfChecked": true,
     "imagesChecked": true,
-    "lastPage": 0
+    "lastPage": {
+      "tesseract_2.1.1": 0,
+      "ocrad_0.25": 0
+    }
   },
   {
     "localName": "110922_0230_mccullough.pdf",
@@ -4941,7 +5064,10 @@
     },
     "pdfChecked": true,
     "imagesChecked": true,
-    "lastPage": 0
+    "lastPage": {
+      "tesseract_2.1.1": 0,
+      "ocrad_0.25": 0
+    }
   },
   {
     "localName": "110922_0230_questionnaire_(4).pdf",
@@ -5077,7 +5203,10 @@
     },
     "pdfChecked": true,
     "imagesChecked": true,
-    "lastPage": 0
+    "lastPage": {
+      "tesseract_2.1.1": 0,
+      "ocrad_0.25": 0
+    }
   },
   {
     "localName": "110922_0230_prehearing_(4).pdf",
@@ -5220,7 +5349,10 @@
     },
     "pdfChecked": true,
     "imagesChecked": true,
-    "lastPage": 0
+    "lastPage": {
+      "tesseract_2.1.1": 0,
+      "ocrad_0.25": 0
+    }
   },
   {
     "localName": "110913_0930_clapper_(1).pdf",
@@ -5302,7 +5434,10 @@
     },
     "pdfChecked": true,
     "imagesChecked": true,
-    "lastPage": 0
+    "lastPage": {
+      "tesseract_2.1.1": 0,
+      "ocrad_0.25": 0
+    }
   },
   {
     "localName": "110726_1000_statement_(4).pdf",
@@ -5378,7 +5513,10 @@
     },
     "pdfChecked": true,
     "imagesChecked": true,
-    "lastPage": 0
+    "lastPage": {
+      "tesseract_2.1.1": 0,
+      "ocrad_0.25": 0
+    }
   },
   {
     "localName": "110726_1000_questionnaire_(3).pdf",
@@ -5472,7 +5610,10 @@
     },
     "pdfChecked": true,
     "imagesChecked": true,
-    "lastPage": 0
+    "lastPage": {
+      "tesseract_2.1.1": 0,
+      "ocrad_0.25": 0
+    }
   },
   {
     "localName": "110726_1000_prehearing_(3).pdf",
@@ -5566,7 +5707,10 @@
     },
     "pdfChecked": true,
     "imagesChecked": true,
-    "lastPage": 0
+    "lastPage": {
+      "tesseract_2.1.1": 0,
+      "ocrad_0.25": 0
+    }
   },
   {
     "localName": "110623_0230_questionnaire_(2).pdf",
@@ -5664,7 +5808,10 @@
     },
     "pdfChecked": true,
     "imagesChecked": true,
-    "lastPage": 0
+    "lastPage": {
+      "tesseract_2.1.1": 0,
+      "ocrad_0.25": 0
+    }
   },
   {
     "localName": "110623_0230_responses_(1).pdf",
@@ -5743,7 +5890,10 @@
     },
     "pdfChecked": true,
     "imagesChecked": true,
-    "lastPage": 0
+    "lastPage": {
+      "tesseract_2.1.1": 0,
+      "ocrad_0.25": 0
+    }
   },
   {
     "localName": "110517_0330_questionnaire_(1).pdf",
@@ -5838,7 +5988,10 @@
     },
     "pdfChecked": true,
     "imagesChecked": true,
-    "lastPage": 0
+    "lastPage": {
+      "tesseract_2.1.1": 0,
+      "ocrad_0.25": 0
+    }
   },
   {
     "localName": "110216_1000_dni.pdf",
@@ -5994,7 +6147,10 @@
     },
     "pdfChecked": true,
     "imagesChecked": true,
-    "lastPage": 0
+    "lastPage": {
+      "tesseract_2.1.1": 0,
+      "ocrad_0.25": 0
+    }
   },
   {
     "localName": "110203_0230_osullivan.pdf",
@@ -6070,7 +6226,10 @@
     },
     "pdfChecked": true,
     "imagesChecked": true,
-    "lastPage": 0
+    "lastPage": {
+      "tesseract_2.1.1": 0,
+      "ocrad_0.25": 0
+    }
   },
   {
     "localName": "110203_0230_osullivanqfrs.pdf",
@@ -6153,7 +6312,10 @@
     },
     "pdfChecked": true,
     "imagesChecked": true,
-    "lastPage": 0
+    "lastPage": {
+      "tesseract_2.1.1": 0,
+      "ocrad_0.25": 0
+    }
   },
   {
     "localName": "110203_0230_attach1.pdf",
@@ -6226,7 +6388,10 @@
     },
     "pdfChecked": true,
     "imagesChecked": true,
-    "lastPage": 0
+    "lastPage": {
+      "tesseract_2.1.1": 0,
+      "ocrad_0.25": 0
+    }
   },
   {
     "localName": "110203_0230_attach2_(1).pdf",
@@ -6300,7 +6465,10 @@
     },
     "pdfChecked": true,
     "imagesChecked": true,
-    "lastPage": 0
+    "lastPage": {
+      "tesseract_2.1.1": 0,
+      "ocrad_0.25": 0
+    }
   },
   {
     "localName": "100921_0230_statement_(1).pdf",
@@ -6382,7 +6550,10 @@
     },
     "pdfChecked": true,
     "imagesChecked": true,
-    "lastPage": 0
+    "lastPage": {
+      "tesseract_2.1.1": 0,
+      "ocrad_0.25": 0
+    }
   },
   {
     "localName": "100921_0230_questionnaire.pdf",
@@ -6475,7 +6646,10 @@
     },
     "pdfChecked": true,
     "imagesChecked": true,
-    "lastPage": 0
+    "lastPage": {
+      "tesseract_2.1.1": 0,
+      "ocrad_0.25": 0
+    }
   },
   {
     "localName": "100921_0230_prehearing.pdf",
@@ -6563,7 +6737,10 @@
     },
     "pdfChecked": true,
     "imagesChecked": true,
-    "lastPage": 0
+    "lastPage": {
+      "tesseract_2.1.1": 0,
+      "ocrad_0.25": 0
+    }
   },
   {
     "localName": "100720_0245_clapperqfrs.pdf",
@@ -6701,7 +6878,10 @@
     },
     "pdfChecked": true,
     "imagesChecked": true,
-    "lastPage": 0
+    "lastPage": {
+      "tesseract_2.1.1": 0,
+      "ocrad_0.25": 0
+    }
   },
   {
     "localName": "100720_0245_attach.pdf",
@@ -6836,7 +7016,10 @@
     },
     "pdfChecked": true,
     "imagesChecked": true,
-    "lastPage": 0
+    "lastPage": {
+      "tesseract_2.1.1": 0,
+      "ocrad_0.25": 0
+    }
   },
   {
     "localName": "100720_0245_attach2.pdf",
@@ -6993,7 +7176,10 @@
     },
     "pdfChecked": true,
     "imagesChecked": true,
-    "lastPage": 0
+    "lastPage": {
+      "tesseract_2.1.1": 0,
+      "ocrad_0.25": 0
+    }
   },
   {
     "localName": "091013_0230_gompert1.pdf",
@@ -7134,7 +7320,10 @@
     },
     "pdfChecked": true,
     "imagesChecked": true,
-    "lastPage": 0
+    "lastPage": {
+      "tesseract_2.1.1": 0,
+      "ocrad_0.25": 0
+    }
   },
   {
     "localName": "091013_0230_gompert2.pdf",
@@ -7306,6 +7495,9 @@
     },
     "pdfChecked": true,
     "imagesChecked": true,
-    "lastPage": 2
+    "lastPage": {
+      "tesseract_2.1.1": 1,
+      "ocrad_0.25": 0
+    }
   }
 ]

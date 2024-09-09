@@ -357,10 +357,8 @@ var Doc = function (options) {
 
 
     if (options.lastPage){
-        
+       this.currentPage = options.lastPage + 1;
     }
-    this.currentPage = options.lastPage;
-
     console.log(this);
     this.exhibition = url.searchParams.get("exhibition");
     if (!this.exhibition){
@@ -397,14 +395,13 @@ var Doc = function (options) {
 	console.log(meta.style.fontSize);
 
 
-
 	if (this.exhibition === "slash"){
 	   console.log("SMALLER");
 	   meta.style.fontSize = parseFloat(meta.style.fontSize) * .4 + "pt";
 	}
         console.log("size", meta.style.fontSize);
         meta.style.opacity = 100;
-
+	util.resize();
         await util.wait(5000);
         //doc.cycleData();
     }).catch((e) => {
@@ -622,14 +619,17 @@ Doc.prototype.init = function () {
     this.url.searchParams.set("mode", this.mode);
     var pageparam = parseInt(this.url.searchParams.get('page'), 10);
     console.log("comparing ", pageparam, " from url ", this.currentPage, " currentPage");
-    if (typeof pageparam !== "undefined" && pageparam < this.pages.length) {
+    
+    if (typeof pageparam !== "undefined" && pageparam < this.pages.length && !isNaN(pageparam)) {
         if (this.currentPage > pageparam) {
             this.url.searchParams.set('page', this.currentPage);
         } else {
             this.currentPage = pageparam;
         }
     } else {
-        this.currentPage = 0;
+	if (!this.currentPage){
+            this.currentPage = 0;
+	}
         this.url.searchParams.set('page', this.currentPage);
 
     }
@@ -660,6 +660,13 @@ Doc.prototype.init = function () {
     this.loadPage();
 };
 
+
+util.resize = function(){
+	let meta = document.querySelector("#meta");
+	let cons = document.querySelector("#console");
+	let mult = cons.offsetHeight / meta.offsetHeight
+	meta.style.fontSize = parseFloat(window.getComputedStyle(meta).getPropertyValue("font-size")) * mult + "px"
+}
 
 util.copyImage = async function (img) {
     console.log("loading image");

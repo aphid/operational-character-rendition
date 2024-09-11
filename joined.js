@@ -857,12 +857,17 @@ var compare = async function (word, dict) {
 let getDoc = async function(){
 
     var targetDoc = url.searchParams.get("document") || false;
-    var targetPage = url.searchParams.get("page") || 0;
+    var exh = url.searchParams.get("exhibition") || url.searchParams.get("exh") || 0;
+    let docs;
+    if (exh === "slash"){
+        docs = await get("slashdata.json");
+    } else {
+        docs = await get("ocrdata.json");
+    }
     console.log(targetDoc);
 
 
     
-    let docs = await get("https://oversightmachin.es/ocr/hdocs.json");
     docs = JSON.parse(docs).reverse();
 
     if (targetDoc){

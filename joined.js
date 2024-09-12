@@ -626,6 +626,12 @@ Doc.prototype.init = function () {
         } else {
             this.currentPage = pageparam;
         }
+    } else if (this.currentPage >= this.pages.length) {
+        let targurl = `${this.url.origin}${this.url.pathname}?document=new`;
+        if (this.exhibition) {
+            targurl = targurl + "&exhibition=" + this.exhibition;
+        }
+        window.location.href = targurl;
     } else {
 	if (!this.currentPage){
             this.currentPage = 0;

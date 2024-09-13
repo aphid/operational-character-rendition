@@ -666,11 +666,60 @@ Doc.prototype.init = function () {
 };
 
 
-util.resize = function(){
+util.resize = async function(){
 	let meta = document.querySelector("#meta");
 	let cons = document.querySelector("#console");
-	let mult = cons.offsetHeight / meta.offsetHeight
-	meta.style.fontSize = parseFloat(window.getComputedStyle(meta).getPropertyValue("font-size")) * mult + "px"
+	/*let mult = cons.offsetHeight / meta.offsetHeight;
+	let mult = meta.offsetHeight / window.innerHeight;
+	let size = parseFloat(window.getComputedStyle(meta).getPropertyValue("font-size")) / mult;
+	meta.style.fontSize = size + "px";
+	return size;*/
+        let steps = 0;
+        let buffer = [];
+	let ssz = [];
+	while (Math.abs(window.innerHeight - meta.offsetHeight) > 25 && steps < 40){
+               let x = window.innerHeight - meta.offsetHeight;
+	       let xx = Math.abs(x);
+	       let unit;
+	       if (xx > 500) {
+		  unit = 4;
+	       } else if (xx > 200 && xx <= 500) {
+                  unit = 2;
+	       } else if (xx > 100 && xx <= 200) {
+                  unit = 1;
+	       } else {
+                  unit = 0.5
+	       }
+               console.log("did", x, Math.abs(x));
+	       let sz;
+               if (x > 0){
+                 sz = parseFloat(meta.style.fontSize) + unit;
+               } else {
+                 sz = parseFloat(meta.style.fontSize) - unit;
+               }
+		 meta.style.fontSize = sz + "px";
+	         steps++;
+	         buffer.push(x);
+		 ssz.push(sz);
+	       if (buffer.length > 15 && buffer.includes(x)){
+                 steps = 40000;
+
+	       }
+
+	}
+        /*
+        let asdf = window.setInterval(() => {
+
+	   if (Math.abs(window.innerHeight - meta.offsetHeight) > 20){
+	       let x = window.innerHeight - meta.offsetHeight;
+	       console.log("did", x);
+               if (x > 0){
+                   meta.style.fontSize = parseFloat(meta.style.fontSize) + 2 + "px";
+               } else {
+                   meta.style.fontSize = parseFloat(meta.style.fontSize) - 2 + "px";
+               }
+           }
+	}, 20);*/
 }
 
 util.copyImage = async function (img) {
@@ -755,7 +804,7 @@ Doc.prototype.loadPage = async function () {
         this.currentPage = parseInt(urlPage, 10);
         page = this.pages[urlPage];
         console.log(page);
-    } else if (this.currentPage >= this.pages.length - 1) {
+    } else if (this.currentPage > this.pages.length - 1) {
         console.log("starting over, end of document reached");
         let targurl = `${this.url.origin}${this.url.pathname}?document=new`;
         if (this.exhibition) {
@@ -784,7 +833,7 @@ Doc.prototype.loadPage = async function () {
         page = this.pages[this.currentPage];
         var pageDivs = document.querySelectorAll(".page");
         for (var i = 0; i < pageDivs.length; i++) {
-            if (i < this.currentPage - 1) {
+            if (i < this.currentPage - 5) {
                 pageDivs[i].style.display = "none";
             }
         }
@@ -832,6 +881,7 @@ function get(url) {
         // Do the usual XHR stuff
         var req = new XMLHttpRequest();
         req.open("GET", url);
+        req.setRequestHeader("Cache-Control", "no-cache, no-store, max-age=0");
         req.onload = function () {
             // This is called even on 404 etc
             // so check the status
@@ -867,7 +917,7 @@ var compare = async function (word, dict) {
 };
 
 let getDoc = async function(){
-
+    await util.wait(5000);
     var targetDoc = url.searchParams.get("document") || false;
     var exh = url.searchParams.get("exhibition") || url.searchParams.get("exh") || 0;
     let docs;
@@ -880,10 +930,11 @@ let getDoc = async function(){
 
 
     
-    docs = JSON.parse(docs).reverse();
+    docs = JSON.parse(docs);
 
-    if (targetDoc){
+    if (targetDoc && targetDoc !== "new"){
         for (let d of docs){
+	    console.log(d);
             d.root = d.localPath.replace("/mnt/oversee/", "https://oversightmachin.es/").replace(".pdf", "").replace(".PDF", "").replace(".txt", "/").replace("html", "").replace("illegible.us", "oversightmachin.es") + "/";
             d.title = d.localName.replace(".pdf", "").replace(".PDF", "");
             let pc = d.metadata.pageCount || d.metadata.PageCount;
@@ -909,6 +960,7 @@ let getDoc = async function(){
                 d.title = d.localName.replace(".pdf", "").replace(".PDF", "");
                 let pc = d.metadata.pageCount || d.metadata.PageCount;
                 d.last = pc - 1;
+		console.log("returning!", d);
                 return d;
             }
         }

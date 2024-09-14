@@ -186,6 +186,7 @@ body {
     margin-bottom: 3px;
     box-sizing: border-box;
     height: auto;
+    max-height: 150px;
     width: auto;
 }
 

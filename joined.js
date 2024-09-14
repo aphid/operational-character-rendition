@@ -665,6 +665,24 @@ Doc.prototype.init = function () {
     this.loadPage();
 };
 
+util.delay = 750;
+util.throttled = false;
+util.calls = 0;
+
+window.addEventListener('resize', function() {
+	// only run if we're not throttled
+  if (!util.throttled) {
+    // actual callback action
+    util.resize();
+    // we're throttled!
+    throttled = true;
+    // set a timeout to un-throttle
+    setTimeout(function() {
+      throttled = false;
+    }, delay);
+  }  
+});
+
 
 util.resize = async function(){
 	let meta = document.querySelector("#meta");

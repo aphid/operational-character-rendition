@@ -201,8 +201,9 @@ Doc.prototype.process = async function () {
             console.log("oof");
 
             await doc.upImage();
-            await util.wait(3000);
+            await util.wait(5000);
             await doc.upWords();
+	    await util.wait(5000);	
             await util.wait(timings.docFinished);
             full.style.transition = "none";
 

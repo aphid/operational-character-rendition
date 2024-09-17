@@ -69,6 +69,7 @@ body {
 }
 
 #data {
+    display: none;
     position: absolute;
     left: 2px;
     top: 2px;
@@ -186,6 +187,7 @@ body {
     margin-bottom: 3px;
     box-sizing: border-box;
     height: auto;
+    max-height: 150px;
     width: auto;
 }
 

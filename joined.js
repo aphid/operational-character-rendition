@@ -679,7 +679,7 @@ window.addEventListener('resize', function() {
     // set a timeout to un-throttle
     setTimeout(function() {
       throttled = false;
-    }, delay);
+    }, util.delay);
   }  
 });
 

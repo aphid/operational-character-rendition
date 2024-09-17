@@ -1,3 +1,4 @@
+/* jshint unused:true */
 
 Word.prototype.draw = async function() {
     var wd = this;

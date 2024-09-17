@@ -17,10 +17,10 @@ Word.prototype.draw = async function () {
         wd.span.style.fontWeight = "bold";
     }
     if (this.is_italic) {
-        wd.span.style.fontStyle = "italic"
+        wd.span.style.fontStyle = "italic";
     }
     if (this.is_underlined) {
-        wd.span.style.fontStyle = "italic"
+        wd.span.style.fontStyle = "italic";
     }
 
     if (this.is_smallcaps) {
@@ -46,7 +46,7 @@ Word.prototype.draw = async function () {
         let widdiff = Math.abs(this.ppos.x - lastEdge);
         //let lastEdge = statement.lastWord.ppos.x + statement.lastWord.ppos.w;
         //let widdiff = Math.abs(this.ppos.x - lastEdge);
-        console.log("(((((((((((((", widdiff)
+        console.log("(((((((((((((", widdiff);
         let gap = (wd.font_size / 6);
         let newVal = lastEdge + gap;
         if (gap < 8) {
@@ -135,7 +135,7 @@ Word.prototype.draw = async function () {
     let fs = parseInt(wd.lineDiv.style.fontSize.replace("px", "")) || 0;
 
     if (h > fs && h < 120) {
-        console.log("changing font size")
+        console.log("changing font size");
         wd.lineDiv.style.fontSize = h + "px";
     }
     //fitty(wd.span, { maxHeight: wd.ppos.h });
@@ -200,7 +200,8 @@ Doc.prototype.process = async function () {
         }).finally(async function () {
             console.log("oof");
 
-            await doc.upImage()
+            await doc.upImage();
+            await util.wait(3000);
             await doc.upWords();
             await util.wait(timings.docFinished);
             full.style.transition = "none";
@@ -273,7 +274,7 @@ Doc.prototype.addWord = async function (word) {
 
     parent.style.display = "inline-block";
     var ssize;
-    ssize = word.lineHeight * .7;
+    ssize = word.lineHeight * 0.7;
     if (ssize > 50) {
         ssize = 50;
     }
@@ -387,7 +388,7 @@ Doc.prototype.processWords = async function () {
             if (w == line.words.length - 1) {
                 //probably nothing
             }
-            this.words.push(new Word(word))
+            this.words.push(new Word(word));
         }
     }
     console.log("words have been set up");

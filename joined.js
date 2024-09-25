@@ -558,7 +558,7 @@ Doc.prototype.upImage = async function () {
         "root": this.root,
         "title": this.title,
         "mode": this.mode,
-        "exh": this.url.searchParams.get("exhibition")
+        "exh": this.exhibition
     };
 
 

@@ -20,7 +20,7 @@ util.paused = false;
 
 util.pause = function () {
     util.pause = !util.pause;
-}
+};
 
 for (let t in timings) {
     //timings[t] = timings[t] * 0.6;
@@ -253,7 +253,7 @@ if (document.readyState == "complete" || document.readyState == "interactive") {
         } else {
             return Promise.resolve(result.data);
         }
-    }
+    };
 } else {
     document.addEventListener("DOMContentLoaded", async function () {
         console.log("DOM loaded");
@@ -264,7 +264,7 @@ if (document.readyState == "complete" || document.readyState == "interactive") {
             } else {
                 return Promise.resolve(result.data);
             }
-        }
+        };
     });
 
 }
@@ -302,12 +302,13 @@ var begin = async function () {
     txt = document.querySelector("#text");
     read = document.querySelector("#readword");
     datasource = document.querySelector("#source");
-    datadistance = document.querySelector("#distance")
+    datadistance = document.querySelector("#distance");
     json = document.querySelector("#json");
     type = document.querySelector("#type");
     typeCtx = type.getContext("2d");
+    let dicts;
     if (!rawdict && !suspectdict) {
-        var dicts = await Promise.all([get("dict.json"), get("suspect.json")]);
+        dicts = await Promise.all([get("dict.json"), get("suspect.json")]);
     }
     url = new URL(window.location.href);
 
@@ -328,7 +329,7 @@ var begin = async function () {
         }
     }
     thedoc = buildPages(pick);
-    console.log(mode, thedoc.lastPage)
+    console.log(mode, thedoc.lastPage);
 
     console.log(thedoc);
     let mod = await pickMode(mode);
@@ -368,7 +369,7 @@ var Doc = function (options) {
     document.title = "operational character rendition: " + this.title;
    console.log("hello");
     console.log(options.root);
-    let troot = options.root.substring(0, options.root.length - 1)
+    let troot = options.root.substring(0, options.root.length - 1);
     let jsonURL = `${troot}.pdf.json`;
 
     aFetch(jsonURL).then(async (result) => {
@@ -391,13 +392,13 @@ var Doc = function (options) {
 
         meta.style.transition = "0.25s linear opacity";
         document.querySelector("#meta").textContent = this.txmetadata;
-        meta.style.fontSize = (parseFloat(window.getComputedStyle(cons).fontSize) * (cons.offsetHeight / meta.offsetHeight)) + .1 + "pt";
+        meta.style.fontSize = (parseFloat(window.getComputedStyle(cons).fontSize) * (cons.offsetHeight / meta.offsetHeight)) + 0.1 + "pt";
 	console.log(meta.style.fontSize);
 
 
 	//if (this.exhibition === "slash"){
 	   console.log("SMALLER");
-	   meta.style.fontSize = parseFloat(meta.style.fontSize) * .4 + "pt";
+	   meta.style.fontSize = parseFloat(meta.style.fontSize) * 0.4 + "pt";
 	//}
         console.log("size", meta.style.fontSize);
         meta.style.opacity = 100;
@@ -434,7 +435,7 @@ aFetch = async function (url) {
         return false;
 
     }
-}
+};
 
 //wtf does this do
 Doc.prototype.cycleData = async function () {
@@ -450,7 +451,7 @@ Doc.prototype.cycleData = async function () {
 
     this.cycleData();
 
-}
+};
 
 const getCircularReplacer = () => {
     const seen = new WeakSet();
@@ -542,7 +543,7 @@ Doc.prototype.upError = async function (page) {
         console.log("request failed");
         return Promise.resolve();
     }
-}
+};
 
 
 Doc.prototype.upImage = async function () {
@@ -627,7 +628,7 @@ Doc.prototype.init = function () {
             this.currentPage = pageparam;
         }
     } else if (this.currentPage >= this.pages.length) {
-        let targurl = `${this.url.origin}${this.url.pathname}?document=new`;
+                let targurl = `${this.url.origin}${this.url.pathname}?document=new`;
         if (this.exhibition) {
             targurl = targurl + "&exhibition=" + this.exhibition;
         }
@@ -794,7 +795,7 @@ Word.prototype.showLetters = async function (doc) {
     await doc.addWord(this);
     await util.wait(1000);
 
-}
+};
 
 
 
@@ -891,7 +892,7 @@ util.testImage = async function (url) {
         return Promise.reject(resp.status);
     }
 
-}
+};
 
 function get(url) {
     // Return a new promise.
@@ -930,7 +931,7 @@ var compare = async function (word, dict) {
         });
         wWorker.onmessage = function (result) {
             resolve(result.data);
-        }
+        };
     });
 };
 
@@ -1025,7 +1026,7 @@ let pickDoc = async function(){
         console.log("**********************", pick);
         if (!pick) {
             console.log("document not found");
-            console.log(hearings)
+            console.log(hearings);
             await util.wait(5000);
             pick = candidates[Math.floor(Math.random() * candidates.length)];
         }
@@ -1041,4 +1042,4 @@ let pickDoc = async function(){
 
     }
     return pick;
-}
+};
